@@ -1,0 +1,21 @@
+.i-right{
+    margin-right: 8px;
+}
+
+.i-hover{
+    cursor: pointer;
+    transition: .3s ease;
+}
+
+.i-hover:hover{
+    color: #51bcda;
+}
+
+.i-gray{
+    color: gray;
+}
+
+.bubble{
+    border-radius: 8px;
+    box-shadow: 0px 0px 20px 0px #3333337a;
+}
