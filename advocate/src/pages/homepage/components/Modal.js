@@ -1,51 +1,80 @@
-import React from 'react';
+import React from "react";
 
-const loginForm = () => {
-    return (
-        <div>
-            <form>
-                <input type={"text"} placeholder={"Username"} name={"username"} required/>
-                <input type={"password"} placeholder={"Password"} name={"password"} required/>
-                <button type={"submit"}>Submit</button>
-            </form>
-        </div>
-    )
-};
+class Modal extends React.Component{
+    constructor(props){
+        super(props);
+        this.handleModal = this.handleModal.bind(this);
+        this.handleForm = this.handleForm.bind(this);
+    }
 
-const registerForm = () => {
-    return (
-        <div>
-            <form>
-                <input type={"text"} placeholder={"First Name"} name={"firstname"} required/>
-                <input type={"text"} placeholder={"Last Name"} name={"lastname"} required/>
-                <input type={"email"} placeholder={"Email"} name={"email"} required/>
-                <input type={"text"} placeholder={"Username"} name={"username"} required/>
-                <input type={"password"} placeholder={"Password"} name={"password"} required/>
-                <input type={"password"} placeholder={"Confirm Password"} required/>
-                <button type={"submit"}>Submit</button>
-            </form>
-        </div>
-    )
-};
+    handleForm = (event, formType) => {
+        event.preventDefault();
+        this.props.modalProps.callback();
+    };
 
-const loginDiv = props => {
-    return (
-        <div className={"headerlogin i-hover"}><i className={"fas fa-user i-right"}/><span>Login</span></div>
-    );
-};
+    handleModal = (formType) => {
+        const registerForm = () => {
+            return (
+                    <form className={"centeredform"} onSubmit={(event) => {this.handleForm(event, formType)}}>
+                        <label htmlFor={"loginfirstname"}>
+                            <i className={"fas fa-id-card"}/>
+                            <input id="loginfirstname" type={"text"} placeholder={"First Name"} name={"firstname"} required/>
+                        </label>
+                        <label htmlFor={"loginfirstname"}>
+                            <i className={"fas fa-id-card"}/>
+                            <input type={"text"} placeholder={"Last Name"} name={"lastname"} required/>
+                        </label>
+                        <label htmlFor={"loginfirstname"}>
+                            <i className={"fas fa-at"}/>
+                            <input type={"email"} placeholder={"Email"} name={"email"} required/>
+                        </label>
+                        <label htmlFor={"loginfirstname"}>
+                            <i className={"fas fa-user"}/>
+                            <input type={"text"} placeholder={"Username"} name={"username"} required/>
+                        </label>
+                        <label htmlFor={"loginfirstname"}>
+                            <i className={"fas fa-user-lock"}/>
+                            <input type={"password"} placeholder={"Password"} name={"password"} required/>
+                        </label>
+                        <label htmlFor={"loginfirstname"}>
+                            <i className={"fas fa-user-check"}/>
+                            <input type={"password"} placeholder={"Confirm Password"} required/>
+                        </label>
+                        <button type={"submit"}>Submit</button>
+                    </form>
+            )
+        };
+        const loginForm = () => {
+            return (
+                    <form className={"centeredform"} onSubmit={(event) => {this.handleForm(event, formType)}}>
+                        <label htmlFor={"loginfirstname"}>
+                            <i className={"fas fa-user"}/>
+                            <input type={"text"} placeholder={"Username"} name={"username"} required/>
+                        </label>
+                        <label htmlFor={"loginfirstname"}>
+                            <i className={"fas fa-user-lock"}/>
+                            <input type={"password"} placeholder={"Password"} name={"password"} required/>
+                        </label>
+                        <button type={"submit"}>Submit</button>
+                    </form>
+            )
+        };
+        return (formType === "login" ? loginForm() : formType === "register" ? registerForm() : "");
+    };
 
-const registerDiv = props => {
-    return (
-        <div className={"headerregister i-hover"}><i className={"fas fa-user-plus i-right"}/><span>Register</span></div>
-    );
-};
-
-const Modal = (props) => {
-    return (
-        <div className={"formmodal"} style={{display: (props.visibility === true ? 'flex' : 'none')}}>
-            {props.formType === "login" ? loginForm() : registerForm()}
-        </div>
-    );
-};
+    render(){
+        return(
+            <div className={`formmodal bubble ${(this.props.modalProps.modalState.displayed ? "display fadein" : "")}`}>
+                <div className="formcontainer">
+                    <div className={"formheader"}>
+                        <h2>{this.props.modalProps.modalState.contentType === "login" ? "Welcome back!" : "Let's get you started."}</h2>
+                        <hr/>
+                    </div>
+                    {this.handleModal(this.props.modalProps.modalState.contentType)}
+                </div>
+            </div>
+        )
+    }
+}
 
 export default Modal;

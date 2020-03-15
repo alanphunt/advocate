@@ -1,6 +1,6 @@
 import React from 'react';
-import logo from '../../assets/advocate.png';
-import SideNav from '../Header/SideNav';
+import logo from '../../../assets/advocate.png';
+import SideNav from './SideNav';
 
 const Header = () => {
     return (

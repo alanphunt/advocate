@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter as Router, Route} from "react-router-dom";
-import ru from './css/reusable.css';
-import st from './css/styles.css';
-import bp from './css/breakpoints.css';
+import './css/reusable.css';
+import './css/styles.css';
+import './css/breakpoints.css';
 
 ReactDOM.render(
     <Router>

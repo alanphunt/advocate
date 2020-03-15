@@ -30,17 +30,6 @@ html, body, #root{
     color: white;
 }
 
-.sidemenu{
-    height: 100%;
-    width: 15%;
-    padding: 1VW;
-    background: linear-gradient(#66615b,#000 80%);
-}
-
-.sidemenulogo{
-    width: 100%;
-}
-
 .homeheader{
     background-color: RGBA(0, 0, 0, .8);
     padding: 5px 2rem;
@@ -102,4 +91,18 @@ html, body, #root{
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
+    width: 50%;
+    max-width: 500px;
+    min-width: 300px;
+    background: white;
+    display: none;
+    padding: 1rem 2rem;
+    color: #333;
+}
+
+.formcontainer{
+    width: 100%;
+}
+
+.formheader{
 }

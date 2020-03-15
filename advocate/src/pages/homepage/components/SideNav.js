@@ -23,7 +23,7 @@ const SideNav = () => {
       links.map(link => (
         <div className={"sidemenulink"}>
             <Link to={'/'+link.url}>
-                <i className={link.icon + " i-gray"}></i>
+                <i className={link.icon + " i-gray"}/>
                 <p>{link.text}</p>
             </Link>
         </div>

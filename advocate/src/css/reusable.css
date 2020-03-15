@@ -1,3 +1,9 @@
+a {
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+}
+
 .i-right{
     margin-right: 8px;
 }
@@ -17,5 +23,94 @@
 
 .bubble{
     border-radius: 8px;
-    box-shadow: 0px 0px 20px 0px #3333337a;
+    box-shadow: 0 0 20px 0 #3333337a;
+}
+
+@keyframes fadein {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+.fadein{
+    animation: fadein .3s ease 0s 1 normal forwards;
+    z-index: 1;
+}
+
+.display{
+    display: flex !important;
+}
+
+.centeredform{
+    display: flex;
+    flex-flow: column;
+    width: 75%;
+    margin: 0 auto 1rem auto;
+}
+
+input{
+    padding: 10px 10px 10px 18px;
+    border-radius: 25px;
+    outline: none;
+    transition: .3s ease;
+    border: 1px solid #e4e4e4;
+}
+
+label:focus-within i{
+    color: #51bcda;
+}
+
+label:focus-within input{
+    border: 1px solid #51bcda;
+}
+
+button{
+    padding: 10px;
+    border: 1px solid #e4e4e4;
+    border-radius: 25px;
+    transition: .3s ease;
+    cursor: pointer;
+    background: none;
+    color: inherit;
+}
+
+button:hover{
+    background-color: #51bcda;
+    color: white;
+}
+
+button:focus{
+    background-color: #2CA1BE;
+    outline: none;
+}
+
+hr{
+    height: 0;
+    border: 1px solid #e4e4e4;
+    margin: .5rem 0 2rem 0;
+}
+
+form label{
+    position: relative;
+}
+
+form label i{
+    position: absolute;
+    font-size: 20px;
+    color: #ccc;
+    top: -7px;
+    left: -7px;
+    transition: .3s ease;
+}
+
+form input{
+    margin-bottom: 1.5rem;
+    width: 100%
+}
+
+.marg-right{
+    margin-right: 1rem;
 }
