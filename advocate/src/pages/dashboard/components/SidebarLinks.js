@@ -17,20 +17,15 @@ class SidebarLinks extends React.Component {
         const links = {
             "link1" : {text: "DASHBOARD", islink: true, link: "/dashboard/main", icon: "fas fa-columns"},
             "link2" : {text: "CLASSROOM", islink: false, menuItems: {
-                item1: {"itemtext": "Classroom", "link": "/dashboard/classroom"},
-                item2: {"itemtext": "Example Two", "link": "/dashboard/classroom/somethingelse"},
-                item3: {"itemtext": "Example Three", "link": "/dashboard/classroom/somethingotherthan"}
+                item1: {"itemtext": "Classroom", "link": "/dashboard/classroom"}
                     }, icon: "far fa-address-book"},
             "link3" : {text: "CHARTS", islink: false, menuItems: {
-                    item1: {"itemtext": "Charts", "link": "/dashboard/charts"},
-                    item2: {"itemtext": "Example Two", "link": "/dashboard/charts/somethingelse"},
-                    item3: {"itemtext": "Example Three", "link": "/dashboard/charts/somethingotherthan"}
+                    item1: {"itemtext": "Charts", "link": "/dashboard/charts"}
                 }, icon: "far fa-chart-bar"},
             "link4" : {text: "GOAL CENTER", islink: false, menuItems: {
-                    item1: {"itemtext": "Goal Center", "link": "/dashboard/goalcenter"},
-                    item2: {"itemtext": "Example Two", "link": "/dashboard/goalcenter/somethingelse"},
-                    item3: {"itemtext": "Example Three", "link": "/dashboard/goalcenter/somethingotherthan"}
+                    item1: {"itemtext": "Goal Center", "link": "/dashboard/goalcenter"}
                 }, icon: "far fa-compass"},
+            "link5" : {text: "MINIMIZE", islink: false, icon: "far fa-hand-point-left"}
         };
 
         return (
@@ -40,7 +35,7 @@ class SidebarLinks extends React.Component {
                         return (
                             <div key={link.text} className={"sideitem"}>
                             {   link.islink
-                                ?   <NavLink onClick={()=>{this.handleChange(link.text)}} className={this.state.current === linktext ? "active" : ""} to={link.link}>
+                                ?   <NavLink onClick={()=>{this.props.updateActiveLink(link.text)}} className={this.props.activeLink === linktext ? "active" : ""} to={link.link}>
                                         <div className={"itemmain"}>
                                             <div className={"itemmaininner"}>
                                                 <i className={link.icon}/>
@@ -48,7 +43,14 @@ class SidebarLinks extends React.Component {
                                             </div>
                                         </div>
                                     </NavLink>
-                                : <SidebarDropdown link={link} updateActiveLink={this.handleChange} isActive={this.state.current === linktext}/>
+                                : link.menuItems
+                                    ? <SidebarDropdown link={link} updateActiveLink={this.props.updateActiveLink} isActive={this.props.activeLink === linktext}/>
+                                    : <div className={"itemmain minmax"}>
+                                        <div className={"itemmaininner"}>
+                                            <i className={link.icon}/>
+                                            <span>{link.text}</span>
+                                        </div>
+                                      </div>
                             }
                             </div>
                         )

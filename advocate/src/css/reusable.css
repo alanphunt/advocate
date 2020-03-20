@@ -4,6 +4,9 @@ a {
     width: 100%;
 }
 
+h1, h2, h3{
+    font-weight: initial;
+}
 .i-right{
     margin-right: 8px;
 }
@@ -95,6 +98,7 @@ hr{
 
 form label{
     position: relative;
+    display: block;
 }
 
 form label i{

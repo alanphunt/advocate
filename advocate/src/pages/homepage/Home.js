@@ -1,8 +1,7 @@
 import React from 'react';
 import logo from '../../assets/advocate.png'
 import Modal from './components/Modal'
-import Dashboard from "../dashboard/Dashboard";
-import {Redirect, Route} from "react-router";
+import {Redirect} from "react-router";
 
 class Home extends React.Component{
     constructor(props){
@@ -39,7 +38,7 @@ class Home extends React.Component{
                 : (<div className={"herocontainer"} onClick={this.exitModal}>
                     <Modal modalProps={{modalState: this.state.modalState, callback: this.logIn}}/>
                     <header className={"homeheader"}>
-                    <img src={logo}/>
+                    <img src={logo} alt={"logo"}/>
                     <div className={"promptcontainer"}>
                         <div onClick={() => {this.handleModal(true, "login")}} className={"headerlogin i-hover"}>
                             <i className={"fas fa-user i-right"}/>

@@ -16,29 +16,29 @@ class Modal extends React.Component{
         const registerForm = () => {
             return (
                     <form className={"centeredform"} onSubmit={(event) => {this.handleForm(event, formType)}}>
-                        <label htmlFor={"loginfirstname"}>
+                        <label htmlFor={"regfirst"}>
                             <i className={"fas fa-id-card"}/>
-                            <input id="loginfirstname" type={"text"} placeholder={"First Name"} name={"firstname"} required/>
+                            <input id="regfirst" type={"text"} placeholder={"First Name"} name={"firstname"} required/>
                         </label>
-                        <label htmlFor={"loginfirstname"}>
+                        <label htmlFor={"reglast"}>
                             <i className={"fas fa-id-card"}/>
-                            <input type={"text"} placeholder={"Last Name"} name={"lastname"} required/>
+                            <input id="reglast" type={"text"} placeholder={"Last Name"} name={"lastname"} required/>
                         </label>
-                        <label htmlFor={"loginfirstname"}>
+                        <label htmlFor={"regemail"}>
                             <i className={"fas fa-at"}/>
-                            <input type={"email"} placeholder={"Email"} name={"email"} required/>
+                            <input id="regemail" type={"email"} placeholder={"Email"} name={"email"} required/>
                         </label>
-                        <label htmlFor={"loginfirstname"}>
+                        <label htmlFor={"reguser"}>
                             <i className={"fas fa-user"}/>
-                            <input type={"text"} placeholder={"Username"} name={"username"} required/>
+                            <input id="reguser" type={"text"} placeholder={"Username"} name={"username"} required/>
                         </label>
-                        <label htmlFor={"loginfirstname"}>
+                        <label htmlFor={"regpass"}>
                             <i className={"fas fa-user-lock"}/>
-                            <input type={"password"} placeholder={"Password"} name={"password"} required/>
+                            <input id="regpass" type={"password"} placeholder={"Password"} name={"password"} required/>
                         </label>
-                        <label htmlFor={"loginfirstname"}>
+                        <label htmlFor={"regconf"}>
                             <i className={"fas fa-user-check"}/>
-                            <input type={"password"} placeholder={"Confirm Password"} required/>
+                            <input id={"regconf"} type={"password"} placeholder={"Confirm Password"} required/>
                         </label>
                         <button type={"submit"}>Submit</button>
                     </form>
@@ -47,13 +47,13 @@ class Modal extends React.Component{
         const loginForm = () => {
             return (
                     <form className={"centeredform"} onSubmit={(event) => {this.handleForm(event, formType)}}>
-                        <label htmlFor={"loginfirstname"}>
+                        <label htmlFor={"loguser"}>
                             <i className={"fas fa-user"}/>
-                            <input type={"text"} placeholder={"Username"} name={"username"} required/>
+                            <input id="loguser" type={"text"} placeholder={"Username"} name={"username"} required/>
                         </label>
-                        <label htmlFor={"loginfirstname"}>
+                        <label htmlFor={"logpass"}>
                             <i className={"fas fa-user-lock"}/>
-                            <input type={"password"} placeholder={"Password"} name={"password"} required/>
+                            <input id={"logpass"} type={"password"} placeholder={"Password"} name={"password"} required/>
                         </label>
                         <button type={"submit"}>Submit</button>
                     </form>

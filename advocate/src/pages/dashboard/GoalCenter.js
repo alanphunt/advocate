@@ -1,13 +1,9 @@
 import React from "react";
 
 class GoalCenter extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
-            <div className={""}>
+            <div className={"dash-main-inner"}>
                 goal center
             </div>
         )

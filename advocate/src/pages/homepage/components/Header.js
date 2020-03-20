@@ -7,7 +7,7 @@ const Header = () => {
         <header className={"sidemenu"}>
             <div className={"sidemenuinner"}>
                 <div className={"sidemenuheader"}>
-                    <img className="sidemenulogo" src={logo}/>
+                    <img className="sidemenulogo" src={logo} alt={"Advocate Logo"}/>
                 </div>
                 <div className={"sidemenuuser"}>
 

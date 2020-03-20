@@ -1,14 +1,9 @@
 import React from "react";
 
 class Charts extends React.Component {
-    constructor(props) {
-        super(props);
-
-    }
-
     render() {
         return (
-            <div className={""}>
+            <div className={"dash-main-inner"}>
                 charts
             </div>
         )

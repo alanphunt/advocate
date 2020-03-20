@@ -1,13 +1,9 @@
 import React from "react";
 
 class DashMain extends React.Component{
-    constructor(props) {
-        super(props);
-    }
-
     render(){
         return(
-            <div className={""}>
+            <div className={"dash-main-inner"}>
                 dash main
             </div>
         )
