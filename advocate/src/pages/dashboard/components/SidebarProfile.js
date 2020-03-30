@@ -6,7 +6,7 @@ class SidebarProfile extends React.Component {
     render() {
         return (
             <div className={"sidebarfooter sidebarpad"}>
-                <NavLink onClick={()=>{this.props.updateActiveLink("profile")}} className={this.props.isActive ? "active" : ""} to={"/dashboard/profile"}>
+                <NavLink onClick={()=>{this.props.updateActiveLink("profile")}} activeClassName={"active"} to={"/dashboard/profile"}>
                     <div className={"itemmain"}>
                         <div className={"itemmaininner"}>
                             <img className={"sidebar-default-pic marg-right"} src={imgph} alt={"user"}/>

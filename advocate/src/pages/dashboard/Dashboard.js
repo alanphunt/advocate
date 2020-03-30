@@ -10,18 +10,43 @@ import CreateClassroom from "./CreateClassroom";
 
 
 class Dashboard extends React.Component {
+
+    constructor(props) {
+        super(props);
+        let path = window.location.pathname.split("/")[2];
+        this.state = {activeCategory: path};
+    }
+
+    handleChange = (e) => {
+        this.setState({activeCategory: (e.replace(" ", ""))});
+    };
+
+
+
     render() {
         return (
                 <div className={"dashboardwrapper"}>
-                    <Sidebar/>
+                    <Sidebar navHandler={{updateActiveCategory: this.handleChange, activeCategory: this.state.activeCategory}}/>
                     <div className={"dash-main-wrapper"}>
                         <Switch>
-                            <Route path="/dashboard/main" component={DashMain}/>
-                            <Route path="/dashboard/classroom" exact component={Classroom}/>
-                            <Route path="/dashboard/classroom/create" component={CreateClassroom}/>
-                            <Route path="/dashboard/charts" component={Charts}/>
-                            <Route path="/dashboard/goalcenter" component={GoalCenter}/>
-                            <Route path="/dashboard/profile" component={Profile}/>
+                            <Route path="/dashboard/main">
+                                <DashMain navHandler={{updateActiveCategory: this.handleChange}}/>
+                            </Route>
+                            <Route path="/dashboard/classroom" exact>
+                                <Classroom/>
+                            </Route>
+                            <Route path="/dashboard/classroom/create">
+                                <CreateClassroom/>
+                            </Route>
+                            <Route path="/dashboard/charts" exact>
+                                <Charts/>
+                            </Route>
+                            <Route path="/dashboard/goalcenter" exact>
+                                <GoalCenter/>
+                            </Route>
+                            <Route path="/dashboard/profile">
+                                <Profile/>
+                            </Route>
                         </Switch>
                     </div>
                 </div>

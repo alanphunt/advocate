@@ -97,6 +97,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
+    text-transform: uppercase;
 }
 
 .itemmaininner i{

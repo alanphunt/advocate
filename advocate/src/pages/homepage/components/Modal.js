@@ -1,10 +1,6 @@
 import React from "react";
 
 class Modal extends React.Component{
-    constructor(props){
-        super(props);
-    }
-
     handleForm = (event) => {
         event.preventDefault();
         this.props.modalProps.callback(event);

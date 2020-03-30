@@ -6,8 +6,12 @@ class SidebarDropdown extends React.Component {
         super(props);
         this.state = {
             dropped: false,
-            active: (window.location.pathname === this.props.link.menuItems.item1.link)
+            activeLink: (window.location.pathname === this.props.link.menuItems.item1.link)
         };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
     }
 
     handleClick = () => {
@@ -18,7 +22,7 @@ class SidebarDropdown extends React.Component {
 
     handleActive = () => {
         this.props.updateActiveLink(this.props.link.text);
-        this.setState({active: this.props.isActive});
+        this.setState({activeLink: this.props.isActive});
     };
 
     render() {
@@ -34,18 +38,18 @@ class SidebarDropdown extends React.Component {
                 </div>
                 <div className={"dropdown"+(this.state.dropped ? " dropdownactive" : "")}>
                     <ul>
-                {
-                    Object.values(this.props.link.menuItems).map(item => {
-                        return(
-                            <li key={item.itemtext}>
-                                <NavLink onClick={this.handleActive} activeClassName={"active"} to={item.link} exact>
-                                    <span>{item.itemtext.split(" ").map(word => word.charAt(0).toUpperCase()).join("")}</span>
-                                    <span>{item.itemtext}</span>
-                                </NavLink>
-                            </li>
-                        )
-                    })
-                }
+                        {
+                            Object.values(this.props.link.menuItems).map(item => {
+                                return(
+                                    <li key={item.itemtext}>
+                                        <NavLink onClick={this.handleActive} activeClassName={"active"} to={item.link} exact>
+                                            <span>{item.itemtext.split(" ").map(word => word.charAt(0).toUpperCase()).join("")}</span>
+                                            <span>{item.itemtext}</span>
+                                        </NavLink>
+                                    </li>
+                                )
+                            })
+                        }
                     </ul>
                 </div>
             </div>

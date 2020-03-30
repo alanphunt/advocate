@@ -6,18 +6,10 @@ import SidebarProfile from "./SidebarProfile";
 import {Link} from "react-router-dom";
 
 class Sidebar extends React.Component{
-    constructor(props) {
-        super(props);
-        let path = window.location.pathname.split("/")[2].toUpperCase();
-        this.state = {current: path};
-    }
-
-    handleChange = (e) => {
-        this.setState({current: (e.replace(" ", ""))});
-    };
-
 
     render(){
+        const active = this.props.navHandler.activeCategory;
+        const changeActive = this.props.navHandler.updateActiveCategory;
         return(
             <div className={"sidebarwrapper"}>
                 <div className={"sidebar"}>
@@ -25,9 +17,9 @@ class Sidebar extends React.Component{
                         <Link to={"/"}><img src={puzzle} alt={"logo"}/></Link>
                     </div>
                     <div className={"sidebarmain sidebarpad sideflex"}>
-                        <SidebarLinks updateActiveLink={this.handleChange} activeLink={this.state.current}/>
+                        <SidebarLinks updateActiveLink={changeActive} activeLink={active}/>
                     </div>
-                    <SidebarProfile updateActiveLink={this.handleChange} isActive={this.state.current === "PROFILE"}/>
+                    <SidebarProfile updateActiveLink={changeActive} isActive={active === "profile"}/>
                 </div>
             </div>
         )

@@ -5,7 +5,7 @@ class DashMain extends React.Component{
     render(){
         return(
             <div className={"dash-main-inner"}>
-                <GetStarted to={"/dashboard/classroom/create"}>
+                <GetStarted to={"/dashboard/classroom/create"} navHandler={{updateActiveCategory: this.props.navHandler.updateActiveCategory}}>
                         <i className="fas fa-plus marg-bot"/>
                         <h2>Get started by creating a classroom</h2>
                 </GetStarted>
