@@ -11,11 +11,9 @@ class Profile extends React.Component {
         this.picHover = this.picHover.bind(this);
     }
 
-
     picHover(){
         this.setState(state => ({picHovered: !state.picHovered}))
     }
-
 
     render() {
         return (

@@ -6,6 +6,7 @@ import Classroom from "./Classroom";
 import Charts from "./Charts";
 import GoalCenter from "./GoalCenter";
 import Profile from "./Profile";
+import CreateClassroom from "./CreateClassroom";
 
 
 class Dashboard extends React.Component {
@@ -16,7 +17,8 @@ class Dashboard extends React.Component {
                     <div className={"dash-main-wrapper"}>
                         <Switch>
                             <Route path="/dashboard/main" component={DashMain}/>
-                            <Route path="/dashboard/classroom" component={Classroom}/>
+                            <Route path="/dashboard/classroom" exact component={Classroom}/>
+                            <Route path="/dashboard/classroom/create" component={CreateClassroom}/>
                             <Route path="/dashboard/charts" component={Charts}/>
                             <Route path="/dashboard/goalcenter" component={GoalCenter}/>
                             <Route path="/dashboard/profile" component={Profile}/>

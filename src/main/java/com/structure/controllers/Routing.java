@@ -6,8 +6,5 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
 public class Routing {
 
-    @GetMapping(value = "/hello")
-    public String hello(@RequestParam String name){
-        return "Oh, hey " + name + "!";
-    }
+
 }

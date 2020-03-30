@@ -126,6 +126,6 @@ class Classroom extends React.Component{
             </div>
         );
     }
-};
+}
 
 export default Classroom;

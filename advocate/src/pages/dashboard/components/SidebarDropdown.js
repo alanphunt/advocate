@@ -8,17 +8,15 @@ class SidebarDropdown extends React.Component {
             dropped: false,
             active: (window.location.pathname === this.props.link.menuItems.item1.link)
         };
-        this.handleClick = this.handleClick.bind(this);
-        this.handleActive = this.handleActive.bind(this);
     }
 
-    handleClick(){
+    handleClick = () => {
         this.setState(state => ({
             dropped: !state.dropped
         }))
-    }
+    };
 
-    handleActive(){
+    handleActive = () => {
         this.props.updateActiveLink(this.props.link.text);
         this.setState({active: this.props.isActive});
     };
@@ -39,12 +37,12 @@ class SidebarDropdown extends React.Component {
                 {
                     Object.values(this.props.link.menuItems).map(item => {
                         return(
-                                <li key={item.itemtext}>
-                                    <NavLink onClick={this.handleActive} activeClassName={"active"} to={item.link}>
-                                        <span>{item.itemtext.charAt(0).toUpperCase()}</span>
-                                        <span>{item.itemtext}</span>
-                                    </NavLink>
-                                </li>
+                            <li key={item.itemtext}>
+                                <NavLink isActive={this.handleActive} onClick={this.handleActive} activeClassName={"active"} to={item.link} exact>
+                                    <span>{item.itemtext.split(" ").map(word => word.charAt(0).toUpperCase()).join("")}</span>
+                                    <span>{item.itemtext}</span>
+                                </NavLink>
+                            </li>
                         )
                     })
                 }

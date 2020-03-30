@@ -98,7 +98,6 @@ hr{
 
 form label{
     position: relative;
-    display: block;
 }
 
 form label i{
@@ -117,4 +116,16 @@ form input{
 
 .marg-right{
     margin-right: 1rem;
+}
+
+.labelblock{
+    display: block;
+}
+
+.br{
+    border-radius: 8px;
+}
+
+.marg-bot{
+    margin-bottom: 1rem;
 }

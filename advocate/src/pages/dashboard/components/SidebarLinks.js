@@ -6,18 +6,14 @@ class SidebarLinks extends React.Component {
     constructor(props) {
         super(props);
         this.state = {current: (window.location.pathname.split("/dashboard/")[1].toUpperCase())};
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(e){
-        this.setState({current: (e.replace(" ", ""))});
     }
 
     render() {
         const links = {
             "link1" : {text: "DASHBOARD", islink: true, link: "/dashboard/main", icon: "fas fa-columns"},
             "link2" : {text: "CLASSROOM", islink: false, menuItems: {
-                item1: {"itemtext": "Classroom", "link": "/dashboard/classroom"}
+                item1: {"itemtext": "Classroom", "link": "/dashboard/classroom"},
+                item2: {"itemtext": "Create Classroom", "link": "/dashboard/classroom/create"}
                     }, icon: "far fa-address-book"},
             "link3" : {text: "CHARTS", islink: false, menuItems: {
                     item1: {"itemtext": "Charts", "link": "/dashboard/charts"}

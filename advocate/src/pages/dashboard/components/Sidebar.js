@@ -8,13 +8,13 @@ import {Link} from "react-router-dom";
 class Sidebar extends React.Component{
     constructor(props) {
         super(props);
-        this.state = {current: (window.location.pathname.split("/dashboard/")[1].toUpperCase())};
-        this.handleChange = this.handleChange.bind(this);
+        let path = window.location.pathname.split("/")[2].toUpperCase();
+        this.state = {current: path};
     }
 
-    handleChange(e){
+    handleChange = (e) => {
         this.setState({current: (e.replace(" ", ""))});
-    }
+    };
 
 
     render(){

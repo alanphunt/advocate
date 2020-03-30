@@ -6,6 +6,7 @@ import {Redirect} from "react-router";
 class Home extends React.Component{
     constructor(props){
         super(props);
+        fetch("/api/logout");
         this.state = {
             modalState:{
                 displayed: false,
@@ -13,9 +14,6 @@ class Home extends React.Component{
             },
             loggedIn: false
         };
-        this.handleModal = this.handleModal.bind(this);
-        this.exitModal = this.exitModal.bind(this);
-        this.logIn = this.logIn.bind(this);
     }
 
     handleModal = (vis, formType) => {
@@ -27,8 +25,21 @@ class Home extends React.Component{
             this.handleModal(false, "");
     };
 
-    logIn = () => {
-        this.setState({loggedIn: true})
+    logIn = (f) => {
+        let fdata = new FormData(f.currentTarget);
+        fdata.append('enabled', '1');
+
+        let url = `/api/${this.state.modalState.contentType === "login" ? "login" : "createuser"}`;
+
+        fetch(url, {method: "POST", body: fdata})
+            .then(response => Promise.all([response.ok, response.ok ? response.json() : response.text()]))
+            .then(([ok, body]) => {
+                if(ok){
+                    this.setState({loggedIn: true});
+                }else{
+                    throw new Error(body);
+                }
+             }).catch(e => alert(e));
     };
 
     render() {
@@ -38,27 +49,27 @@ class Home extends React.Component{
                 : (<div className={"herocontainer"} onClick={this.exitModal}>
                     <Modal modalProps={{modalState: this.state.modalState, callback: this.logIn}}/>
                     <header className={"homeheader"}>
-                    <img src={logo} alt={"logo"}/>
-                    <div className={"promptcontainer"}>
-                        <div onClick={() => {this.handleModal(true, "login")}} className={"headerlogin i-hover"}>
-                            <i className={"fas fa-user i-right"}/>
-                            <span>Login</span>
+                        <img src={logo} alt={"Advocate logo"}/>
+                        <div className={"promptcontainer"}>
+                            <div onClick={() => {this.handleModal(true, "login")}} className={"headerlogin i-hover"}>
+                                <i className={"fas fa-user i-right"}/>
+                                <span>Login</span>
+                            </div>
+                            <div onClick={() => {this.handleModal(true, "register")}} className={"headerregister i-hover"}>
+                                <i className={"fas fa-user-plus i-right"}/>
+                                <span>Register</span>
+                            </div>
                         </div>
-                        <div onClick={() => {this.handleModal(true, "register")}} className={"headerregister i-hover"}>
-                            <i className={"fas fa-user-plus i-right"}/>
-                            <span>Register</span>
-                        </div>
-                    </div>
-                </header>
+                    </header>
                     <div className={"herotext"}>
-                    <h3>Advocate through data.</h3>
-                    <h2>Spend less time with data collection and more time impacting lives.</h2>
-                    <br/>
-                    <p><i className={"far fa-chart-bar i-right"}/> Visualize student growth</p>
-                    <p><i className={"fas fa-sync-alt i-right"}/> Create templates to reuse goals</p>
-                    <p><i className={"fas fa-users i-right"}/>Manage your classroom</p>
-                    <p><i className={"fas fa-network-wired i-right"}/>Multiple methods to track progress</p>
-                </div>
+                        <h3>Advocate through data.</h3>
+                        <h2>Spend less time with data collection and more time impacting lives.</h2>
+                        <br/>
+                        <p><i className={"far fa-chart-bar i-right"}/> Visualize student growth</p>
+                        <p><i className={"fas fa-sync-alt i-right"}/> Create templates to reuse goals</p>
+                        <p><i className={"fas fa-users i-right"}/>Manage your classroom</p>
+                        <p><i className={"fas fa-network-wired i-right"}/>Multiple methods to track progress</p>
+                    </div>
                   </div>)
         );
     }
