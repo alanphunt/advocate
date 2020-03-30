@@ -38,7 +38,7 @@ class SidebarDropdown extends React.Component {
                     Object.values(this.props.link.menuItems).map(item => {
                         return(
                             <li key={item.itemtext}>
-                                <NavLink isActive={this.handleActive} onClick={this.handleActive} activeClassName={"active"} to={item.link} exact>
+                                <NavLink onClick={this.handleActive} activeClassName={"active"} to={item.link} exact>
                                     <span>{item.itemtext.split(" ").map(word => word.charAt(0).toUpperCase()).join("")}</span>
                                     <span>{item.itemtext}</span>
                                 </NavLink>
