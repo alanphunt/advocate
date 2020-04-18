@@ -6,8 +6,7 @@ import javax.persistence.*;
 @Table(name = "trackings", schema = "advocate")
 public class Tracking {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
     private int frequency;
     @Column(name = "cue_count")
     private int cueCount;
@@ -18,12 +17,12 @@ public class Tracking {
     @Column(name = "accuracy_percentage")
     private double accuracyPercentage;
     @Column(name = "trial_id")
-    private int trialId;
+    private String trialId;
     private int enabled;
 
     public Tracking(){}
     //properties of a trial
-    public Tracking(int frequency, int cueCount, String permanentProduct, int durationInSeconds, double accuracyPercentage, int trialId) {
+    public Tracking(int frequency, int cueCount, String permanentProduct, int durationInSeconds, double accuracyPercentage, String trialId) {
         this.frequency = frequency;
         this.cueCount = cueCount;
         this.permanentProduct = permanentProduct;
@@ -33,11 +32,11 @@ public class Tracking {
         this.enabled = 1;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -81,11 +80,11 @@ public class Tracking {
         this.accuracyPercentage = accuracyPercentage;
     }
 
-    public int getTrialId() {
+    public String getTrialId() {
         return trialId;
     }
 
-    public void setTrialId(int trialId) {
+    public void setTrialId(String trialId) {
         this.trialId = trialId;
     }
 

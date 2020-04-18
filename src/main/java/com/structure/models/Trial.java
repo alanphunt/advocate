@@ -1,30 +1,29 @@
 package com.structure.models;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Table(name = "trials", schema = "advocate")
 public class Trial {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
     @Column(name = "date_started")
-    private Instant dateStarted;
+    private Date dateStarted;
     @Column(name = "trial_length_minutes")
     private int trialLengthMinutes;
     private String comments;
     @Column(name = "tracked_by")
-    private int trackedBy;
+    private String trackedBy;
     @Column(name = "benchmark_id")
-    private int benchmarkId;
+    private String benchmarkId;
 
     private int enabled;
 
     public Trial (){}
 
-    public Trial(Instant dateStarted, int trialLengthMinutes, String comments, int trackedBy, int benchmarkId) {
+    public Trial(Date dateStarted, int trialLengthMinutes, String comments, String trackedBy, String benchmarkId) {
         this.dateStarted = dateStarted;
         this.trialLengthMinutes = trialLengthMinutes;
         this.comments = comments;
@@ -33,19 +32,19 @@ public class Trial {
         this.enabled = 1;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Instant getDateStarted() {
+    public Date getDateStarted() {
         return dateStarted;
     }
 
-    public void setDateStarted(Instant dateStarted) {
+    public void setDateStarted(Date dateStarted) {
         this.dateStarted = dateStarted;
     }
 
@@ -65,19 +64,19 @@ public class Trial {
         this.comments = comments;
     }
 
-    public int getTrackedBy() {
+    public String getTrackedBy() {
         return trackedBy;
     }
 
-    public void setTrackedBy(int trackedBy) {
+    public void setTrackedBy(String trackedBy) {
         this.trackedBy = trackedBy;
     }
 
-    public int getBenchmarkId() {
+    public String getBenchmarkId() {
         return benchmarkId;
     }
 
-    public void setBenchmarkId(int benchmarkId) {
+    public void setBenchmarkId(String benchmarkId) {
         this.benchmarkId = benchmarkId;
     }
 

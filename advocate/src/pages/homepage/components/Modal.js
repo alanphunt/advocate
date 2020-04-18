@@ -11,27 +11,27 @@ class Modal extends React.Component{
             return (
                     <form className={"centeredform"} onSubmit={(event) => {this.handleForm(event)}}>
                         <label htmlFor={"regfirst"}>
-                            <i className={"fas fa-id-card"}/>
+                            <i className={"fas fa-id-card label-i"}/>
                             <input id="regfirst" type={"text"} placeholder={"First Name"} name={"firstName"} required/>
                         </label>
 
                         <label htmlFor={"reglast"}>
-                            <i className={"fas fa-id-card"}/>
+                            <i className={"fas fa-id-card label-i"}/>
                             <input id="reglast" type={"text"} placeholder={"Last Name"} name={"lastName"} required/>
                         </label>
 
                         <label htmlFor={"regemail"}>
-                            <i className={"fas fa-at"}/>
+                            <i className={"fas fa-at label-i"}/>
                             <input id="regemail" type={"email"} placeholder={"Email"} name={"email"} required/>
                         </label>
 
                         <label htmlFor={"regtele"}>
-                            <i className="fas fa-phone"/>
+                            <i className="fas fa-phone label-i"/>
                             <input id="regtele" type={"text"} placeholder={"Phone # - 10 Digits"} name={"phone"} pattern="(\d{10})" required/>
                         </label>
 
                         <label htmlFor={"regpass"}>
-                            <i className={"fas fa-user-lock"}/>
+                            <i className={"fas fa-user-lock label-i"}/>
                             <input id="regpass" type={"password"} placeholder={"Password"} name={"password"} pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,20})" required/>
                         </label>
 
@@ -43,12 +43,12 @@ class Modal extends React.Component{
             return (
                     <form className={"centeredform"} onSubmit={(event) => {this.handleForm(event)}}>
                         <label htmlFor={"regemail"}>
-                            <i className={"fas fa-at"}/>
+                            <i className={"fas fa-at label-i"}/>
                             <input id="regemail" type={"email"} placeholder={"Email"} name={"email"} required/>
                         </label>
 
                         <label htmlFor={"logpass"}>
-                            <i className={"fas fa-user-lock"}/>
+                            <i className={"fas fa-user-lock label-i"}/>
                             <input id={"logpass"} type={"password"} placeholder={"Password"} name={"password"} required/>
                         </label>
 

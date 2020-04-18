@@ -2,22 +2,22 @@ package com.structure.models;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Table(name = "goals", schema = "advocate")
 public class Goal {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
 
     @Column(name = "goal_name")
     private String goalName;
     @Column(name = "trial_count")
     private int trialCount;
     @Column(name = "start_date")
-    private Instant startDate;
+    private Date startDate;
     @Column(name = "master_date")
-    private Instant masteryDate;
+    private Date masteryDate;
     //each goal will have a minimum of 3 benchmarks
     @Column(name = "benchmark_count")
     private int benchmarkCount;
@@ -34,7 +34,7 @@ public class Goal {
 
     public Goal(){}
 
-    public Goal(int trialCount, Instant startDate, boolean monitor, String process, String goalTracking, int studentId) {
+    public Goal(int trialCount, Date startDate, boolean monitor, String process, String goalTracking, int studentId) {
         this.trialCount = trialCount;
         this.startDate = startDate;
         this.monitor = monitor;
@@ -44,11 +44,11 @@ public class Goal {
         this.enabled = 1;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -60,19 +60,19 @@ public class Goal {
         this.trialCount = trialCount;
     }
 
-    public Instant getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Instant startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public Instant getMasteryDate() {
+    public Date getMasteryDate() {
         return masteryDate;
     }
 
-    public void setMasteryDate(Instant masteryDate) {
+    public void setMasteryDate(Date masteryDate) {
         this.masteryDate = masteryDate;
     }
 

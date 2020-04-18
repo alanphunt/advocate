@@ -1,29 +1,46 @@
 package com.structure.models;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
-@Table(name = "classrooms", schema = "advocate")
+@Table(name = "classrooms")
 public class Classroom {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Expose
+    private String id;
 
+    @Expose
     private int enabled;
 
+    @Expose
     @Column(name = "class_name")
     private String className;
 
+    @Expose
     @Column(name = "teacher_id")
-    private int teacherId;
+    private String teacherId;
 
+    @Expose
     @Column(name = "student_count")
     private int studentCount;
+
+    @Expose
+    @OneToMany(mappedBy = "classroom")
+    List<Student> students;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id", insertable = false, updatable = false)
+    Teacher teacher;
 
     public Classroom() {
     }
 
-    public Classroom(String className, int teacherId, int studentCount){
+    public Classroom(String id, String className, String teacherId, int studentCount){
+        this.id = id;
         this.className = className;
         this.teacherId = teacherId;
         this.studentCount = studentCount;
@@ -38,11 +55,11 @@ public class Classroom {
         this.className = className;
     }
 
-    public int getTeacherId() {
+    public String getTeacherId() {
         return teacherId;
     }
 
-    public void setTeacherId(int teacherId) {
+    public void setTeacherId(String teacherId) {
         this.teacherId = teacherId;
     }
 
@@ -54,11 +71,11 @@ public class Classroom {
         this.studentCount = studentCount;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -70,15 +87,24 @@ public class Classroom {
         this.enabled = enabled;
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
     @Override
     public String toString() {
         return "Classroom{" +
                 "id=" + id +
                 ", enabled=" + enabled +
-                ", className='" + className + '\'' +
+                ", className='" + className +
                 ", teacherId=" + teacherId +
                 ", studentCount=" + studentCount +
-                '}';
+                ", students=" + Arrays.toString(students.toArray()) +
+        '}';
     }
 
     public int increaseCount(){

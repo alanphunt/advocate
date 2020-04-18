@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -14,11 +12,10 @@ import javax.persistence.Table;
 @Table(name = "thumbnails", schema = "advocate")
 public class Thumbnail {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int id;
+    private String id;
 
     @Column(name="teacher_id")
-    private int teacherId;
+    private String teacherId;
 
     @Column(name="file_name")
     private String fileName;
@@ -32,7 +29,7 @@ public class Thumbnail {
 
     public Thumbnail() {}
 
-    public Thumbnail(int teacherId, String fileName, String fileType, byte[] data, int enabled) {
+    public Thumbnail(String teacherId, String fileName, String fileType, byte[] data, int enabled) {
         this.teacherId = teacherId;
         this.fileName = fileName;
         this.fileType = fileType;
@@ -40,19 +37,19 @@ public class Thumbnail {
         this.enabled = enabled;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getTeacherId() {
+    public String getTeacherId() {
         return teacherId;
     }
 
-    public void setTeacherId(int teacherId) {
+    public void setTeacherId(String teacherId) {
         this.teacherId = teacherId;
     }
 

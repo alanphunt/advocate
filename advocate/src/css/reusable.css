@@ -11,6 +11,18 @@ h1, h2, h3{
     margin-right: 8px;
 }
 
+.i-left{
+    margin-left: 8px;
+}
+
+.i-top{
+    margin-top: 8px;
+}
+
+.i-bottom{
+    margin-bottom: 8px;
+}
+
 .i-hover{
     cursor: pointer;
     transition: .3s ease;
@@ -78,6 +90,7 @@ button{
     cursor: pointer;
     background: none;
     color: inherit;
+    outline: none;
 }
 
 button:hover{
@@ -85,9 +98,8 @@ button:hover{
     color: white;
 }
 
-button:focus{
+button:active{
     background-color: #2CA1BE;
-    outline: none;
 }
 
 hr{
@@ -96,11 +108,11 @@ hr{
     margin: .5rem 0 2rem 0;
 }
 
-form label{
+label{
     position: relative;
 }
 
-form label i{
+.label-i{
     position: absolute;
     font-size: 20px;
     color: #ccc;
@@ -114,8 +126,40 @@ form input{
     width: 100%
 }
 
+.height-100{
+    height: 100%;
+}
+
+.width-100{
+    width: 100%;
+}
+
+.width-50{
+    width: 50%;
+}
+
+.width-25{
+    width: 25%;
+}
+
 .marg-right{
     margin-right: 1rem;
+}
+
+.marg-left{
+    margin-left: 1rem;
+}
+
+.marg-bot{
+    margin-bottom: 1rem;
+}
+
+.marg-top{
+    margin-top: 1rem;
+}
+
+.marg-bot-2{
+    margin-bottom: 2rem;
 }
 
 .labelblock{
@@ -126,6 +170,17 @@ form input{
     border-radius: 8px;
 }
 
-.marg-bot{
-    margin-bottom: 1rem;
+
+
+.disabled{
+    pointer-events: none;
+    background-color: #afafaf;
+    color: #454545;
+}
+
+.posabs{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

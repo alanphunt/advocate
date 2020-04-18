@@ -10,6 +10,7 @@ class Sidebar extends React.Component{
     render(){
         const active = this.props.navHandler.activeCategory;
         const changeActive = this.props.navHandler.updateActiveCategory;
+        const teacher = this.props.teacher;
         return(
             <div className={"sidebarwrapper"}>
                 <div className={"sidebar"}>
@@ -19,7 +20,7 @@ class Sidebar extends React.Component{
                     <div className={"sidebarmain sidebarpad sideflex"}>
                         <SidebarLinks updateActiveLink={changeActive} activeLink={active}/>
                     </div>
-                    <SidebarProfile updateActiveLink={changeActive} isActive={active === "profile"}/>
+                    <SidebarProfile teacher={teacher} updateActiveLink={changeActive} isActive={active === "profile"}/>
                 </div>
             </div>
         )

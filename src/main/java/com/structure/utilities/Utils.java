@@ -1,8 +1,9 @@
 package com.structure.utilities;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.structure.models.Teacher;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,10 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.Enumeration;
+import java.util.*;
 
 public class Utils {
+    @Autowired
+    static PasswordEncoder pe;
 
     public static boolean hasAcceptableInput(String[] input){
         for (String s : input) {
@@ -33,7 +35,7 @@ public class Utils {
             System.out.println("User signed in: " + session.getAttribute("teacher").toString());
             Cookie c = new Cookie("email", teacher.getEmail());
             c.setHttpOnly(true);
-            c.setMaxAge(-1);
+            //c.setMaxAge(-1);
             return c;
     }
 
@@ -71,6 +73,10 @@ public class Utils {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    public static String generateUniqueId() {
+        return RandomStringUtils.randomAlphanumeric(11);
     }
 
 }

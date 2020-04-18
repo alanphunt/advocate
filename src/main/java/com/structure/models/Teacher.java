@@ -1,21 +1,22 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
+import com.structure.utilities.Utils;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "teachers", schema = "advocate")
+@Table(name = "teachers")
 public class Teacher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Expose(serialize = false)
-    private int id;
+    @Expose
+    private String id;
 
-    @Expose(serialize = false)
+    @Expose
     private int enabled;
 
     @Expose
@@ -23,7 +24,7 @@ public class Teacher {
 
     @Expose
     @Column(name = "date_created")
-    private Instant dateCreated;
+    private Date dateCreated;
 
     @Expose
     @Column(name = "first_name")
@@ -42,7 +43,15 @@ public class Teacher {
     @Expose
     private String description;
 
+    @Expose
+    @OneToMany(mappedBy = "teacher")
+    List<Classroom> classrooms;
+
     public Teacher(){}
+
+    public Teacher(Teacher teacher){
+        this(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getPhone(), teacher.getPassword());
+    }
 
     public Teacher(String firstName, String lastName, String email, int phone, String password) {
         this.firstName = firstName;
@@ -50,16 +59,17 @@ public class Teacher {
         this.email = email;
         this.phone = phone;
         this.password = password;
+        this.id = Utils.generateUniqueId();
         this.enabled = 1;
-        this.dateCreated = new Timestamp(System.currentTimeMillis()).toInstant();
+        this.dateCreated = new Date();
         this.description = "";
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -79,11 +89,11 @@ public class Teacher {
         this.phone = phone;
     }
 
-    public Instant getDateCreated() {
+    public Date getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Instant dateCreated) {
+    public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 
@@ -127,6 +137,14 @@ public class Teacher {
         this.description = description;
     }
 
+    public List<Classroom> getClassrooms() {
+        return classrooms;
+    }
+
+    public void setClassrooms(List<Classroom> classrooms) {
+        this.classrooms = classrooms;
+    }
+
     @Override
     public String toString() {
         return "Teacher{" +
@@ -138,6 +156,7 @@ public class Teacher {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", description='" + description + '\'' +
+                ", classrooms=" + Arrays.toString(classrooms.toArray()) +
                 '}';
     }
 }

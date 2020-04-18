@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Map;
 
 @RestController
 @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
 public class LoginRegistration {
     private Teacher teacher;
+
     @Autowired
     TeacherRepo tr;
+
     @Autowired
     PasswordEncoder pe;
 
@@ -26,9 +29,11 @@ public class LoginRegistration {
     public ResponseEntity<?> createUser(@RequestParam Map<String, String> body, HttpServletRequest request, HttpServletResponse response){
         if(!Utils.hasAcceptableInput(body.values().toArray(new String[0])))
             return new ResponseEntity<>("Invalid input.", HttpStatus.NOT_ACCEPTABLE);
-        teacher = Utils.gson().fromJson(body.toString(), Teacher.class);
+
+        teacher = new Teacher(Utils.gson().fromJson(body.toString(), Teacher.class));
         teacher.setPassword(pe.encode(teacher.getPassword()));
         tr.save(teacher);
+
         String jsonTeacher = Utils.gson().toJson(teacher);
         response.addCookie(Utils.setSession(request, teacher));
         response.setHeader("Location", "/dashboard");
@@ -49,9 +54,7 @@ public class LoginRegistration {
             validPW = pe.matches(password, teacher.getPassword());
             if(!Utils.isEmpty(teacher) && validPW){
                 String jsonTeacher = Utils.gson().toJson(teacher);
-                response.setHeader("Location", "/dashboard");
                 response.addCookie(Utils.setSession(request, teacher));
-                Utils.getSessionUser(request);
                 return new ResponseEntity<>(jsonTeacher, HttpStatus.ACCEPTED);
             }
         }catch(Exception e){
@@ -64,12 +67,21 @@ public class LoginRegistration {
     }
 
     @GetMapping(value = "/api/logout")
-    public void logout(HttpServletRequest request)throws NullPointerException{
+    public void logout(HttpServletRequest request){
         try {
             System.out.println("Logging out: " + request.getSession().getAttribute("teacher"));
             Utils.invalidateSession(request);
         }catch(NullPointerException npe){
-            System.out.println(npe);
+            System.out.println(Arrays.toString(npe.getStackTrace()));
+        }
+    }
+
+    @GetMapping(value = "/api/teacher")
+    public ResponseEntity<?> getTeacher(HttpServletRequest request){
+        try{
+           return ResponseEntity.ok(Utils.gson().toJson(tr.findTeacherByEmailAndEnabled(Utils.getSessionUser(request).getEmail(), 1)));
+        }catch(NullPointerException npe){
+            return ResponseEntity.ok(Utils.gson().toJson(null));
         }
     }
 

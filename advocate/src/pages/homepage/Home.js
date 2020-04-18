@@ -6,13 +6,14 @@ import {Redirect} from "react-router";
 class Home extends React.Component{
     constructor(props){
         super(props);
-        fetch("/api/logout");
+        /*fetch("/api/logout");*/
         this.state = {
             modalState:{
                 displayed: false,
                 contentType: "",
             },
-            loggedIn: false
+            loggedIn: false,
+            teacher: {}
         };
     }
 
@@ -27,25 +28,27 @@ class Home extends React.Component{
 
     logIn = (f) => {
         let fdata = new FormData(f.currentTarget);
-        fdata.append('enabled', '1');
-
         let url = `/api/${this.state.modalState.contentType === "login" ? "login" : "createuser"}`;
 
         fetch(url, {method: "POST", body: fdata})
             .then(response => Promise.all([response.ok, response.ok ? response.json() : response.text()]))
             .then(([ok, body]) => {
                 if(ok){
-                    this.setState({loggedIn: true});
+                    this.setState({
+                        loggedIn: true,
+                        teacher: body
+                    });
                 }else{
                     throw new Error(body);
                 }
-             }).catch(e => alert(e));
+             })
+            .catch(e => alert(e));
     };
 
     render() {
         return (
             this.state.loggedIn
-                ? <Redirect push to={"/dashboard/main"}/>
+                ? <Redirect push to={{pathname: "/dashboard/main", state: {teacher: this.state.teacher}}}/>
                 : (<div className={"herocontainer"} onClick={this.exitModal}>
                     <Modal modalProps={{modalState: this.state.modalState, callback: this.logIn}}/>
                     <header className={"homeheader"}>

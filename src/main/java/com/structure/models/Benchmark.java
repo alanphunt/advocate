@@ -1,25 +1,24 @@
 package com.structure.models;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Table(name = "benchmarks", schema = "advocate")
 public class Benchmark {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
 
     private int enabled;
 
     private String label;
 
     @Column(name = "met_date")
-    private Instant metDate;
+    private Date metDate;
 
     @Column(name = "goal_id")
-    private int goalId;
+    private String goalId;
 
     @Column(name = "trial_count")
     private int trialCount;
@@ -27,18 +26,18 @@ public class Benchmark {
     public Benchmark() {
     }
 
-    public Benchmark(String label, int goalId){
+    public Benchmark(String label, String goalId){
         this.label = label;
         this.goalId = goalId;
         this.enabled = 1;
         this.trialCount = 0;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -58,19 +57,19 @@ public class Benchmark {
         this.label = label;
     }
 
-    public Instant getMetDate() {
+    public Date getMetDate() {
         return metDate;
     }
 
-    public void setMetDate(Instant metDate) {
+    public void setMetDate(Date metDate) {
         this.metDate = metDate;
     }
 
-    public int getGoalId() {
+    public String getGoalId() {
         return goalId;
     }
 
-    public void setGoalId(int goalId) {
+    public void setGoalId(String goalId) {
         this.goalId = goalId;
     }
 

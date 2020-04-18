@@ -1,39 +1,52 @@
 package com.structure.models;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "students", schema = "advocate")
+@Table(name = "students")
 public class Student {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Expose
+    private String id;
+
+    @Expose
     private String name, eligibility, skills;
-    @Column(name = "case_manager")
-    private String caseManager;
+
+    @Expose
     @Column(name="goal_count")
     private int goalCount;
+
+    @ManyToOne
+    @JoinColumn(name = "classroom_id", insertable = false, updatable = false)
+    private Classroom classroom;
+
+    @Expose
     @Column(name = "classroom_id")
-    private int classroomId;
+    private String classroomId;
+
+    @Expose
     private int enabled;
 
     public Student(){}
 
-    public Student(String name, String eligibility, String skills, String caseManager, int goalCount, int classroomId) {
+    public Student(String id, String name, String eligibility, String skills, int goalCount, String classroomId) {
+        this.id = id;
         this.name = name;
         this.eligibility = eligibility;
         this.skills = skills;
-        this.caseManager = caseManager;
         this.goalCount = goalCount;
         this.classroomId = classroomId;
         this.enabled = 1;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -61,14 +74,6 @@ public class Student {
         this.skills = skills;
     }
 
-    public String getCaseManager() {
-        return caseManager;
-    }
-
-    public void setCaseManager(String caseManager) {
-        this.caseManager = caseManager;
-    }
-
     public int getGoalCount() {
         return goalCount;
     }
@@ -77,11 +82,11 @@ public class Student {
         this.goalCount = goalCount;
     }
 
-    public int getClassroomId() {
+    public String getClassroomId() {
         return classroomId;
     }
 
-    public void setClassroomId(int classroomId) {
+    public void setClassroomId(String classroomId) {
         this.classroomId = classroomId;
     }
 
@@ -100,14 +105,9 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", eligibility='" + eligibility + '\'' +
                 ", skills='" + skills + '\'' +
-                ", caseManager='" + caseManager + '\'' +
                 ", goalCount=" + goalCount +
                 ", classroomId=" + classroomId +
                 ", enabled=" + enabled +
                 '}';
-    }
-
-    public int increaseCount(){
-        return this.goalCount++;
     }
 }
