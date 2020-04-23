@@ -20,9 +20,6 @@ public class Teacher {
     private int enabled;
 
     @Expose
-    private int phone;
-
-    @Expose
     @Column(name = "date_created")
     private Date dateCreated;
 
@@ -50,16 +47,15 @@ public class Teacher {
     public Teacher(){}
 
     public Teacher(Teacher teacher){
-        this(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getPhone(), teacher.getPassword());
+        this(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getPassword(), teacher.getId());
     }
 
-    public Teacher(String firstName, String lastName, String email, int phone, String password) {
+    public Teacher(String firstName, String lastName, String email, String password, String id) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.phone = phone;
         this.password = password;
-        this.id = Utils.generateUniqueId();
+        this.id = id;
         this.enabled = 1;
         this.dateCreated = new Date();
         this.description = "";
@@ -79,14 +75,6 @@ public class Teacher {
 
     public void setEnabled(int enabled) {
         this.enabled = enabled;
-    }
-
-    public int getPhone() {
-        return phone;
-    }
-
-    public void setPhone(int phone) {
-        this.phone = phone;
     }
 
     public Date getDateCreated() {
@@ -150,7 +138,6 @@ public class Teacher {
         return "Teacher{" +
                 "id=" + id +
                 ", enabled=" + enabled +
-                ", phone=" + phone +
                 ", dateCreated=" + dateCreated +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

@@ -3,6 +3,7 @@ package com.structure.models;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "students")
@@ -16,12 +17,21 @@ public class Student {
     private String name, eligibility, skills;
 
     @Expose
-    @Column(name="goal_count")
-    private int goalCount;
+    @Column(name="goal_focus")
+    private String goalFocus;
 
     @ManyToOne
     @JoinColumn(name = "classroom_id", insertable = false, updatable = false)
     private Classroom classroom;
+
+    @Expose
+    @ManyToMany
+    @JoinTable(
+            name = "student_goal",
+            joinColumns = @JoinColumn(name = "stu_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "goal_id", referencedColumnName = "id")
+    )
+    private List<Goal> goals;
 
     @Expose
     @Column(name = "classroom_id")
@@ -32,12 +42,12 @@ public class Student {
 
     public Student(){}
 
-    public Student(String id, String name, String eligibility, String skills, int goalCount, String classroomId) {
+    public Student(String id, String name, String eligibility, String skills, String goalFocus, String classroomId) {
         this.id = id;
         this.name = name;
         this.eligibility = eligibility;
         this.skills = skills;
-        this.goalCount = goalCount;
+        this.goalFocus = goalFocus;
         this.classroomId = classroomId;
         this.enabled = 1;
     }
@@ -74,12 +84,12 @@ public class Student {
         this.skills = skills;
     }
 
-    public int getGoalCount() {
-        return goalCount;
+    public String getGoalFocus() {
+        return goalFocus;
     }
 
-    public void setGoalCount(int goalCount) {
-        this.goalCount = goalCount;
+    public void setGoalFocus(String goalFocus) {
+        this.goalFocus = goalFocus;
     }
 
     public String getClassroomId() {
@@ -105,7 +115,7 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", eligibility='" + eligibility + '\'' +
                 ", skills='" + skills + '\'' +
-                ", goalCount=" + goalCount +
+                ", goalFocus=" + goalFocus +
                 ", classroomId=" + classroomId +
                 ", enabled=" + enabled +
                 '}';

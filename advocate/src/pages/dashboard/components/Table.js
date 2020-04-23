@@ -22,7 +22,7 @@ class Table extends React.Component {
             case "goal":
                 opt.t = type;
                 opt.i = 1;
-                opt.f = (student) => student.goalCount === parseInt(inputVal);
+                opt.f = (student) => student.goalFocus.includes(inputVal.toLowerCase());
                 break;
             case "eligibility":
                 opt.t = type;
@@ -47,11 +47,11 @@ class Table extends React.Component {
         }));
     };
 
-    /*
-    So if we send in data that means the table will take care of the rendering. If there is no data, it is assumed
-    the parent to this component will add rows itself. If there is no data there shouldn't be more than 2 children
-    passed into this, one for the header and one for the body.
-     */
+    handleSelect = (e, student) => {
+        e.currentTarget.classList.toggle("selected-bg");
+            this.props.selectedCallback(e.currentTarget.classList.contains("selected-bg"), student);
+    };
+
     render() {
         const filters = [
             <input type={"text"} value={this.state.filterValues[0]} placeholder={"Name"} onChange={(e) => {
@@ -63,12 +63,12 @@ class Table extends React.Component {
             <input type={"text"} value={this.state.filterValues[3]} placeholder={"Skill"} onChange={(e) => {
                 this.filterArray("skills", e.currentTarget.value)}}/>
         ];
-        const header = (h, i) => <div key={'classroomth'+i} className={"th"}>
-            {h}
+        const header = (head, i) => <div key={'classroomth'+i} className={"th"}>
+            <h3 className={"i-bottom"}>{head}</h3>
             {this.props.filterable && filters[i]}
         </div>;
-        const studentHeader = ["Name", "Goal Count", "Eligibility", "Skills"].map((v, i) =>
-            header(<h3 className={"i-bottom"}>{v}</h3>, i));
+        const studentHeader = ["Name", "Goal Focus", "Eligibility", "Skills"].map((v, i) =>
+            header(v, i));
 
 
         //GOAL FOCUS READING COMPREHENSION, NUMBER IDENTIFICATION, CORRECT WORDS PER MINUTE
@@ -89,9 +89,12 @@ class Table extends React.Component {
                         this.students
                             ?  (this.state.isFiltering ? this.state.filtered : this.students).map((student, index) => {
                                     return (
-                                        <div key={student.name + index} className={"tr"}>
+                                        <div key={student.name + index}
+                                             className={"tr " + (this.props.selectable && "selectable")}
+                                             onClick={this.props.selectable ? (e)=>{this.handleSelect(e, student)} : null}
+                                        >
                                             <div className={"td"}>{student.name}</div>
-                                            <div className={"td"}>{student.goalCount}</div>
+                                            <div className={"td"}>{student.goalFocus}</div>
                                             <div className={"td"}>{student.eligibility}</div>
                                             <div className={"td"}>{student.skills}</div>
                                         </div>

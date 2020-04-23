@@ -25,10 +25,6 @@ public class Classroom {
     private String teacherId;
 
     @Expose
-    @Column(name = "student_count")
-    private int studentCount;
-
-    @Expose
     @OneToMany(mappedBy = "classroom")
     List<Student> students;
 
@@ -39,11 +35,10 @@ public class Classroom {
     public Classroom() {
     }
 
-    public Classroom(String id, String className, String teacherId, int studentCount){
+    public Classroom(String id, String className, String teacherId){
         this.id = id;
         this.className = className;
         this.teacherId = teacherId;
-        this.studentCount = studentCount;
         this.enabled = 1;
     }
 
@@ -61,14 +56,6 @@ public class Classroom {
 
     public void setTeacherId(String teacherId) {
         this.teacherId = teacherId;
-    }
-
-    public int getStudentCount() {
-        return studentCount;
-    }
-
-    public void setStudentCount(int studentCount) {
-        this.studentCount = studentCount;
     }
 
     public String getId() {
@@ -102,12 +89,8 @@ public class Classroom {
                 ", enabled=" + enabled +
                 ", className='" + className +
                 ", teacherId=" + teacherId +
-                ", studentCount=" + studentCount +
                 ", students=" + Arrays.toString(students.toArray()) +
         '}';
     }
 
-    public int increaseCount(){
-        return this.studentCount++;
-    }
 }

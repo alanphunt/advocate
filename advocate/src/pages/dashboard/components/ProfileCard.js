@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import imgph from "../../../assets/imgph.png";
+import imgph from "../../../assets/imgph-sm.png";
 
 const ProfileCard = (props) => {
 

@@ -12,7 +12,7 @@ class Modal extends React.Component{
                     <form className={"centeredform"} onSubmit={(event) => {this.handleForm(event)}}>
                         <label htmlFor={"regfirst"}>
                             <i className={"fas fa-id-card label-i"}/>
-                            <input id="regfirst" type={"text"} placeholder={"First Name"} name={"firstName"} required/>
+                            <input id="regfirst" type={"text"} placeholder={"First Name"} name={"firstName"} required autoFocus={true}/>
                         </label>
 
                         <label htmlFor={"reglast"}>
@@ -23,11 +23,6 @@ class Modal extends React.Component{
                         <label htmlFor={"regemail"}>
                             <i className={"fas fa-at label-i"}/>
                             <input id="regemail" type={"email"} placeholder={"Email"} name={"email"} required/>
-                        </label>
-
-                        <label htmlFor={"regtele"}>
-                            <i className="fas fa-phone label-i"/>
-                            <input id="regtele" type={"text"} placeholder={"Phone # - 10 Digits"} name={"phone"} pattern="(\d{10})" required/>
                         </label>
 
                         <label htmlFor={"regpass"}>
@@ -44,7 +39,7 @@ class Modal extends React.Component{
                     <form className={"centeredform"} onSubmit={(event) => {this.handleForm(event)}}>
                         <label htmlFor={"regemail"}>
                             <i className={"fas fa-at label-i"}/>
-                            <input id="regemail" type={"email"} placeholder={"Email"} name={"email"} required/>
+                            <input id="regemail" type={"email"} placeholder={"Email"} name={"email"} autoFocus={true} required/>
                         </label>
 
                         <label htmlFor={"logpass"}>

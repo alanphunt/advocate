@@ -1,12 +1,11 @@
 import React from 'react';
-import logo from '../../assets/advocate.png'
+import logo from '../../assets/advocate-sm.png'
 import Modal from './components/Modal'
 import {Redirect} from "react-router";
 
 class Home extends React.Component{
     constructor(props){
         super(props);
-        /*fetch("/api/logout");*/
         this.state = {
             modalState:{
                 displayed: false,

@@ -66,7 +66,7 @@ public class Utils {
     }
 
     public static Gson gson(){
-        GsonBuilder builder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
+        GsonBuilder builder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("MM/dd/yyyy");
         return builder.create();
     }
 

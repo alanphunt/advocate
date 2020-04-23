@@ -34,7 +34,7 @@ class SidebarDropdown extends React.Component {
                         <i className={this.props.link.icon}/>
                         <span>{this.props.link.text}</span>
                     </div>
-                    <i className={"fas fa-caret-down menucaret"+(this.state.dropped ? " caretflip" : "")}/>
+                    <i className={"fas fa-caret-down transition"+(this.state.dropped ? " caretflip" : "")}/>
                 </div>
                 <div className={"dropdown"+(this.state.dropped ? " dropdownactive" : "")}>
                     <ul>

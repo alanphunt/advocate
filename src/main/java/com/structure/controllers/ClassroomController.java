@@ -32,7 +32,7 @@ public class ClassroomController {
         try {
             Type listType = new TypeToken<ArrayList<Student>>() {}.getType();
             ArrayList<Student> studentArray = Utils.gson().fromJson(students, listType);
-            Classroom classroom = cr.save(new Classroom(Utils.generateUniqueId(), className, Utils.getSessionUser(request).getId(), studentArray.size()));
+            Classroom classroom = cr.save(new Classroom(Utils.generateUniqueId(), className, Utils.getSessionUser(request).getId()));
 
             studentArray.forEach(stu -> {
                 stu.setId(Utils.generateUniqueId());

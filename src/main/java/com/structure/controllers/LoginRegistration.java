@@ -32,6 +32,7 @@ public class LoginRegistration {
 
         teacher = new Teacher(Utils.gson().fromJson(body.toString(), Teacher.class));
         teacher.setPassword(pe.encode(teacher.getPassword()));
+        teacher.setId(Utils.generateUniqueId());
         tr.save(teacher);
 
         String jsonTeacher = Utils.gson().toJson(teacher);

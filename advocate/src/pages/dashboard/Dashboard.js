@@ -7,6 +7,7 @@ import Charts from "./Charts";
 import GoalCenter from "./GoalCenter";
 import Profile from "./Profile";
 import CreateClassroom from "./CreateClassroom";
+import CreateGoal from "./CreateGoal";
 
 
 class Dashboard extends React.Component {
@@ -41,7 +42,14 @@ class Dashboard extends React.Component {
         console.log(teacher);
         return (
             this.state.isFetching
-            ? <p>Loading..</p>
+            ?   <div className={"dashboardwrapper"}>
+                    <div className="loadingio-spinner-dual-ring-uq8lhoxnro posabs">
+                        <div className="ldio-qw71tr0evte">
+                            <div/><div><div/></div>
+                        </div>
+                    </div>
+                </div>
+
             : <div className={"dashboardwrapper"}>
                 <Sidebar teacher={teacher} navHandler={{updateActiveCategory: this.handleChange, activeCategory: this.state.activeCategory}}/>
                 <div className={"dash-main-wrapper"}>
@@ -60,6 +68,9 @@ class Dashboard extends React.Component {
                         </Route>
                         <Route path="/dashboard/goalcenter" exact>
                             <GoalCenter teacher={teacher}/>
+                        </Route>
+                        <Route path="/dashboard/goalcenter/create">
+                            <CreateGoal teacher={teacher}/>
                         </Route>
                         <Route path="/dashboard/profile">
                             <Profile teacher={teacher}/>

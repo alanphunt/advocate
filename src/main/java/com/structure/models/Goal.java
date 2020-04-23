@@ -1,46 +1,56 @@
 package com.structure.models;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
-import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "goals", schema = "advocate")
+@Table(name = "goals")
 public class Goal {
+
     @Id
+    @Expose
     private String id;
 
+    @Expose
     @Column(name = "goal_name")
     private String goalName;
-    @Column(name = "trial_count")
-    private int trialCount;
+
+    @Expose
     @Column(name = "start_date")
     private Date startDate;
-    @Column(name = "master_date")
+
+    @Expose
+    @Column(name = "mastery_date")
     private Date masteryDate;
-    //each goal will have a minimum of 3 benchmarks
-    @Column(name = "benchmark_count")
-    private int benchmarkCount;
+
+    @Expose
     private boolean monitor;
+
+    @Expose
     private String process;
 
-    //dropdown menu
-    @Column(name = "goal_tracking")
-    private String goalTracking;
-
+    @Expose
     private int enabled;
-    @Column(name = "student_id")
-    private int studentId;
+
+    @ManyToMany(mappedBy = "goals")
+    private List<Student> students;
+
+    @Expose
+    @OneToMany(mappedBy = "goal")
+    private List<Benchmark> benchmarks;
 
     public Goal(){}
 
-    public Goal(int trialCount, Date startDate, boolean monitor, String process, String goalTracking, int studentId) {
-        this.trialCount = trialCount;
+    public Goal(String id, String goalName, Date startDate, Date masteryDate, boolean monitor, String process) {
+        this.id = id;
+        this.goalName = goalName;
         this.startDate = startDate;
+        this.masteryDate = masteryDate;
         this.monitor = monitor;
         this.process = process;
-        this.goalTracking = goalTracking;
-        this.studentId = studentId;
         this.enabled = 1;
     }
 
@@ -50,14 +60,6 @@ public class Goal {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public int getTrialCount() {
-        return trialCount;
-    }
-
-    public void setTrialCount(int trialCount) {
-        this.trialCount = trialCount;
     }
 
     public Date getStartDate() {
@@ -76,14 +78,6 @@ public class Goal {
         this.masteryDate = masteryDate;
     }
 
-    public int getBenchmarkCount() {
-        return benchmarkCount;
-    }
-
-    public void setBenchmarkCount(int benchmarkCount) {
-        this.benchmarkCount = benchmarkCount;
-    }
-
     public boolean getMonitor() {
         return monitor;
     }
@@ -100,14 +94,6 @@ public class Goal {
         this.process = process;
     }
 
-    public String getGoalTracking() {
-        return goalTracking;
-    }
-
-    public void setGoalTracking(String goalTracking) {
-        this.goalTracking = goalTracking;
-    }
-
     public int getEnabled() {
         return enabled;
     }
@@ -116,27 +102,24 @@ public class Goal {
         this.enabled = enabled;
     }
 
-    public int getStudentId() {
-        return studentId;
+    public String getGoalName() {
+        return goalName;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public void setGoalName(String goalName) {
+        this.goalName = goalName;
     }
 
     @Override
     public String toString() {
         return "Goal{" +
                 "id=" + id +
-                ", trialCount=" + trialCount +
+                ", goalName=" + goalName +
                 ", startDate=" + startDate +
                 ", masteryDate=" + masteryDate +
-                ", benchmarkCount=" + benchmarkCount +
                 ", monitor=" + monitor +
                 ", process='" + process + '\'' +
-                ", goalTracking='" + goalTracking + '\'' +
                 ", enabled=" + enabled +
-                ", studentId=" + studentId +
                 '}';
     }
 }

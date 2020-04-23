@@ -19,7 +19,8 @@ class SidebarLinks extends React.Component {
                     item1: {"itemtext": "Charts", "link": "/dashboard/charts"}
                 }, icon: "far fa-chart-bar"},
             "link4" : {text: "goal center", islink: false, menuItems: {
-                    item1: {"itemtext": "Goal Center", "link": "/dashboard/goalcenter"}
+                    item1: {"itemtext": "Goal Center", "link": "/dashboard/goalcenter"},
+                    item2: {"itemtext": "Create Goal", "link": "/dashboard/goalcenter/create"}
                 }, icon: "far fa-compass"},
             "link5" : {text: "minimize", islink: false, icon: "far fa-hand-point-left"}
         };

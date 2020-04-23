@@ -1,36 +1,60 @@
 package com.structure.models;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "benchmarks", schema = "advocate")
+@Table(name = "benchmarks")
 public class Benchmark {
 
     @Id
+    @Expose
     private String id;
 
+    @Expose
     private int enabled;
 
+    @Expose
     private String label;
 
+    @Expose
+    private String description;
+
+    @Expose
     @Column(name = "met_date")
     private Date metDate;
 
+    @Expose
+    @Column(name = "mastery_date")
+    private Date masteryDate;
+
+    @ManyToOne
+    @JoinColumn(name = "goal_id", insertable = false, updatable = false)
+    private Goal goal;
+
+    @Expose
     @Column(name = "goal_id")
     private String goalId;
 
-    @Column(name = "trial_count")
-    private int trialCount;
+    @Expose
+    private String tracking;
+
+    @Expose
+    private int complete;
 
     public Benchmark() {
     }
 
-    public Benchmark(String label, String goalId){
+    public Benchmark(String label, String description, String goalId, String tracking, Date masteryDate){
         this.label = label;
+        this.description = description;
         this.goalId = goalId;
+        this.tracking = tracking;
+        this.masteryDate = masteryDate;
         this.enabled = 1;
-        this.trialCount = 0;
+        this.complete = 0;
     }
 
     public String getId() {
@@ -73,12 +97,36 @@ public class Benchmark {
         this.goalId = goalId;
     }
 
-    public int getTrialCount() {
-        return trialCount;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTrialCount(int trialCount) {
-        this.trialCount = trialCount;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getMasteryDate() {
+        return masteryDate;
+    }
+
+    public void setMasteryDate(Date masteryDate) {
+        this.masteryDate = masteryDate;
+    }
+
+    public String getTracking() {
+        return tracking;
+    }
+
+    public void setTracking(String tracking) {
+        this.tracking = tracking;
+    }
+
+    public int getComplete() {
+        return complete;
+    }
+
+    public void setComplete(int complete) {
+        this.complete = complete;
     }
 
     @Override
@@ -89,11 +137,11 @@ public class Benchmark {
                 ", label='" + label + '\'' +
                 ", metDate=" + metDate +
                 ", goalId=" + goalId +
-                ", trialCount=" + trialCount +
+                ", masteryDate=" + masteryDate +
+                ", description=" + description +
+                ", tracking=" + tracking +
+                ", complete=" + complete +
                 '}';
     }
 
-    public int increaseCount(){
-       return this.trialCount++;
-    }
 }

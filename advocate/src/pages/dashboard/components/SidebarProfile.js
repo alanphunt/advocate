@@ -13,7 +13,7 @@ class SidebarProfile extends React.Component {
                             <img className={"sidebar-default-pic marg-right"} src={imgph} alt={"user"}/>
                             <p>{`${teacher.firstName} ${teacher.lastName.charAt(0)}.`}</p>
                         </div>
-                        <i className={"fas fa-caret-right menucaret"}/>
+                        <i className={"fas fa-caret-right transition"}/>
                     </div>
                 </NavLink>
             </div>

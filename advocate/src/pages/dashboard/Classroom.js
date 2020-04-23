@@ -15,11 +15,14 @@ class Classroom extends React.Component{
         if(this.students)
             return (
                 <div className={"dash-main-inner"}>
-                    <div className={"card"}>
+                    <div className={"card width-100"}>
                         <div className={"cardheader"}>
-                            <h2>{this.props.teacher.classrooms[0].className}</h2>
+                            <h2>Classrooms</h2>
                         </div>
-                        <Table data={this.students} filterable={true} studentTable={true}/>
+                        <div className={"cardmain"}>
+                            <h2 className={"marg-bot"}>{this.props.teacher.classrooms[0].className}</h2>
+                            <Table data={this.students} filterable={true} studentTable={true}/>
+                        </div>
                     </div>
                 </div>
             );

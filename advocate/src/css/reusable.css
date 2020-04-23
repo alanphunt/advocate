@@ -7,6 +7,15 @@ a {
 h1, h2, h3{
     font-weight: initial;
 }
+
+img{
+    width: 100%;
+}
+
+[type='radio']{
+    margin-right: 4px;
+}
+
 .i-right{
     margin-right: 8px;
 }
@@ -59,6 +68,10 @@ h1, h2, h3{
     display: flex !important;
 }
 
+.nodisplay{
+    display: none !important;
+}
+
 .centeredform{
     display: flex;
     flex-flow: column;
@@ -66,7 +79,7 @@ h1, h2, h3{
     margin: 0 auto 1rem auto;
 }
 
-input{
+input, select{
     padding: 10px 10px 10px 18px;
     border-radius: 25px;
     outline: none;
@@ -134,6 +147,10 @@ form input{
     width: 100%;
 }
 
+.width-75{
+    width: 75%;
+}
+
 .width-50{
     width: 50%;
 }
@@ -170,8 +187,6 @@ form input{
     border-radius: 8px;
 }
 
-
-
 .disabled{
     pointer-events: none;
     background-color: #afafaf;
@@ -183,4 +198,85 @@ form input{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+/**LOADING ANIMATION **/
+@keyframes ldio-qw71tr0evte {
+    0% { transform: rotate(0) }
+    100% { transform: rotate(360deg) }
+}
+
+.ldio-qw71tr0evte div { box-sizing: border-box!important }
+
+.ldio-qw71tr0evte > div {
+    position: absolute;
+    width: 76px;
+    height: 76px;
+    top: 62px;
+    left: 62px;
+    border-radius: 50%;
+    border: 4px solid #000;
+    border-color: #51bcda transparent #51bcda transparent;
+    animation: ldio-qw71tr0evte 1.2048192771084336s linear infinite;
+}
+
+.ldio-qw71tr0evte > div:nth-child(2) { border-color: transparent }
+
+.ldio-qw71tr0evte > div:nth-child(2) div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: rotate(45deg);
+}
+
+.ldio-qw71tr0evte > div:nth-child(2) div:before, .ldio-qw71tr0evte > div:nth-child(2) div:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    top: -4px;
+    left: 32px;
+    background: #51bcda;
+    border-radius: 50%;
+    box-shadow: 0 72px 0 0 #51bcda;
+}
+
+.ldio-qw71tr0evte > div:nth-child(2) div:after {
+    left: -4px;
+    top: 32px;
+    box-shadow: 72px 0 0 0 #51bcda;
+}
+
+.loadingio-spinner-dual-ring-uq8lhoxnro {
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.ldio-qw71tr0evte {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: translateZ(0) scale(1);
+    backface-visibility: hidden;
+    transform-origin: 0 0; /* see note above */
+}
+
+.ldio-qw71tr0evte div { box-sizing: content-box; }
+/**END LOADING ANIMATION **/
+
+.selectable{
+    cursor: pointer;
+}
+
+.selected-bg{
+    background-color: #51bcda !important;
+    color: #000;
+}
+
+.selected-bg:hover{
+    background-color: #51bcda !important;
 }

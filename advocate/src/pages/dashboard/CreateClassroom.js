@@ -13,39 +13,9 @@ class CreateClassroom extends React.Component{
 
     student = {
         name: '',
-        goalCount: '',
+        goalFocus: '',
         eligibility: '',
         skills: ''
-    };
-
-    subtract = () => {
-        this.setState(state => ({
-            students: state.students.slice(0, -1)
-        }));
-    };
-
-    add = () => {
-        this.setState(state => ({
-            students: state.students.concat(this.student)
-        }));
-    };
-
-    change = (event) => {
-        let x = parseInt(event.currentTarget.value) || 0;
-        x = (x > 100 ? 100 : x);
-
-        let cur = this.state.students.length;
-            if (x > cur) {
-                while(cur !== x){
-                   this.add();
-                    cur++;
-                }
-            }
-             else if (x < cur)
-                 while(cur !== x){
-                     this.subtract();
-                     cur--;
-                 }
     };
 
     updateStudent = (i, event) => {
@@ -55,6 +25,10 @@ class CreateClassroom extends React.Component{
         let studentsCopy = JSON.parse(JSON.stringify(this.state.students));
         studentsCopy[i][attr] = val;
         this.setState({students: studentsCopy});
+    };
+
+    updateStudents = (updatedArray) => {
+        this.setState({students: updatedArray});
     };
 
     createClassroom = () => {
@@ -80,19 +54,19 @@ class CreateClassroom extends React.Component{
 
         return (
             <div className={"dash-main-inner"}>
-                <div className={"card"}>
+                <div className={"card width-100"}>
                     <div className={"cardheader"}>
                         <h2>Create a Classroom</h2>
                     </div>
-                    <div className={"cardmain marg-bot-2"}>
+                    <div className={"cardmain"}>
                         <h3 className={"i-bottom"}>Class Name</h3>
                         <label htmlFor={"className"}>
-                            <i className={"fas fa-id-card label-i"}/>
+                            <i className={"fas fa-address-book label-i"}/>
                             <input onChange={this.updateClassName} className={"width-25 marg-bot-2"} id="className" type={"text"} placeholder={"Class Name"} name={"className"}/>
                         </label>
                         <div className="marg-bot-2">
                             <h3 className={"i-bottom"}>Number of students</h3>
-                            <NumberPicker subtract={this.subtract} add={this.add} change={this.change} num={stuCount}/>
+                            <NumberPicker updateState={this.updateStudents} object={this.student} objectArray={this.state.students}/>
                         </div>
                         <Table studentTable={true}>
                             <div>
@@ -101,7 +75,7 @@ class CreateClassroom extends React.Component{
                                         return(
                                             <div key={"student"+i} className={"tr"}>
                                                 <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`name${i}`} placeholder='Name' name='name' required/></div>
-                                                <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`goals${i}`} placeholder='# of Goals' name='goalCount' required/></div>
+                                                <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`goals${i}`} placeholder='Goal Focus' name='goalFocus' required/></div>
                                                 <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`eligibility${i}`} placeholder='Eligibility' name='eligibility' required/></div>
                                                 <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`skills${i}`} placeholder='Skills' name='skills' required/></div>
                                             </div>

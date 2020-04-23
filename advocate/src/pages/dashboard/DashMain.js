@@ -23,8 +23,18 @@ class DashMain extends React.Component{
             <div className={"dash-main-inner"}>
                 <div className={"cardwrapperrow"}>
                     <ProfileCard teacher={this.teacher}/>
-                    {(this.teacher.classrooms.length === 0 && this.createClass())
-                    || <div className={"card width-100"}><div className={"cardheader"}><h2>{this.teacher.classrooms[0].className}</h2></div><Table studentTable={true} data={this.teacher.classrooms[0].students}/></div>}
+                    {
+                        (this.teacher.classrooms.length === 0 && this.createClass())
+                    || <div className={"card width-100"}>
+                            <div className={"cardheader"}>
+                                <h2>Classrooms</h2>
+                            </div>
+                            <div className={"cardmain"}>
+                                <h2 className={"marg-bot"}>{this.teacher.classrooms[0].className}</h2>
+                                <Table studentTable={true} data={this.teacher.classrooms[0].students}/>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         )
