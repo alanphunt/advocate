@@ -38,17 +38,17 @@ public class GoalController {
             System.out.println(key + " : " + body.get(key));
         }
         String goalId = Utils.generateUniqueId();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
         //saving the student/goal relationship
         for (String stuId : body.get("studentIds").split("\\s*,\\s*")) {
             String studentGoalId = Utils.generateUniqueId();
-            sgr.save(new StudentGoal(studentGoalId, stuId, goalId));
+            sgr.save(new StudentGoal(studentGoalId, goalId, stuId, sdf.parse(body.get("startDate")), sdf.parse(body.get("masteryDate")), body.get("monitor").equals("true")));
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
         //saving the goal itself
-        Goal goal = new Goal(goalId, body.get("goalName"), sdf.parse(body.get("startDate")), sdf.parse(body.get("masteryDate")), body.get("monitor").equals("true"), body.get("process"));
+        Goal goal = new Goal(goalId, body.get("goalName"), body.get("process"));
         gr.save(goal);
 
         Type listType = new TypeToken<List<Benchmark>>() {}.getType();

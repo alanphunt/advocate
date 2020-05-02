@@ -13,7 +13,14 @@ const Sidebar = (props) => {
         <div className={"sidebarwrapper"}>
             <div className={"sidebar"}>
                 <div className={"sidebarheader sidebarpad"}>
-                    <Link to={"/"} onClick={() => {fetch("/api/logout");}}><img src={puzzle} alt={"logo"}/></Link>
+                    <Link to={"/"}
+                          onClick={() => {
+                            fetch("/api/logout").then(r => r.text()).then(d => {
+                                window.location.replace("/");
+                            });
+                    }}>
+                        <img src={puzzle} alt={"logo"}/>
+                    </Link>
                 </div>
                 <div className={"sidebarmain sidebarpad sideflex"}>
                     <SidebarLinks updateActiveLink={changeActive} activeLink={active}/>

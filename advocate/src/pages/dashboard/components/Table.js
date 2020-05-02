@@ -6,9 +6,8 @@ class Table extends React.Component {
         this.state = {
             filtered: [],
             isFiltering: false,
-            filterValues: ["", "", "", ""]
+            filterValues: props.headers?.map(v => "") || ["", "", "", ""]
         };
-        this.students = props.data;
     }
 
     filterArray = (type, inputVal) => {
@@ -22,7 +21,7 @@ class Table extends React.Component {
             case "goal":
                 opt.t = type;
                 opt.i = 1;
-                opt.f = (student) => student.goalFocus.includes(inputVal.toLowerCase());
+                opt.f = (student) => student.goalFocus.toLowerCase().includes(inputVal.toLowerCase());
                 break;
             case "eligibility":
                 opt.t = type;
@@ -43,60 +42,64 @@ class Table extends React.Component {
                     return inputVal;
                 return "";
             }),
-            filtered: this.students.filter(student => opt.f(student))
+            filtered: this.props.data.filter(student => opt.f(student))
         }));
     };
 
-    handleSelect = (e, student) => {
-        e.currentTarget.classList.toggle("selected-bg");
-            this.props.selectedCallback(e.currentTarget.classList.contains("selected-bg"), student);
+    handleSelect = (student, index) => {
+        this.props.selectedCallback(student, index);
     };
 
     render() {
         const filters = [
-            <input type={"text"} value={this.state.filterValues[0]} placeholder={"Name"} onChange={(e) => {
+            <input className={"i-top"} type={"text"} value={this.state.filterValues[0]} placeholder={"Name"} onChange={(e) => {
                 this.filterArray("name", e.currentTarget.value)}}/>,
-            <input type={"text"} value={this.state.filterValues[1]} placeholder={"Goal #"} onChange={(e) => {
+            <input className={"i-top"} type={"text"} value={this.state.filterValues[1]} placeholder={"Goal #"} onChange={(e) => {
                 this.filterArray("goal", e.currentTarget.value)}}/>,
-            <input type={"text"} value={this.state.filterValues[2]} placeholder={"Eligibility"} onChange={(e) => {
+            <input className={"i-top"} type={"text"} value={this.state.filterValues[2]} placeholder={"Eligibility"} onChange={(e) => {
                 this.filterArray("eligibility", e.currentTarget.value)}}/>,
-            <input type={"text"} value={this.state.filterValues[3]} placeholder={"Skill"} onChange={(e) => {
+            <input className={"i-top"} type={"text"} value={this.state.filterValues[3]} placeholder={"Skill"} onChange={(e) => {
                 this.filterArray("skills", e.currentTarget.value)}}/>
         ];
+        const mainStudentKeys = ["name", "goalFocus", "eligibility", "skills"];
         const header = (head, i) => <div key={'classroomth'+i} className={"th"}>
-            <h3 className={"i-bottom"}>{head}</h3>
+            <h3>{head}</h3>
             {this.props.filterable && filters[i]}
         </div>;
-        const studentHeader = ["Name", "Goal Focus", "Eligibility", "Skills"].map((v, i) =>
-            header(v, i));
+        const studentHeader = ["Name", "Goal Focus", "Eligibility", "Skills"].map((v, i) => header(v, i));
 
-
-        //GOAL FOCUS READING COMPREHENSION, NUMBER IDENTIFICATION, CORRECT WORDS PER MINUTE
 
         return (
             <div className={"table"}>
                 <div className={"theader"}>
-                    <div className={"tcols tr"}>
-                        {
-                            this.props.studentTable === true
-                            ? studentHeader.map(v => v)
-                            : this.props.headers.map((head, index) => header(head, index))
-                        }
-                    </div>
+                    {
+                        this.props.studentTable || this.props.headers
+                         ? <div className={"tcols tr"}>
+                            {
+                                this.props.studentTable === true
+                                    ? studentHeader.map(v => v)
+                                    : this.props.headers.map((head, index) => header(head, index))
+                            }
+                        </div>
+                         : <></>
+                    }
                 </div>
                 <div className={"tbody"}>
                     {
-                        this.students
-                            ?  (this.state.isFiltering ? this.state.filtered : this.students).map((student, index) => {
+                        this.props.data
+                            ?  (this.state.isFiltering ? this.state.filtered : this.props.data).map((student, index) => {
+                                let includesIndex = this.props.selectedRowIndexes?.length ? this.props.selectedRowIndexes.includes(index) : this.props.selectedRowIndexes === index;
+                                let rowClassName = `tr ${this.props.selectable ? "selectable" : ""} ${includesIndex ? "selected-bg" : ""}`;
                                     return (
-                                        <div key={student.name + index}
-                                             className={"tr " + (this.props.selectable && "selectable")}
-                                             onClick={this.props.selectable ? (e)=>{this.handleSelect(e, student)} : null}
-                                        >
-                                            <div className={"td"}>{student.name}</div>
-                                            <div className={"td"}>{student.goalFocus}</div>
-                                            <div className={"td"}>{student.eligibility}</div>
-                                            <div className={"td"}>{student.skills}</div>
+                                        <div
+                                            key={`${student.name}${index}`}
+                                            className={rowClassName}
+                                            onClick={this.props.selectable ? () => {this.handleSelect(student, index)} : null}>
+                                            {
+                                                this.props.studentTable
+                                                    ? mainStudentKeys.map((key, ind) => <div key={`tableTD${key}${ind}`} className={"td"}>{student[key]}</div>)
+                                                    : Object.keys(student).map((key, ind) => <div key={`tableTD${key}${ind}`} className={"td"}>{student[key]}</div>)
+                                            }
                                         </div>
                                     )
                                 })

@@ -3,6 +3,7 @@ package com.structure.models;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -13,25 +14,24 @@ public class Student {
     @Expose
     private String id;
 
+    @ManyToOne
+    @JoinColumn(name = "classroom_id", insertable = false, updatable = false)
+    private Classroom classroom;
+
+    @Expose
+    @OneToMany(mappedBy = "student")
+    private List<StudentGoal> goalData;
+
+    @Expose
+    @OneToMany(mappedBy = "student")
+    private List<Trial> trials;
+
     @Expose
     private String name, eligibility, skills;
 
     @Expose
     @Column(name="goal_focus")
     private String goalFocus;
-
-    @ManyToOne
-    @JoinColumn(name = "classroom_id", insertable = false, updatable = false)
-    private Classroom classroom;
-
-    @Expose
-    @ManyToMany
-    @JoinTable(
-            name = "student_goal",
-            joinColumns = @JoinColumn(name = "stu_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "goal_id", referencedColumnName = "id")
-    )
-    private List<Goal> goals;
 
     @Expose
     @Column(name = "classroom_id")
@@ -108,16 +108,44 @@ public class Student {
         this.enabled = enabled;
     }
 
+    public Classroom getClassroom() {
+        return classroom;
+    }
+
+    public void setClassroom(Classroom classroom) {
+        this.classroom = classroom;
+    }
+
+/*    public List<Goal> getGoals() {
+        return goals;
+    }
+
+    public void setGoals(List<Goal> goals) {
+        this.goals = goals;
+    }*/
+
+    public List<Trial> getTrials() {
+        return trials;
+    }
+
+    public void setTrials(List<Trial> trials) {
+        this.trials = trials;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", eligibility='" + eligibility + '\'' +
-                ", skills='" + skills + '\'' +
+                ", name=" + name +
+                ", eligibility=" + eligibility +
+                ", skills=" + skills +
                 ", goalFocus=" + goalFocus +
                 ", classroomId=" + classroomId +
                 ", enabled=" + enabled +
+                ", trials=" + Arrays.toString(trials.toArray()) +
+/*
+                ", goals=" + Arrays.toString(goals.toArray()) +
+*/
                 '}';
     }
 }

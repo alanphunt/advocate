@@ -1,34 +1,33 @@
 import React from 'react';
 import Table from "./components/Table";
+import Accordion from "./components/accordion/Accordion";
 
 
-//if they have multiple classrooms then each table should have the name at the top and act as an accordion
-
-class Classroom extends React.Component{
-    constructor(props) {
-        super(props);
-        this.students = this.props.teacher.classrooms[0]?.students || null;
-    }
-
-
-    render() {
-        if(this.students)
-            return (
-                <div className={"dash-main-inner"}>
-                    <div className={"card width-100"}>
-                        <div className={"cardheader"}>
-                            <h2>Classrooms</h2>
-                        </div>
-                        <div className={"cardmain"}>
-                            <h2 className={"marg-bot"}>{this.props.teacher.classrooms[0].className}</h2>
-                            <Table data={this.students} filterable={true} studentTable={true}/>
-                        </div>
-                    </div>
+const Classroom = (props) => {
+    return (
+        <div className={"dash-main-inner"}>
+            <div className={"card width-100"}>
+                <div className={"cardheader"}>
+                    <h2>Classrooms</h2>
                 </div>
-            );
-        else
-            {window.location = "/dashboard/classroom/create";}
-    }
+                <div className={"cardmain"}>
+                    <Accordion open={true} array={props.teacher.classrooms}
+                               name={props.teacher.classrooms.map(v => v.className)}>
+                        {
+                            props.teacher.classrooms.map((cr, ind) =>
+                                <Table
+                                    key={`classroomtable${ind}`}
+                                    data={cr.students}
+                                    filterable={true}
+                                    studentTable={true}
+                                />
+                            )
+                        }
+                    </Accordion>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 export default Classroom;

@@ -82,12 +82,20 @@ public class Classroom {
         this.students = students;
     }
 
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
     @Override
     public String toString() {
         return "Classroom{" +
                 "id=" + id +
                 ", enabled=" + enabled +
-                ", className='" + className +
+                ", className=" + className +
                 ", teacherId=" + teacherId +
                 ", students=" + Arrays.toString(students.toArray()) +
         '}';

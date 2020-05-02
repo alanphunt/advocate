@@ -17,20 +17,21 @@ class Dashboard extends React.Component {
         let path = window.location.pathname.split("/")[2];
         this.state = {
             activeCategory: path,
-            isFetching: true
         };
-        this.teacher = props.location.state?.teacher || null;
+        this.teacher = props.teacher;
     }
 
+    refreshDataFromComponents = async () => {
+        console.log("rehydrating data..");
+        let resp = await fetch("/api/teacher");
+        await resp.json().then(data => {
+            this.props.updateTeacher(data);
+        });
+    };
+
     componentDidMount() {
-        if(!this.teacher) {
-            fetch("/api/teacher").then(r => r.json()).then(d => {
-                this.teacher = d;
-                this.setState(() => ({isFetching: false}));
-            });
-        }else{
-            this.setState(() => ({isFetching: false}));
-        }
+        if(!this.props.teacher)
+            this.refreshDataFromComponents().then();
     }
 
     handleChange = (e) => {
@@ -41,27 +42,24 @@ class Dashboard extends React.Component {
         let teacher = this.teacher;
         console.log(teacher);
         return (
-            this.state.isFetching
-            ?   <div className={"dashboardwrapper"}>
-                    <div className="loadingio-spinner-dual-ring-uq8lhoxnro posabs">
-                        <div className="ldio-qw71tr0evte">
-                            <div/><div><div/></div>
-                        </div>
-                    </div>
-                </div>
-
-            : <div className={"dashboardwrapper"}>
-                <Sidebar teacher={teacher} navHandler={{updateActiveCategory: this.handleChange, activeCategory: this.state.activeCategory}}/>
+            this.props.teacher
+                ? <div className={"dashboardwrapper"}>
+                <Sidebar
+                    teacher={teacher}
+                    navHandler={{updateActiveCategory: this.handleChange, activeCategory: this.state.activeCategory}}
+                    updateTeacher={this.props.updateTeacher}
+                    updateLoggedIn={this.props.updateLoggedIn}
+                />
                 <div className={"dash-main-wrapper"}>
                     <Switch>
                         <Route path="/dashboard/main">
-                            <DashMain teacher={teacher} navHandler={{updateActiveCategory: this.handleChange}}/>
+                            <DashMain teacher={teacher}/>
                         </Route>
                         <Route path="/dashboard/classroom" exact>
                             <Classroom teacher={teacher}/>
                         </Route>
                         <Route path="/dashboard/classroom/create">
-                            <CreateClassroom/>
+                            <CreateClassroom navHandler={this.handleChange} refreshData={this.refreshDataFromComponents}/>
                         </Route>
                         <Route path="/dashboard/charts" exact>
                             <Charts teacher={teacher}/>
@@ -70,7 +68,7 @@ class Dashboard extends React.Component {
                             <GoalCenter teacher={teacher}/>
                         </Route>
                         <Route path="/dashboard/goalcenter/create">
-                            <CreateGoal teacher={teacher}/>
+                            <CreateGoal teacher={teacher} refreshData={this.refreshDataFromComponents}/>
                         </Route>
                         <Route path="/dashboard/profile">
                             <Profile teacher={teacher}/>
@@ -78,8 +76,14 @@ class Dashboard extends React.Component {
                     </Switch>
                 </div>
             </div>
-
-    );
+                : <div className={"dashboardwrapper"}>
+                <div className="loadingio-spinner-dual-ring-uq8lhoxnro posabs">
+                    <div className="ldio-qw71tr0evte">
+                        <div/><div><div/></div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 

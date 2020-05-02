@@ -3,6 +3,7 @@ package com.structure.models;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -12,6 +13,10 @@ public class Benchmark {
     @Id
     @Expose
     private String id;
+
+    @Expose
+    @Column(name = "goal_id")
+    private String goalId;
 
     @Expose
     private int enabled;
@@ -30,14 +35,6 @@ public class Benchmark {
     @Column(name = "mastery_date")
     private Date masteryDate;
 
-    @ManyToOne
-    @JoinColumn(name = "goal_id", insertable = false, updatable = false)
-    private Goal goal;
-
-    @Expose
-    @Column(name = "goal_id")
-    private String goalId;
-
     @Expose
     private String tracking;
 
@@ -47,10 +44,11 @@ public class Benchmark {
     public Benchmark() {
     }
 
-    public Benchmark(String label, String description, String goalId, String tracking, Date masteryDate){
+    public Benchmark(String id, String label, String description, String studentGoalId, String tracking, Date masteryDate){
+        this.id = id;
         this.label = label;
         this.description = description;
-        this.goalId = goalId;
+        this.goalId = studentGoalId;
         this.tracking = tracking;
         this.masteryDate = masteryDate;
         this.enabled = 1;
@@ -134,7 +132,7 @@ public class Benchmark {
         return "Benchmark{" +
                 "id=" + id +
                 ", enabled=" + enabled +
-                ", label='" + label + '\'' +
+                ", label=" + label +
                 ", metDate=" + metDate +
                 ", goalId=" + goalId +
                 ", masteryDate=" + masteryDate +

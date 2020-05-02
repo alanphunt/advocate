@@ -139,10 +139,10 @@ public class Teacher {
                 "id=" + id +
                 ", enabled=" + enabled +
                 ", dateCreated=" + dateCreated +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", description='" + description + '\'' +
+                ", firstName=" + firstName +
+                ", lastName=" + lastName +
+                ", email=" + email +
+                ", description=" + description +
                 ", classrooms=" + Arrays.toString(classrooms.toArray()) +
                 '}';
     }

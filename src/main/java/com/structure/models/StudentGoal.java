@@ -2,25 +2,53 @@ package com.structure.models;
 
 import com.google.gson.annotations.Expose;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "student_goal")
-public class StudentGoal {
+public class StudentGoal implements Serializable {
 
-    @Id
     @Expose
+    @Id
     private String id;
 
-    @Column(name = "stu_id")
-    private String stuId;
+    @ManyToOne
+    @JoinColumn(name = "student_id", insertable = false, updatable = false)
+    private Student student;
+
+    @Expose
+    @OneToMany
+    @JoinColumn(name = "id", referencedColumnName = "goal_id")
+    private List<Goal> goal;
 
     @Expose
     @Column(name = "goal_id")
     private String goalId;
+
+    @Expose
+    @Column(name = "student_id")
+    private String studentId;
+
+    @Expose
+    @OneToMany
+    @OrderBy("label ASC")
+    @JoinColumn(name = "goal_id", referencedColumnName="goal_id")
+    private List<Benchmark> benchmarks;
+
+
+    @Expose
+    @Column(name = "start_date")
+    private Date startDate;
+
+    @Expose
+    @Column(name = "mastery_date")
+    private Date masteryDate;
+
+    @Expose
+    private boolean monitor;
 
     @Expose
     private int enabled;
@@ -28,10 +56,13 @@ public class StudentGoal {
     public StudentGoal() {
     }
 
-    public StudentGoal(String id, String stuId, String goalId){
+    public StudentGoal(String id, String goalId, String studentId, Date startDate, Date masteryDate, boolean monitor){
         this.id = id;
-        this.stuId = stuId;
         this.goalId = goalId;
+        this.studentId = studentId;
+        this.startDate = startDate;
+        this.masteryDate = masteryDate;
+        this.monitor = monitor;
         this.enabled = 1;
     }
 
@@ -43,20 +74,44 @@ public class StudentGoal {
         this.id = id;
     }
 
-    public String getStuId() {
-        return stuId;
-    }
-
-    public void setStuId(String stuId) {
-        this.stuId = stuId;
-    }
-
     public String getGoalId() {
         return goalId;
     }
 
     public void setGoalId(String goalId) {
         this.goalId = goalId;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public List<Goal> getGoal() {
+        return goal;
+    }
+
+    public void setGoal(List<Goal> goal) {
+        this.goal = goal;
+    }
+
+    public List<Benchmark> getBenchmarks() {
+        return benchmarks;
+    }
+
+    public void setBenchmarks(List<Benchmark> benchmarks) {
+        this.benchmarks = benchmarks;
     }
 
     public int getEnabled() {
@@ -67,12 +122,41 @@ public class StudentGoal {
         this.enabled = enabled;
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getMasteryDate() {
+        return masteryDate;
+    }
+
+    public void setMasteryDate(Date masteryDate) {
+        this.masteryDate = masteryDate;
+    }
+
+    public boolean getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(boolean monitor) {
+        this.monitor = monitor;
+    }
+
     @Override
     public String toString() {
         return "StudentGoal{" +
-                "id=" + id +
-                ", stuId='" + stuId + '\'' +
+                "id='" + id + '\'' +
+                ", student=" + student +
+                ", goal=" + goal.get(0).toString() +
                 ", goalId='" + goalId + '\'' +
+                ", studentId='" + studentId + '\'' +
+                ", startDate=" + startDate +
+                ", masteryDate=" + masteryDate +
+                ", monitor=" + monitor +
                 ", enabled=" + enabled +
                 '}';
     }

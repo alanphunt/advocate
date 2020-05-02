@@ -32,7 +32,7 @@ public class Utils {
     public static Cookie setSession(HttpServletRequest req, Teacher teacher) {
             HttpSession session = req.getSession();
             session.setAttribute("teacher", teacher);
-            System.out.println("User signed in: " + session.getAttribute("teacher").toString());
+            //System.out.println("User signed in: " + session.getAttribute("teacher").toString());
             Cookie c = new Cookie("email", teacher.getEmail());
             c.setHttpOnly(true);
             //c.setMaxAge(-1);

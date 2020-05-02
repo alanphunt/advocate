@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 const GetStarted = (props) => {
     return (
-        <Link to={props.to} className={"getstarted br"} onClick={()=>{props.navHandler.updateActiveCategory("classroom")}}>
+        <Link push={"true"} to={props.to} className={"getstarted br"}>
             {props.children}
         </Link>
     )

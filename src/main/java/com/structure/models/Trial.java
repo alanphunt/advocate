@@ -1,33 +1,51 @@
 package com.structure.models;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "trials", schema = "advocate")
+@Table(name = "trials")
 public class Trial {
 
     @Id
+    @Expose
     private String id;
+
+    @Expose
     @Column(name = "date_started")
     private Date dateStarted;
+
+    @Expose
     @Column(name = "trial_length_minutes")
     private int trialLengthMinutes;
+
+    @Expose
     private String comments;
-    @Column(name = "tracked_by")
-    private String trackedBy;
+
+    @Expose
     @Column(name = "benchmark_id")
     private String benchmarkId;
 
+    @Expose
+    @Column(name = "student_id")
+    private String studentId;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id", insertable = false, updatable = false)
+    private Student student;
+
+    @Expose
     private int enabled;
 
     public Trial (){}
 
-    public Trial(Date dateStarted, int trialLengthMinutes, String comments, String trackedBy, String benchmarkId) {
+    public Trial(String id, Date dateStarted, int trialLengthMinutes, String comments, String benchmarkId) {
+        this.id = id;
         this.dateStarted = dateStarted;
         this.trialLengthMinutes = trialLengthMinutes;
         this.comments = comments;
-        this.trackedBy = trackedBy;
         this.benchmarkId = benchmarkId;
         this.enabled = 1;
     }
@@ -64,14 +82,6 @@ public class Trial {
         this.comments = comments;
     }
 
-    public String getTrackedBy() {
-        return trackedBy;
-    }
-
-    public void setTrackedBy(String trackedBy) {
-        this.trackedBy = trackedBy;
-    }
-
     public String getBenchmarkId() {
         return benchmarkId;
     }
@@ -88,14 +98,29 @@ public class Trial {
         this.enabled = enabled;
     }
 
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
     @Override
     public String toString() {
         return "Trial{" +
                 "id=" + id +
                 ", dateStarted=" + dateStarted +
                 ", trialLengthMinutes=" + trialLengthMinutes +
-                ", comments='" + comments + '\'' +
-                ", trackedBy=" + trackedBy +
+                ", comments=" + comments +
                 ", benchmarkId=" + benchmarkId +
                 ", enabled=" + enabled +
                 '}';

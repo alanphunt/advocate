@@ -87,23 +87,26 @@ html, body, #root{
     margin: 0 0 1rem .5rem;
 }
 
-.formmodal{
+.modal{
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
-    width: 50%;
-    max-width: 500px;
-    min-width: 300px;
     background: white;
     display: none;
     padding: 1rem 2rem;
-    color: #333;
+    width: fit-content;
+    color: #454545;
+}
+
+.modal-lg{
+    width: 85%;
+    height: 85%;
 }
 
 .formcontainer{
-    width: 100%;
+    min-width: 400px;
 }
 
 .formheader{

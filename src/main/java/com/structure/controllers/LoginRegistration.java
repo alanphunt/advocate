@@ -1,5 +1,6 @@
 package com.structure.controllers;
 
+import com.structure.models.Classroom;
 import com.structure.models.Teacher;
 import com.structure.repositories.TeacherRepo;
 import com.structure.utilities.Utils;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -33,6 +35,7 @@ public class LoginRegistration {
         teacher = new Teacher(Utils.gson().fromJson(body.toString(), Teacher.class));
         teacher.setPassword(pe.encode(teacher.getPassword()));
         teacher.setId(Utils.generateUniqueId());
+        teacher.setClassrooms(new ArrayList<Classroom>());
         tr.save(teacher);
 
         String jsonTeacher = Utils.gson().toJson(teacher);
@@ -79,6 +82,7 @@ public class LoginRegistration {
 
     @GetMapping(value = "/api/teacher")
     public ResponseEntity<?> getTeacher(HttpServletRequest request){
+        System.out.println("retrieving teacher..");
         try{
            return ResponseEntity.ok(Utils.gson().toJson(tr.findTeacherByEmailAndEnabled(Utils.getSessionUser(request).getEmail(), 1)));
         }catch(NullPointerException npe){

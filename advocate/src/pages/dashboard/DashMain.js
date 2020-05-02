@@ -5,11 +5,12 @@ import Table from "./components/Table";
 
 class DashMain extends React.Component{
     teacher = this.props.teacher;
+    classrooms = this.props.teacher.classrooms || null;
 
     createClass = () => {
         return (
             <div className={"card width-100"}>
-                <GetStarted to={"/dashboard/classroom/create"} navHandler={{updateActiveCategory: this.props.navHandler.updateActiveCategory}}>
+                <GetStarted to={"/dashboard/classroom/create"}>
                     <i className="fas fa-plus marg-bot"/>
                     <h2>Get started by creating a classroom</h2>
                 </GetStarted>
@@ -24,8 +25,8 @@ class DashMain extends React.Component{
                 <div className={"cardwrapperrow"}>
                     <ProfileCard teacher={this.teacher}/>
                     {
-                        (this.teacher.classrooms.length === 0 && this.createClass())
-                    || <div className={"card width-100"}>
+                       (this.classrooms.length === 0 && this.createClass())
+                       || <div className={"card width-100"}>
                             <div className={"cardheader"}>
                                 <h2>Classrooms</h2>
                             </div>
