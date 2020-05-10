@@ -5,13 +5,9 @@ class SidebarDropdown extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dropped: false,
+            dropped: (window.location.pathname === this.props.link.menuItems.item1.link),
             activeLink: (window.location.pathname === this.props.link.menuItems.item1.link)
         };
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-
     }
 
     handleClick = () => {

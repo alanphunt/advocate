@@ -163,7 +163,10 @@ const CreateGoal = (props) => {
                         </div>
 
                         <h3 className={"i-bottom"}>Apply to which students</h3>
-                        <Accordion array={props.teacher.classrooms} name={props.teacher.classrooms.map(cr => cr.className)}>
+                        <Accordion
+                            array={props.teacher.classrooms}
+                            name={props.teacher.classrooms.map(cr => cr.className)}
+                        >
                             {
                                 props.teacher.classrooms.map((cr, crInd) =>
                                     <Table

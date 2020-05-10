@@ -26,7 +26,8 @@ class SidebarLinks extends React.Component {
 //            "link5" : {text: "minimize", islink: false, icon: "far fa-hand-point-left"}
         return (
             <div className={"sideitemwrapper"}>
-                {Object.values(links).map(link => {
+                {
+                    Object.values(links).map(link => {
                     let linktext = link.text.replace(" ", "");
                         return (
                             <div key={link.text} className={"sideitem"}>

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "trials")
@@ -18,8 +19,8 @@ public class Trial {
     private Date dateStarted;
 
     @Expose
-    @Column(name = "trial_length_minutes")
-    private int trialLengthMinutes;
+    @Column(name = "date_completed")
+    private Date dateCompleted;
 
     @Expose
     private String comments;
@@ -37,17 +38,29 @@ public class Trial {
     private Student student;
 
     @Expose
+    @OneToMany(mappedBy = "trial")
+    private List<Tracking> trackings;
+
+
+    @Expose
     private int enabled;
 
     public Trial (){}
 
-    public Trial(String id, Date dateStarted, int trialLengthMinutes, String comments, String benchmarkId) {
+    public Trial(String id, Date dateStarted, String comments, String benchmarkId) {
         this.id = id;
         this.dateStarted = dateStarted;
-        this.trialLengthMinutes = trialLengthMinutes;
         this.comments = comments;
         this.benchmarkId = benchmarkId;
         this.enabled = 1;
+    }
+
+    public Date getDateCompleted() {
+        return dateCompleted;
+    }
+
+    public void setDateCompleted(Date dateCompleted) {
+        this.dateCompleted = dateCompleted;
     }
 
     public String getId() {
@@ -64,14 +77,6 @@ public class Trial {
 
     public void setDateStarted(Date dateStarted) {
         this.dateStarted = dateStarted;
-    }
-
-    public int getTrialLengthMinutes() {
-        return trialLengthMinutes;
-    }
-
-    public void setTrialLengthMinutes(int trialLengthMinutes) {
-        this.trialLengthMinutes = trialLengthMinutes;
     }
 
     public String getComments() {
@@ -117,11 +122,12 @@ public class Trial {
     @Override
     public String toString() {
         return "Trial{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", dateStarted=" + dateStarted +
-                ", trialLengthMinutes=" + trialLengthMinutes +
-                ", comments=" + comments +
-                ", benchmarkId=" + benchmarkId +
+                ", dateCompleted=" + dateCompleted +
+                ", comments='" + comments + '\'' +
+                ", benchmarkId='" + benchmarkId + '\'' +
+                ", studentId='" + studentId + '\'' +
                 ", enabled=" + enabled +
                 '}';
     }
