@@ -3,6 +3,7 @@ package com.structure.models;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "goals")
@@ -21,6 +22,12 @@ public class Goal {
 
     @Expose
     private int enabled;
+
+    @Expose
+    @OneToMany
+    @OrderBy("label ASC")
+    @JoinColumn(name = "goal_id")
+    private List<Benchmark> benchmarks;
 
 
     public Goal(){}

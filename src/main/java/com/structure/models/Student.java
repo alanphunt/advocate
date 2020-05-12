@@ -23,10 +23,6 @@ public class Student {
     private List<StudentGoal> goalData;
 
     @Expose
-    @OneToMany(mappedBy = "student")
-    private List<Trial> trials;
-
-    @Expose
     private String name, eligibility, skills;
 
     @Expose
@@ -116,22 +112,6 @@ public class Student {
         this.classroom = classroom;
     }
 
-/*    public List<Goal> getGoals() {
-        return goals;
-    }
-
-    public void setGoals(List<Goal> goals) {
-        this.goals = goals;
-    }*/
-
-    public List<Trial> getTrials() {
-        return trials;
-    }
-
-    public void setTrials(List<Trial> trials) {
-        this.trials = trials;
-    }
-
     @Override
     public String toString() {
         return "Student{" +
@@ -142,10 +122,6 @@ public class Student {
                 ", goalFocus=" + goalFocus +
                 ", classroomId=" + classroomId +
                 ", enabled=" + enabled +
-                ", trials=" + Arrays.toString(trials.toArray()) +
-/*
-                ", goals=" + Arrays.toString(goals.toArray()) +
-*/
                 '}';
     }
 }

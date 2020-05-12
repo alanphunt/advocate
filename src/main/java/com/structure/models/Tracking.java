@@ -7,6 +7,7 @@ import javax.persistence.*;
 public class Tracking {
     @Id
     private String id;
+
     private int frequency;
     @Column(name = "cue_count")
     private int cueCount;

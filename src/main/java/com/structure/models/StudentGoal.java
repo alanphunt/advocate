@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "student_goal")
-public class StudentGoal implements Serializable {
+public class StudentGoal implements Serializable{
 
     @Expose
     @Id
@@ -25,19 +25,17 @@ public class StudentGoal implements Serializable {
     private List<Goal> goal;
 
     @Expose
+    @OneToMany
+    @JoinColumn(name = "student_goal_id")
+    private List<BenchmarkMeta> benchmarkMeta;
+
+    @Expose
     @Column(name = "goal_id")
     private String goalId;
 
     @Expose
     @Column(name = "student_id")
     private String studentId;
-
-    @Expose
-    @OneToMany
-    @OrderBy("label ASC")
-    @JoinColumn(name = "goal_id", referencedColumnName="goal_id")
-    private List<Benchmark> benchmarks;
-
 
     @Expose
     @Column(name = "start_date")
@@ -98,20 +96,12 @@ public class StudentGoal implements Serializable {
         this.student = student;
     }
 
-    public List<Goal> getGoal() {
+    public List <Goal> getGoal() {
         return goal;
     }
 
     public void setGoal(List<Goal> goal) {
         this.goal = goal;
-    }
-
-    public List<Benchmark> getBenchmarks() {
-        return benchmarks;
-    }
-
-    public void setBenchmarks(List<Benchmark> benchmarks) {
-        this.benchmarks = benchmarks;
     }
 
     public int getEnabled() {

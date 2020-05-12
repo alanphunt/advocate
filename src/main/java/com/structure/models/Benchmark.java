@@ -3,8 +3,6 @@ package com.structure.models;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 
 @Entity
 @Table(name = "benchmarks")
@@ -28,31 +26,18 @@ public class Benchmark {
     private String description;
 
     @Expose
-    @Column(name = "met_date")
-    private Date metDate;
-
-    @Expose
-    @Column(name = "mastery_date")
-    private Date masteryDate;
-
-    @Expose
     private String tracking;
-
-    @Expose
-    private int complete;
 
     public Benchmark() {
     }
 
-    public Benchmark(String id, String label, String description, String studentGoalId, String tracking, Date masteryDate){
+    public Benchmark(String id, String label, String description, String goalId, String tracking){
         this.id = id;
         this.label = label;
         this.description = description;
-        this.goalId = studentGoalId;
+        this.goalId = goalId;
         this.tracking = tracking;
-        this.masteryDate = masteryDate;
         this.enabled = 1;
-        this.complete = 0;
     }
 
     public String getId() {
@@ -79,14 +64,6 @@ public class Benchmark {
         this.label = label;
     }
 
-    public Date getMetDate() {
-        return metDate;
-    }
-
-    public void setMetDate(Date metDate) {
-        this.metDate = metDate;
-    }
-
     public String getGoalId() {
         return goalId;
     }
@@ -103,14 +80,6 @@ public class Benchmark {
         this.description = description;
     }
 
-    public Date getMasteryDate() {
-        return masteryDate;
-    }
-
-    public void setMasteryDate(Date masteryDate) {
-        this.masteryDate = masteryDate;
-    }
-
     public String getTracking() {
         return tracking;
     }
@@ -119,26 +88,15 @@ public class Benchmark {
         this.tracking = tracking;
     }
 
-    public int getComplete() {
-        return complete;
-    }
-
-    public void setComplete(int complete) {
-        this.complete = complete;
-    }
-
     @Override
     public String toString() {
         return "Benchmark{" +
                 "id=" + id +
                 ", enabled=" + enabled +
                 ", label=" + label +
-                ", metDate=" + metDate +
                 ", goalId=" + goalId +
-                ", masteryDate=" + masteryDate +
                 ", description=" + description +
                 ", tracking=" + tracking +
-                ", complete=" + complete +
                 '}';
     }
 
