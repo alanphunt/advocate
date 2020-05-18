@@ -11,17 +11,20 @@ class SidebarLinks extends React.Component {
     render() {
         const links = {
             "link1" : {text: "dashboard", islink: true, link: "/dashboard/main", icon: "fas fa-columns"},
-            "link2" : {text: "classroom", islink: false, menuItems: {
-                item1: {"itemtext": "Classroom", "link": "/dashboard/classroom"},
-                item2: {"itemtext": "Create Classroom", "link": "/dashboard/classroom/create"}
-                    }, icon: "far fa-address-book"},
-            "link3" : {text: "charts", islink: false, menuItems: {
-                    item1: {"itemtext": "Charts", "link": "/dashboard/charts"}
-                }, icon: "far fa-chart-bar"},
-            "link4" : {text: "goal center", islink: false, menuItems: {
-                    item1: {"itemtext": "Goal Center", "link": "/dashboard/goalcenter"},
-                    item2: {"itemtext": "Create Goal", "link": "/dashboard/goalcenter/create"}
-                }, icon: "far fa-compass"}
+            "link2" : {text: "classroom", islink: false,
+                menuItems: [
+                    {"itemtext": "Classroom", "link": "/dashboard/classroom"},
+                    {"itemtext": "Create Classroom", "link": "/dashboard/classroom/create"}
+                ], icon: "far fa-address-book"},
+            "link3" : {text: "charts", islink: false,
+                menuItems: [
+                    {"itemtext": "Charts", "link": "/dashboard/charts"}
+                ], icon: "far fa-chart-bar"},
+            "link4" : {text: "goal center", islink: false,
+                menuItems: [
+                    {"itemtext": "Goal Center", "link": "/dashboard/goalcenter"},
+                    {"itemtext": "Create Goal", "link": "/dashboard/goalcenter/create"}
+                ], icon: "far fa-compass"}
         };
 //            "link5" : {text: "minimize", islink: false, icon: "far fa-hand-point-left"}
         return (

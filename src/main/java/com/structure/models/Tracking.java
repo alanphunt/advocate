@@ -1,36 +1,61 @@
 package com.structure.models;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "trackings", schema = "advocate")
+@Table(name = "trackings")
 public class Tracking {
+    @Expose
     @Id
     private String id;
 
-    private int frequency;
+    @Expose
+    private String label;
+
+    @Expose
     @Column(name = "cue_count")
     private int cueCount;
+
+    @Expose
     @Column(name = "permanent_product")
     private String permanentProduct;
+
+    @Expose
     @Column(name = "duration_in_seconds")
     private int durationInSeconds;
+
+    @Expose
     @Column(name = "accuracy_percentage")
     private double accuracyPercentage;
+
+    @Expose
     @Column(name = "trial_id")
     private String trialId;
-    private int enabled;
+
+    @Expose
+    private int enabled, correct, frequency;
+
+    @ManyToOne
+    @JoinColumn(name = "trial_id", updatable = false, insertable = false)
+    private Trial trial;
 
     public Tracking(){}
-    //properties of a trial
-    public Tracking(int frequency, int cueCount, String permanentProduct, int durationInSeconds, double accuracyPercentage, String trialId) {
-        this.frequency = frequency;
-        this.cueCount = cueCount;
-        this.permanentProduct = permanentProduct;
-        this.durationInSeconds = durationInSeconds;
-        this.accuracyPercentage = accuracyPercentage;
+
+    public Tracking(String id, String trialId, String label) {
+        this.id = id;
         this.trialId = trialId;
+        this.label = label;
         this.enabled = 1;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getId() {
@@ -97,6 +122,14 @@ public class Tracking {
         this.enabled = enabled;
     }
 
+    public int getCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(int correct) {
+        this.correct = correct;
+    }
+
     @Override
     public String toString() {
         return "Tracking{" +
@@ -107,7 +140,9 @@ public class Tracking {
                 ", durationInSeconds=" + durationInSeconds +
                 ", accuracyPercentage=" + accuracyPercentage +
                 ", trialId=" + trialId +
+                ", correct=" + correct +
                 ", enabled=" + enabled +
+                ", label=" + label +
                 '}';
     }
 }

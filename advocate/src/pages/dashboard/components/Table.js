@@ -64,6 +64,11 @@ class Table extends React.Component {
         const mainStudentKeys = ["name", "goalFocus", "eligibility", "skills"];
         const header = (head, i) => <div key={'classroomth'+i} className={"th"}>
             <h3>{head}</h3>
+            {
+                this.props.subheaders
+                  ? <p>{this.props.subheaders[i]}</p>
+                  : <></>
+            }
             {this.props.filterable && filters[i]}
         </div>;
         const studentHeader = ["Name", "Goal Focus", "Eligibility", "Skills"].map((v, i) => header(v, i));

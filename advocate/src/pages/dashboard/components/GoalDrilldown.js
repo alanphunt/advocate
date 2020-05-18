@@ -6,20 +6,23 @@ import {Link} from "react-router-dom";
 
 const GoalDrilldown = (props) => {
     let stu = props.student ?? null;
-    const [selectedBenchmark, setSelectedBenchmark] = useState();
-    const [trials, setTrials] = useState([]);
-    const [selectedTrial, setSelectedTrial] = useState();
+
+    const [selectedGoalIndex, setSelectedGoalIndex] = useState();
     const [benchmarkRow, setBenchmarkRow] = useState();
     const [trialRow, setTrialRow] = useState();
-    const [selectedGoalIndex, setSelectedGoalIndex] = useState();
+
+    const [selectedBenchmark, setSelectedBenchmark] = useState();
+    const [selectedTrial, setSelectedTrial] = useState();
+    const [trials, setTrials] = useState([]);
+
+    const trackings = selectedTrial?.trackings || null;
 
     const selectedBenchmarkCallback = (obj, ind, goalindex) => {
-        console.log(ind, goalindex);
-        let bm = stu.goalData[goalindex].benchmarks[ind];
+        let bm = stu.goals[goalindex].benchmarks[ind];
         setSelectedGoalIndex(goalindex);
         setBenchmarkRow(ind);
         setSelectedBenchmark(bm);
-        setTrials(stu.trials.filter(trial => trial.benchmarkId === bm.id));
+        setTrials(bm.trials);
         setSelectedTrial(null);
         setTrialRow(999);
     };
@@ -29,8 +32,7 @@ const GoalDrilldown = (props) => {
         setSelectedTrial(trials[ind]);
     };
 
-    const stuWithGoals = stu && stu.goalData.length !==0;
-
+    const stuWithGoals = stu && stu.goals.length !== 0;
 
     return (
         <div className={"drilldownwrapper"}>
@@ -44,12 +46,12 @@ const GoalDrilldown = (props) => {
                     </div>
                     {
                         stuWithGoals
-                            ? <Accordion open={true} array={stu.goalData} name={stu.goalData.map(goal => goal.goal[0].goalName)}>
+                            ? <Accordion open={true} array={stu.goals} name={stu.goals.map(goal => goal.goalName)}>
                                 {
-                                    stu.goalData.map((goal, goalind) => {
+                                    stu.goals.map((goal, goalind) => {
                                         return (
                                             <div key={`goaldrilldowntable${goalind}`}>
-                                                <p className={"marg-bot"}><strong>Description: </strong>{goal.goal[0].process}</p>
+                                                <p className={"marg-bot"}><strong>Description: </strong>{goal.process}</p>
                                                 <Table
                                                     selectable={true}
                                                     selectedCallback={(obj, ind) => {selectedBenchmarkCallback(obj, ind, goalind);}}
@@ -69,21 +71,25 @@ const GoalDrilldown = (props) => {
                 <div className={"drilldown-trials"}>
                     <div className={"marg-bot-2 flex-center-between"}>
                         <h2>{selectedBenchmark ? selectedBenchmark.label : "Benchmark"}</h2>
-                        <button onClick={() => {props.handleModal(selectedBenchmark)}} className={selectedBenchmark ? "enabled" : "disabled"}>Create Trial</button>
+                        <button
+                            onClick={() => {
+                                props.handleModal(selectedBenchmark);
+                            }}
+                            className={selectedBenchmark ? "enabled" : "disabled"}>Create Trial</button>
                     </div>
                     {
                         stuWithGoals && selectedBenchmark &&
-                            <div>
+                            <>
                                 <div className={"marg-bot-2"}>
                                     <p><strong>Description: </strong>{selectedBenchmark?.description}</p>
                                     <p><strong>Mastery Date: </strong>{selectedBenchmark?.masteryDate}</p>
-                                    <p><strong>Completed: </strong>{selectedBenchmark?.complete === 0 ? "No" : "Yes"}</p>
+                                    <p><strong>Completed: </strong>{selectedBenchmark?.complete === 1 ? "Yes" : "No"}</p>
                                     <p><strong>Tracking type: </strong>{selectedBenchmark?.tracking}</p>
                                 </div>
                                 <div>
                                     <Table key={`benchmarktablefor${benchmarkRow}`}
                                            headers={["Trials"]}
-                                           selectable={trials.length !== 0}
+                                           selectable={trials && trials.length !== 0}
                                            selectedRowIndexes={trialRow}
                                            selectedCallback={
                                                (obj, ind) => {
@@ -91,19 +97,38 @@ const GoalDrilldown = (props) => {
                                                }
                                            }
                                            data={
-                                               trials.length !== 0
+                                               trials && trials.length !== 0
                                                    ? trials.map((t, i) =>{
                                                        return {text: `Trial ${i+1} - ${t.dateStarted}`}
                                                     })
                                                    : [{text: "No trials"}]}
                                     />
                                 </div>
-                            </div>
+                            </>
                     }
                 </div>
                 <div className={"drilldown-trialmeta"}>
                     <h2 className={"marg-bot-2"}>Trial Tracking</h2>
-                    <p>{selectedTrial ? selectedTrial.id : ""}</p>
+                    {
+                        selectedTrial
+                            ? <div>
+                                <p className={"marg-bot"}><strong>Trial Accuracy: </strong>{(trackings.filter(t => t.correct === 1).length / trackings.length * 100 )+ "%"}</p>
+                                {
+                                    trackings.map(track => {
+                                        return (
+                                            <p key={`tracklabel${track.label.toUpperCase()}`}>
+                                                <strong>Label: </strong>
+                                                {track.label}
+                                                <i className={`marg-left fas fa-${track.correct === 1 ? "plus comp" : "minus incomp"}-color`} />
+                                            </p>
+                                        )
+                                    })
+                                }
+                                <p className={"marg-top"}><strong>Comments: </strong></p>
+                                <p>{selectedTrial.comments}</p>
+                              </div>
+                            : <></>
+                    }
                 </div>
             </div>
         </div>

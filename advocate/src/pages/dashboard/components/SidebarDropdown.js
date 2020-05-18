@@ -5,34 +5,33 @@ class SidebarDropdown extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dropped: (window.location.pathname === this.props.link.menuItems.item1.link),
-            activeLink: (window.location.pathname === this.props.link.menuItems.item1.link)
+            dropped: this.props.link.menuItems.filter(item => item.link.includes(window.location.pathname)).length !== 0
         };
     }
 
-    handleClick = () => {
+    handleClick = (e) => {
         this.setState(state => ({
             dropped: !state.dropped
         }))
     };
 
-    handleActive = () => {
+    handleActive = (e) => {
         this.props.updateActiveLink(this.props.link.text);
-        this.setState({activeLink: this.props.isActive});
     };
 
     render() {
         let classes = this.props.isActive ? "itemmain active" : "itemmain";
+        let dropped = this.state.dropped
         return (
             <div className={"dropdownwrapper"}>
-                <div className={classes} onClick={this.handleClick}>
+                <div className={classes} onClickCapture={this.handleClick}>
                     <div className={"itemmaininner"}>
                         <i className={this.props.link.icon}/>
                         <span>{this.props.link.text}</span>
                     </div>
-                    <i className={"fas fa-caret-down transition"+(this.state.dropped ? " caretflip" : "")}/>
+                    <i className={"fas fa-caret-down transition"+(dropped ? " caretflip" : "")}/>
                 </div>
-                <div className={"dropdown"+(this.state.dropped ? " dropdownactive" : "")}>
+                <div className={"dropdown"+(dropped ? " dropdownactive" : "")}>
                     <ul>
                         {
                             Object.values(this.props.link.menuItems).map(item => {

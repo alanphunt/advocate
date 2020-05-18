@@ -9,6 +9,7 @@ const Sidebar = (props) => {
     const active = props.navHandler.activeCategory;
     const changeActive = props.navHandler.updateActiveCategory;
     const teacher = props.teacher;
+
     return(
         <div className={"sidebarwrapper"}>
             <div className={"sidebar"}>

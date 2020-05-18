@@ -113,6 +113,7 @@ textarea{
     max-height: 400px;
     max-width: 600px;
     border-radius: 8px;
+    font-family: inherit;
 }
 
 label:focus-within i{

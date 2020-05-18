@@ -14,11 +14,10 @@ const CreateGoal = (props) => {
         process: "",
         monitor: "",
         benchmarks: [],
-        studentIds: []
+        studentId: ""
     });
 
-    const [selectedRowIndexes, setSelectedRowIndex] = useState([]);
-    const [selectedStuObj, setSelectedStuObj] = useState([]);
+    const [selectedStuObj, setSelectedStuObj] = useState({crInd: 999, stuInd: 999});
 
     const benchmark = {
         label: "",
@@ -29,22 +28,18 @@ const CreateGoal = (props) => {
 
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    const handleSelected = (stu, selectedIndex, crInd) => {
-        let ids = goal.studentIds;
-        let selected = {crInd: crInd, stuInd: selectedIndex};
+    const handleSelected = (stu, stuIndex, crInd) => {
+        let selected = {crInd: crInd, stuInd: stuIndex};
 
-        if(!goal.studentIds.includes(stu.id)) {
-            setGoal({...goal, studentIds: ids.concat(stu.id)});
-            setSelectedStuObj(prevState => prevState.concat(selected))
-            //setSelectedRowIndex(selectedRowIndexes.concat(selectedIndex))
+        if(goal.studentId !== stu.id) {
+            setGoal({...goal, studentId: stu.id});
+            setSelectedStuObj(selected);
         }
         else {
-            setGoal({...goal, studentIds: ids.filter(id => stu.id !== id)});
-            setSelectedStuObj(prevState => prevState.filter(stuObj =>
-                stuObj.crInd !== selected.crInd ||
-                (stuObj.stuInd !== selected.stuInd && stuObj.crInd === selected.crInd)
-            ))
-            //setSelectedRowIndex(selectedRowIndexes.filter(i => i !== selectedIndex))
+            selected.crInd = 999;
+            selected.stuInd = 999;
+            setGoal({...goal, studentId: ""});
+            setSelectedStuObj(selected);
         }
 
     };
@@ -58,12 +53,10 @@ const CreateGoal = (props) => {
             bm.label = `Benchmark ${alphabet[i]}.`;
         });
 
-        console.log(updatedGoals);
-
         Object.keys(updatedGoals).forEach(key => {
             fd.append(key, (key === "benchmarks" ? JSON.stringify(updatedGoals[key]) : updatedGoals[key]));
         });
-
+        console.log(fd);
         fetch("/api/creategoal", {method: "POST", body: fd})
             .then(r => r.text())
             .then(d => {
@@ -162,10 +155,11 @@ const CreateGoal = (props) => {
                             </Table>
                         </div>
 
-                        <h3 className={"i-bottom"}>Apply to which students</h3>
+                        <h3 className={"i-bottom"}>Apply to which student</h3>
                         <Accordion
                             array={props.teacher.classrooms}
                             name={props.teacher.classrooms.map(cr => cr.className)}
+                            open
                         >
                             {
                                 props.teacher.classrooms.map((cr, crInd) =>
@@ -174,13 +168,7 @@ const CreateGoal = (props) => {
                                         selectedCallback={(stu, ind) => {
                                             handleSelected(stu, ind, crInd);
                                         }}
-                                        selectedRowIndexes={
-                                            selectedStuObj.map(stuObj => {
-                                                    if (stuObj.crInd === crInd)
-                                                        return stuObj.stuInd;
-                                                }
-                                            ).filter(n => n !== undefined)
-                                        }
+                                        selectedRowIndexes={ selectedStuObj.crInd === crInd ? selectedStuObj.stuInd : 999 }
                                         studentTable={true}
                                         key={"attachgoaltostudent"}
                                         data={cr.students}

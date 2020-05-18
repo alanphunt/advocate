@@ -2,6 +2,7 @@ import React from "react";
 import GetStarted from "./components/GetStarted";
 import ProfileCard from "./components/ProfileCard";
 import Table from "./components/Table";
+import Accordion from "./components/accordion/Accordion";
 
 class DashMain extends React.Component{
     teacher = this.props.teacher;
@@ -31,8 +32,21 @@ class DashMain extends React.Component{
                                 <h2>Classrooms</h2>
                             </div>
                             <div className={"cardmain"}>
-                                <h2 className={"marg-bot"}>{this.teacher.classrooms[0].className}</h2>
-                                <Table studentTable={true} data={this.teacher.classrooms[0].students}/>
+                                <Accordion
+                                    array={this.teacher.classrooms}
+                                    name={this.teacher.classrooms.map(cr => cr.className)}
+                                    open={true}
+                                >
+                                    {
+                                        this.teacher.classrooms.map((cr, crInd) =>
+                                            <Table
+                                                studentTable={true}
+                                                key={`dashmaintable${crInd}`}
+                                                data={cr.students}
+                                            />
+                                        )
+                                    }
+                                </Accordion>
                             </div>
                         </div>
                     }

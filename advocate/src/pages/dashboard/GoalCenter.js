@@ -9,11 +9,14 @@ const GoalCenter = (props) =>{
 
     const [selectedStudentIndex, setSelectedStudentIndex] = useState(999);
     const [selectedClassroomIndex, setSelectedSClassroomIndex] = useState(999);
+
     let selectedStudent = props.teacher.classrooms[selectedClassroomIndex]?.students[selectedStudentIndex];
+
     const handleSelected = (stu, ind, crind) => {
         setSelectedStudentIndex(ind);
         setSelectedSClassroomIndex(crind);
     };
+
     const [displayModal, setDisplayModal] = useState(false);
     const [selectedBenchmark, setSelectedBenchmark] = useState();
 
@@ -21,13 +24,13 @@ const GoalCenter = (props) =>{
 
     return (
         <div className={"dash-main-inner width-100 height-100"} onClick={e => {
-            exitModal(e, displayModal, ()=>{
+            exitModal(e, displayModal, () => {
                 setDisplayModal(prevState => !prevState);
                 setTemplate("");
             });
         }}>
             <Modal displayed={displayModal} large>
-                <CreateTrial benchmark={selectedBenchmark} template={template} setTemplate={setTemplate}/>
+                <CreateTrial benchmark={selectedBenchmark} template={template} setTemplate={setTemplate} student={selectedStudent}/>
             </Modal>
             <div className={"card height-50 marg-bot"}>
                 <div className={"cardheader"}><h2>Goal Center</h2></div>
@@ -52,7 +55,7 @@ const GoalCenter = (props) =>{
             </div>
             <div className={"card height-50"}>
                 <GoalDrilldown
-                    handleModal={(bm)=>{
+                    handleModal={(bm) => {
                         setDisplayModal(prevState => !prevState);
                         setSelectedBenchmark(bm);
                     }}
@@ -64,7 +67,7 @@ const GoalCenter = (props) =>{
 };
 
 export const calculateGoalCompletion = (student) => {
-    const goals = student.goalData;
+    const goals = student.goals;
     const goalCount = goals.length || 0;
     const completedGoals = goals.filter(goal => goal.benchmarks.filter(bm => bm.complete === 1).length === goal.benchmarks.length).length;
     let percent = Math.round((completedGoals / goalCount) * 100);
@@ -73,7 +76,7 @@ export const calculateGoalCompletion = (student) => {
 
 export const studentGoalMeta = (students) => {
     return students.map(student => {
-        return {name: student.name, goalFocus: student.goalFocus, goalCount: student.goalData.length, completion: `${calculateGoalCompletion(student)}%`};
+        return {name: student.name, goalFocus: student.goalFocus, goalCount: student.goals.length, completion: `${calculateGoalCompletion(student)}%`};
     });
 };
 

@@ -20,7 +20,7 @@ public class Student {
 
     @Expose
     @OneToMany(mappedBy = "student")
-    private List<StudentGoal> goalData;
+    private List<Goal> goals;
 
     @Expose
     private String name, eligibility, skills;

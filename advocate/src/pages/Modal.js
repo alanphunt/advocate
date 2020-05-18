@@ -2,10 +2,16 @@ import React from "react";
 
 const Modal = (props) => {
 
+    const isDisplayed = props.displayed ? "display fadeinfromtop" : "";
+
     return(
-        <div className={`modal bubble ${(props.displayed ? "display fadeinfromtop" : "")} ${props.large ? "modal-lg" : ""}`}>
-            {props.children}
+        <div className={`modalwrapper posabs ${isDisplayed} ${props.large ? "modal-lg" : ""}`}>
+            <i className={`far fa-times-circle modal-exit`}/>
+            <div className={`modal bubble`}>
+                {props.children}
+            </div>
         </div>
+
     )
 }
 

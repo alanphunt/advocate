@@ -26,36 +26,29 @@ public class Trial {
     private String comments;
 
     @Expose
-    @Column(name = "benchmark_meta_id")
-    private String benchmarkMetaId;
+    @Column(name = "benchmark_id")
+    private String benchmarkId;
 
     @ManyToOne
-    @JoinColumn(name = "benchmark_meta_id", insertable = false, updatable = false)
-    private BenchmarkMeta benchmarkMeta;
+    @JoinColumn(name = "benchmark_id", insertable = false, updatable = false)
+    private Benchmark benchmark;
 
-/*    @Expose
+    @Expose
     @OneToMany(mappedBy = "trial")
-    private List<Tracking> trackings;*/
+    @OrderBy("label ASC")
+    private List<Tracking> trackings;
 
     @Expose
     private int enabled;
 
     public Trial (){}
 
-    public Trial(String id, Date dateStarted, String comments, String benchmarkMetaId) {
+    public Trial(String id, Date dateStarted, String comments, String benchmarkId) {
         this.id = id;
         this.dateStarted = dateStarted;
         this.comments = comments;
-        this.benchmarkMetaId = benchmarkMetaId;
+        this.benchmarkId = benchmarkId;
         this.enabled = 1;
-    }
-
-    public Date getDateCompleted() {
-        return dateCompleted;
-    }
-
-    public void setDateCompleted(Date dateCompleted) {
-        this.dateCompleted = dateCompleted;
     }
 
     public String getId() {
@@ -74,6 +67,14 @@ public class Trial {
         this.dateStarted = dateStarted;
     }
 
+    public Date getDateCompleted() {
+        return dateCompleted;
+    }
+
+    public void setDateCompleted(Date dateCompleted) {
+        this.dateCompleted = dateCompleted;
+    }
+
     public String getComments() {
         return comments;
     }
@@ -82,12 +83,12 @@ public class Trial {
         this.comments = comments;
     }
 
-    public String getBenchmarkMetaId() {
-        return benchmarkMetaId;
+    public String getBenchmarkId() {
+        return benchmarkId;
     }
 
-    public void setBenchmarkMetaId(String benchmarkMetaId) {
-        this.benchmarkMetaId = benchmarkMetaId;
+    public void setBenchmarkId(String benchmarkId) {
+        this.benchmarkId = benchmarkId;
     }
 
     public int getEnabled() {
@@ -105,7 +106,7 @@ public class Trial {
                 ", dateStarted=" + dateStarted +
                 ", dateCompleted=" + dateCompleted +
                 ", comments='" + comments + '\'' +
-                ", benchmarkId='" + benchmarkMetaId + '\'' +
+                ", benchmarkId='" + benchmarkId + '\'' +
                 ", enabled=" + enabled +
                 '}';
     }

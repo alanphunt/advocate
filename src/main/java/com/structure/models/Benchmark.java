@@ -3,6 +3,8 @@ package com.structure.models;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "benchmarks")
@@ -16,8 +18,12 @@ public class Benchmark {
     @Column(name = "goal_id")
     private String goalId;
 
+    @ManyToOne
+    @JoinColumn(name = "goal_id", insertable = false, updatable = false)
+    private Goal goal;
+
     @Expose
-    private int enabled;
+    private int enabled, complete;
 
     @Expose
     private String label;
@@ -28,6 +34,18 @@ public class Benchmark {
     @Expose
     private String tracking;
 
+    @Expose
+    @Column(name = "mastery_date")
+    private Date masteryDate;
+
+    @Expose
+    @Column(name = "met_date")
+    private Date metDate;
+
+    @OneToMany(mappedBy = "benchmark")
+    @Expose
+    private List<Trial> trials;
+
     public Benchmark() {
     }
 
@@ -37,6 +55,7 @@ public class Benchmark {
         this.description = description;
         this.goalId = goalId;
         this.tracking = tracking;
+        this.complete = 0;
         this.enabled = 1;
     }
 
@@ -46,6 +65,14 @@ public class Benchmark {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getGoalId() {
+        return goalId;
+    }
+
+    public void setGoalId(String goalId) {
+        this.goalId = goalId;
     }
 
     public int getEnabled() {
@@ -64,14 +91,6 @@ public class Benchmark {
         this.label = label;
     }
 
-    public String getGoalId() {
-        return goalId;
-    }
-
-    public void setGoalId(String goalId) {
-        this.goalId = goalId;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -88,16 +107,42 @@ public class Benchmark {
         this.tracking = tracking;
     }
 
+    public Date getMasteryDate() {
+        return masteryDate;
+    }
+
+    public void setMasteryDate(Date masteryDate) {
+        this.masteryDate = masteryDate;
+    }
+
+    public Date getMetDate() {
+        return metDate;
+    }
+
+    public void setMetDate(Date metDate) {
+        this.metDate = metDate;
+    }
+
+    public int getComplete() {
+        return complete;
+    }
+
+    public void setComplete(int complete) {
+        this.complete = complete;
+    }
+
     @Override
     public String toString() {
         return "Benchmark{" +
-                "id=" + id +
+                "id='" + id + '\'' +
+                ", goalId='" + goalId + '\'' +
                 ", enabled=" + enabled +
-                ", label=" + label +
-                ", goalId=" + goalId +
-                ", description=" + description +
-                ", tracking=" + tracking +
+                ", label='" + label + '\'' +
+                ", description='" + description + '\'' +
+                ", tracking='" + tracking + '\'' +
+                ", masteryDate=" + masteryDate +
+                ", metDate=" + metDate +
+                ", complete=" + complete +
                 '}';
     }
-
 }

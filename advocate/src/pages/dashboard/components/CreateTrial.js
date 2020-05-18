@@ -1,17 +1,17 @@
-import React, {useState} from "react";
+import React from "react";
 import ScoreTrial from "./Trials/ScoreTrial";
 import TrialTemplateSelector from "./Trials/TrialTemplateSelector";
 
-const CreateTrial = (props) => {
+const CreateTrial = ({benchmark, template, setTemplate, student}) => {
 
     const goBack = () => {
-        props.setTemplate("");
+        setTemplate("");
     };
 
     const trialOptions = (type) => {
         return {
-            "": <TrialTemplateSelector benchmark={props.benchmark} setTemplate={props.setTemplate}/>,
-            "score": <ScoreTrial goBack={goBack}/>,
+            "": <TrialTemplateSelector benchmark={benchmark} setTemplate={setTemplate}/>,
+            "score": <ScoreTrial goBack={goBack} benchmark={benchmark} student={student}/>,
             "cue": cueTrial(goBack),
             "wpm": wpmTrial(goBack)
         }[type];
@@ -20,8 +20,8 @@ const CreateTrial = (props) => {
     return (
         <div className={"createtrialwrapper"}>
             {
-                props.benchmark
-                ? trialOptions(props.template)
+                benchmark
+                ? trialOptions(template)
                 : <p>No benchmark selected!</p>
             }
         </div>
