@@ -1,4 +1,5 @@
 import React from "react";
+import {FaRegTimesCircle as ExitIcon} from "react-icons/fa";
 
 const Modal = (props) => {
 
@@ -6,7 +7,7 @@ const Modal = (props) => {
 
     return(
         <div className={`modalwrapper posabs ${isDisplayed} ${props.large ? "modal-lg" : ""}`}>
-            <i className={`far fa-times-circle modal-exit`}/>
+            <ExitIcon className={"modal-exit"}/>
             <div className={`modal bubble`}>
                 {props.children}
             </div>

@@ -8,6 +8,7 @@ import GoalCenter from "./GoalCenter";
 import Profile from "./Profile";
 import CreateClassroom from "./CreateClassroom";
 import CreateGoal from "./CreateGoal";
+import Loading from "../SharedComponents/Loading";
 
 
 class Dashboard extends React.Component {
@@ -23,7 +24,7 @@ class Dashboard extends React.Component {
 
     refreshDataFromComponents = async () => {
         console.log("rehydrating data..");
-        let resp = await fetch("/api/teacher");
+        let resp = await fetch("/api/teacher", {headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}});
         await resp.json().then(data => {
             this.props.updateTeacher(data);
         });
@@ -44,45 +45,41 @@ class Dashboard extends React.Component {
         return (
             this.props.teacher
                 ? <div className={"dashboardwrapper"}>
-                <Sidebar
-                    teacher={teacher}
-                    navHandler={{updateActiveCategory: this.handleChange, activeCategory: this.state.activeCategory}}
-                    updateTeacher={this.props.updateTeacher}
-                    updateLoggedIn={this.props.updateLoggedIn}
-                />
-                <div className={"dash-main-wrapper"}>
-                    <Switch>
-                        <Route path="/dashboard/main">
-                            <DashMain teacher={teacher}/>
-                        </Route>
-                        <Route path="/dashboard/classroom" exact>
-                            <Classroom teacher={teacher}/>
-                        </Route>
-                        <Route path="/dashboard/classroom/create">
-                            <CreateClassroom navHandler={this.handleChange} refreshData={this.refreshDataFromComponents}/>
-                        </Route>
-                        <Route path="/dashboard/charts" exact>
-                            <Charts teacher={teacher}/>
-                        </Route>
-                        <Route path="/dashboard/goalcenter" exact>
-                            <GoalCenter teacher={teacher}/>
-                        </Route>
-                        <Route path="/dashboard/goalcenter/create">
-                            <CreateGoal teacher={teacher} refreshData={this.refreshDataFromComponents}/>
-                        </Route>
-                        <Route path="/dashboard/profile">
-                            <Profile teacher={teacher}/>
-                        </Route>
-                    </Switch>
-                </div>
-            </div>
-                : <div className={"dashboardwrapper"}>
-                <div className="loadingio-spinner-dual-ring-uq8lhoxnro posabs">
-                    <div className="ldio-qw71tr0evte">
-                        <div/><div><div/></div>
+                    <Sidebar
+                        teacher={teacher}
+                        navHandler={{updateActiveCategory: this.handleChange, activeCategory: this.state.activeCategory}}
+                        updateTeacher={this.props.updateTeacher}
+                        updateLoggedIn={this.props.updateLoggedIn}
+                    />
+                    <div className={"dash-main-wrapper"}>
+                        <Switch>
+                            <Route path="/dashboard/main">
+                                <DashMain teacher={teacher}/>
+                            </Route>
+                            <Route path="/dashboard/classroom" exact>
+                                <Classroom teacher={teacher}/>
+                            </Route>
+                            <Route path="/dashboard/classroom/create">
+                                <CreateClassroom navHandler={this.handleChange} refreshData={this.refreshDataFromComponents}/>
+                            </Route>
+                            <Route path="/dashboard/charts" exact>
+                                <Charts teacher={teacher}/>
+                            </Route>
+                            <Route path="/dashboard/goalcenter" exact>
+                                <GoalCenter teacher={teacher}/>
+                            </Route>
+                            <Route path="/dashboard/goalcenter/create">
+                                <CreateGoal teacher={teacher} refreshData={this.refreshDataFromComponents}/>
+                            </Route>
+                            <Route path="/dashboard/profile">
+                                <Profile teacher={teacher}/>
+                            </Route>
+                        </Switch>
                     </div>
                 </div>
-            </div>
+                : <div className={"dashboardwrapper"}>
+                    <Loading/>
+                  </div>
         );
     }
 }

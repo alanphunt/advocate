@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import imgph from "../../../assets/imgph-sm.png";
+import {FaPlus as PlusIcon} from "react-icons/fa";
 
 const ProfileCard = (props) => {
 
@@ -14,7 +15,7 @@ const ProfileCard = (props) => {
                     <img src={imgph} alt={"user"}/>
                     { props.editable &&
                                <label htmlFor={"file"} className={"addpic" + (picHovered ? " display" : "")}>
-                                    <i className="fas fa-plus"/>
+                                    <PlusIcon/>
                                     <input id="file" type="file" name="file" accept="image/*" style={{display: 'none'}}/>
                                 </label>
                     }

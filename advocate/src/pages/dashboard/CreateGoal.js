@@ -3,6 +3,7 @@ import Table from "./components/Table";
 import NumberPicker from "./components/NumberPicker";
 import {useHistory} from "react-router-dom";
 import Accordion from "./components/accordion/Accordion";
+import {FaAddressBook as BookIcon, FaCalendarPlus as CalPlusIcon, FaCalendarCheck as CalCheckIcon, FaClipboard as ClipIcon} from "react-icons/fa";
 
 const CreateGoal = (props) => {
     const history = useHistory();
@@ -57,7 +58,7 @@ const CreateGoal = (props) => {
             fd.append(key, (key === "benchmarks" ? JSON.stringify(updatedGoals[key]) : updatedGoals[key]));
         });
         console.log(fd);
-        fetch("/api/creategoal", {method: "POST", body: fd})
+        fetch("/api/creategoal", {method: "POST", body: fd, headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}})
             .then(r => r.text())
             .then(d => {
                 alert("Successfully created a new goal! You'll be redirected to the goal center.")
@@ -89,7 +90,7 @@ const CreateGoal = (props) => {
                         <div className={"marg-bot-2"}>
                             <h3 className={"i-bottom"}>Goal name</h3>
                             <label htmlFor={"goalName"}>
-                                <i className={"fas fa-address-book label-i"}/>
+                                <BookIcon className={"label-i"}/>
                                 <input onChange={(e) => {setGoal({...goal, goalName: e.currentTarget.value});}}
                                      className={"width-25"} id="goalName" type={"text"} placeholder={"Goal Name"} name={"goalName"}/>
                             </label>
@@ -98,7 +99,7 @@ const CreateGoal = (props) => {
                         <div className={"marg-bot-2"}>
                             <h3 className={"i-bottom"}>Start date</h3>
                             <label htmlFor={"startDate"}>
-                                <i className={"fas fa-calendar-plus label-i"}/>
+                                <CalPlusIcon className={"label-i"}/>
                                 <input onChange={(e) => {setGoal({...goal, startDate: e.currentTarget.value});}} className={"width-25"} id="startDate" type={"text"} placeholder={"MM/DD/YYYY"} name={"startDate"}/>
                             </label>
                         </div>
@@ -106,7 +107,7 @@ const CreateGoal = (props) => {
                         <div className={"marg-bot-2"}>
                             <h3 className={"i-bottom"}>Mastery date</h3>
                             <label htmlFor={"startDate"}>
-                                <i className={"fas fa-calendar-check label-i"}/>
+                                <CalCheckIcon className={"label-i"}/>
                                 <input onChange={(e) => {setGoal({...goal, masteryDate: e.currentTarget.value});}} className={"width-25"} id="masteryDate" type={"text"} placeholder={"MM/DD/YYYY"} name={"masteryDate"}/>
                             </label>
                         </div>
@@ -114,7 +115,7 @@ const CreateGoal = (props) => {
                         <div className={"marg-bot-2"}>
                             <h3 className={"i-bottom"}>How to implement goal</h3>
                             <label htmlFor={"process"}>
-                                <i className={"fas fa-clipboard label-i"}/>
+                                <ClipIcon className={"label-i"}/>
                                 <input onChange={(e) => {setGoal({...goal, process: e.currentTarget.value});}} className={"width-25"} id="process" type={"text"} placeholder={"Process"} name={"Process"}/>
                             </label>
                         </div>
@@ -192,11 +193,3 @@ const CreateGoal = (props) => {
 };
 
 export default CreateGoal;
-
-/*
-
-                                        selectedRowIndexes={crind === selectedRowIndexes ? 0 : 1}
-
-                        <Table selectedRowIndexes={selectedRowIndexes} studentTable={true} selectable={true} data={props.teacher.classrooms[0].students} selectedCallback={handleSelected}/>
-
- */

@@ -2,6 +2,7 @@ import React from "react";
 import NumberPicker from "./components/NumberPicker";
 import Table from "./components/Table";
 import {Redirect} from "react-router-dom";
+import {FaAddressBook as BookIcon} from "react-icons/fa";
 
 class CreateClassroom extends React.Component{
     constructor(props){
@@ -38,7 +39,7 @@ class CreateClassroom extends React.Component{
         let form = new FormData();
         form.append("students", JSON.stringify(this.state.students));
         form.append("className", this.state.className);
-        fetch("/api/createclassroom", {method: "POST", body: form})
+        fetch("/api/createclassroom", {method: "POST", body: form, headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}})
             .then(response => response)
             .then(data => {
                 this.props.refreshData();
@@ -68,7 +69,7 @@ class CreateClassroom extends React.Component{
                         <div className={"cardmain"}>
                             <h3 className={"i-bottom"}>Class Name</h3>
                             <label htmlFor={"className"}>
-                                <i className={"fas fa-address-book label-i"}/>
+                                <BookIcon className={"label-i"}/>
                                 <input onChange={this.updateClassName} className={"width-25 marg-bot-2"} id="className" type={"text"} placeholder={"Class Name"} name={"className"}/>
                             </label>
                             <div className="marg-bot-2">

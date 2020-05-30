@@ -16,9 +16,8 @@ const Sidebar = (props) => {
                 <div className={"sidebarheader sidebarpad"}>
                     <Link to={"/"}
                           onClick={() => {
-                            fetch("/api/logout").then(r => r.text()).then(d => {
-                                window.location.replace("/");
-                            });
+                              window.sessionStorage.clear();
+                              window.location.replace("/");
                     }}>
                         <img src={puzzle} alt={"logo"}/>
                     </Link>

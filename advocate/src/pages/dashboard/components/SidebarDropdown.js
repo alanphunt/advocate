@@ -1,5 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
+import {FaCaretDown as CaretIcon} from "react-icons/fa";
 
 class SidebarDropdown extends React.Component {
     constructor(props) {
@@ -26,10 +27,10 @@ class SidebarDropdown extends React.Component {
             <div className={"dropdownwrapper"}>
                 <div className={classes} onClickCapture={this.handleClick}>
                     <div className={"itemmaininner"}>
-                        <i className={this.props.link.icon}/>
+                        {this.props.link.icon}
                         <span>{this.props.link.text}</span>
                     </div>
-                    <i className={"fas fa-caret-down transition"+(dropped ? " caretflip" : "")}/>
+                    <CaretIcon className={"transition"+(dropped ? " caretflip" : "")}/>
                 </div>
                 <div className={"dropdown"+(dropped ? " dropdownactive" : "")}>
                     <ul>

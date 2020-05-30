@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import NumberPicker from "../NumberPicker";
 import Table from "../Table";
 import StudentInfoCard from "../StudentInfoCard";
+import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
+
 
 const ScoreTrial = ({goBack, benchmark, student}) => {
     let track =  {label: "", correct: 0};
@@ -26,7 +28,7 @@ const ScoreTrial = ({goBack, benchmark, student}) => {
         formData.append("comments", trialComments);
         formData.append("tracking", JSON.stringify(trackingArray));
         formData.append("benchmarkId", benchmark.id);
-        fetch("/api/createtrial", {method: "POST", body: formData})
+        fetch("/api/createtrial", {method: "POST", body: formData, headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}})
             .then(r => r)
             .then(data => {
                 console.log(data);
@@ -62,8 +64,8 @@ const ScoreTrial = ({goBack, benchmark, student}) => {
                                             </div>
                                             <div className="td">
                                                 <div onClick={() => {updateTrack("correct", index)}} className={"itemsuccess"}>
-                                                    <span><i className={`marg-right fas fa-plus comp-color ${trackingArray[index]?.correct === 1 ? "" : "grayscale"}`}/></span>
-                                                    <span><i className={`fas fa-minus incomp-color ${trackingArray[index]?.correct === 1 ? "grayscale" : ""}`}/></span>
+                                                    <span><PlusIcon className={`marg-right comp-color ${trackingArray[index]?.correct === 1 ? "" : "grayscale"}`}/></span>
+                                                    <span><MinusIcon className={`incomp-color ${trackingArray[index]?.correct === 1 ? "grayscale" : ""}`}/></span>
                                                 </div>
                                             </div>
                                         </div>

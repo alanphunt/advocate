@@ -1,4 +1,5 @@
 import React from "react";
+import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
 
 const NumberPicker = (props) => {
     let num = props.objectArray.length;
@@ -29,13 +30,13 @@ const NumberPicker = (props) => {
             <div className={`numbersub ${num === 0 ? 'disabled' : ''}`} onClick={(e)=>{
                 props.updateState(change(num-1, props.object, props.objectArray));
                 }}
-            ><i className={"fas fa-minus posabs"}/></div>
+            ><MinusIcon className={"posabs"}/></div>
             <div className={"numberinput"}><input placeholder={num} value={num} onChange={(e)=>{
                 props.updateState(change(e.currentTarget.value, props.object, props.objectArray));
             }} type={"text"}/></div>
             <div className={`numberadd ${num === limit ? 'disabled' : ''}`} onClick={(e)=>{
                 props.updateState(change(num+1, props.object, props.objectArray));
-            }}><i className={"fas fa-plus posabs"}/></div>
+            }}><PlusIcon className={"posabs"}/></div>
         </div>
     )
 };

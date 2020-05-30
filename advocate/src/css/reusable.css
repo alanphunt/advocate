@@ -116,7 +116,7 @@ textarea{
     font-family: inherit;
 }
 
-label:focus-within i{
+label:focus-within svg{
     color: #51bcda;
 }
 
@@ -291,7 +291,7 @@ form input{
     height: 150px;
     display: inline-block;
     overflow: hidden;
-    background: #ffffff;
+    z-index: 3;
 }
 
 .ldio-qw71tr0evte {

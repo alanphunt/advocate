@@ -3,8 +3,11 @@ package com.structure.controllers;
 import com.google.gson.reflect.TypeToken;
 import com.structure.models.Classroom;
 import com.structure.models.Student;
+import com.structure.models.Teacher;
 import com.structure.repositories.ClassroomRepo;
 import com.structure.repositories.StudentRepo;
+import com.structure.utilities.JWTUtil;
+import com.structure.utilities.TeacherDetailsService;
 import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @RestController
 @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
@@ -27,12 +29,20 @@ public class ClassroomController {
     @Autowired
     ClassroomRepo cr;
 
+    @Autowired
+    TeacherDetailsService tds;
+
+    @Autowired
+    JWTUtil jwtUtil;
+
     @PostMapping(value = "/api/createclassroom")
     public ResponseEntity<?> createClassroom(HttpServletRequest request, @RequestParam String students, @RequestParam String className){
         try {
+            String username = jwtUtil.extractEmail(request.getHeader("Authorization").substring(7));
+            Teacher teacher = (Teacher) tds.loadUserByUsername(username);
             Type listType = new TypeToken<ArrayList<Student>>() {}.getType();
             ArrayList<Student> studentArray = Utils.gson().fromJson(students, listType);
-            Classroom classroom = cr.save(new Classroom(Utils.generateUniqueId(), className, Utils.getSessionUser(request).getId()));
+            Classroom classroom = cr.save(new Classroom(Utils.generateUniqueId(), className, teacher.getId()));
 
             studentArray.forEach(stu -> {
                 stu.setId(Utils.generateUniqueId());
@@ -45,19 +55,7 @@ public class ClassroomController {
                     .header(HttpHeaders.LOCATION, "/classroom")
                     .build();
         }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to authenticate");
         }
-    }
-
-    @GetMapping(value = "/api/getclassroom")
-    public ResponseEntity<?> getClassroom(HttpServletRequest request){
-        try {
-            ArrayList<Classroom> rooms = cr.getClassroomByTeacherIdAndEnabled(Utils.getSessionUser(request).getId(), 1);
-            rooms.forEach(System.out::println);
-        }catch(NullPointerException npe){
-            System.out.println(Arrays.toString(npe.getStackTrace()));
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok("great");
     }
 }

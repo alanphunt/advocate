@@ -1,16 +1,16 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
-import com.structure.utilities.Utils;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "teachers")
-public class Teacher {
+public class Teacher implements UserDetails {
 
     @Id
     @Expose
@@ -32,7 +32,7 @@ public class Teacher {
     private String lastName;
 
     @Expose
-    private String email;
+    private String username;
 
     @Expose(serialize = false)
     private String password;
@@ -46,14 +46,10 @@ public class Teacher {
 
     public Teacher(){}
 
-    public Teacher(Teacher teacher){
-        this(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(), teacher.getPassword(), teacher.getId());
-    }
-
-    public Teacher(String firstName, String lastName, String email, String password, String id) {
+    public Teacher(String firstName, String lastName, String username, String password, String id) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        this.username = username;
         this.password = password;
         this.id = id;
         this.enabled = 1;
@@ -101,18 +97,6 @@ public class Teacher {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -134,6 +118,40 @@ public class Teacher {
     }
 
     @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return isEnabled();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return isEnabled();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return isEnabled();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled == 1;
+    }
+
+    @Override
     public String toString() {
         return "Teacher{" +
                 "id=" + id +
@@ -141,7 +159,7 @@ public class Teacher {
                 ", dateCreated=" + dateCreated +
                 ", firstName=" + firstName +
                 ", lastName=" + lastName +
-                ", email=" + email +
+                ", username=" + username +
                 ", description=" + description +
                 ", classrooms=" + Arrays.toString(classrooms.toArray()) +
                 '}';

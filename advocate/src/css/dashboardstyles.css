@@ -101,7 +101,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
     text-transform: uppercase;
 }
 
-.itemmaininner i{
+.itemmaininner svg{
     font-size: 24px;
     margin-right: 10px;
     width: 30px;

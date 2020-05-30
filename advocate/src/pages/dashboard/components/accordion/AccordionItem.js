@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {FaCaretDown as CaretIcon} from "react-icons/fa";
 
 const AccordionItem = (props) => {
     const name = props.header;
@@ -7,7 +8,7 @@ const AccordionItem = (props) => {
     return (
         <div className={"acc-item"}>
             <div className={"acc-item-head"} onClick={()=>{setOpen(!open)}}>
-                <h2><i className={`fas fa-caret-down ${open ? "caretflip" : ""} i-right transition`}/>{name}</h2>
+                <h2><CaretIcon className={`${open ? "caretflip" : ""} i-right transition`}/>{name}</h2>
             </div>
             <div className={openClass}>
                 <div className={"acc-details width-100"}>

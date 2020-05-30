@@ -1,19 +1,23 @@
 package com.structure.controllers;
 
-import com.structure.models.Classroom;
+import com.structure.models.AuthRequest;
 import com.structure.models.Teacher;
-import com.structure.repositories.TeacherRepo;
+import com.structure.utilities.JWTUtil;
+import com.structure.utilities.TeacherDetailsService;
 import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -22,72 +26,60 @@ public class LoginRegistration {
     private Teacher teacher;
 
     @Autowired
-    TeacherRepo tr;
+    private TeacherDetailsService tds;
 
     @Autowired
-    PasswordEncoder pe;
+    private AuthenticationManager authMan;
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
+    private final PasswordEncoder pe = new BCryptPasswordEncoder();
 
     @PostMapping(value = "/api/createuser")
-    public ResponseEntity<?> createUser(@RequestParam Map<String, String> body, HttpServletRequest request, HttpServletResponse response){
-        if(!Utils.hasAcceptableInput(body.values().toArray(new String[0])))
+    public ResponseEntity<?> createUser(@RequestParam Map<String, String> body, HttpServletResponse response, HttpServletRequest req){
+        if(Utils.acceptableInput(body.values().toArray(new String[0])))
             return new ResponseEntity<>("Invalid input.", HttpStatus.NOT_ACCEPTABLE);
+        System.out.println(body.get("password"));
+        teacher = Utils.gson().fromJson(body.toString(), Teacher.class);
+        System.out.println(teacher.getPassword());
 
-        teacher = new Teacher(Utils.gson().fromJson(body.toString(), Teacher.class));
+        teacher.setEnabled(1);
+        teacher.setDateCreated(new Date());
         teacher.setPassword(pe.encode(teacher.getPassword()));
         teacher.setId(Utils.generateUniqueId());
-        teacher.setClassrooms(new ArrayList<Classroom>());
-        tr.save(teacher);
+        teacher.setClassrooms(new ArrayList<>());
+        tds.saveTeacher(teacher);
 
         String jsonTeacher = Utils.gson().toJson(teacher);
-        response.addCookie(Utils.setSession(request, teacher));
         response.setHeader("Location", "/dashboard");
         return new ResponseEntity<>(jsonTeacher, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping(value = "/api/login")
-    public ResponseEntity<?> login(@RequestParam Map<String, String> body, HttpServletRequest request, HttpServletResponse response){
-        String email = body.get("email");
-        String password = body.get("password");
-        boolean validPW;
-
-        if(!Utils.hasAcceptableInput(new String[]{email, password}))
-            return new ResponseEntity <>("Invalid input.", HttpStatus.NOT_ACCEPTABLE);
-
-        try{
-            teacher = tr.findTeacherByEmailAndEnabled(email,1);
-            validPW = pe.matches(password, teacher.getPassword());
-            if(!Utils.isEmpty(teacher) && validPW){
-                String jsonTeacher = Utils.gson().toJson(teacher);
-                response.addCookie(Utils.setSession(request, teacher));
-                return new ResponseEntity<>(jsonTeacher, HttpStatus.ACCEPTED);
-            }
-        }catch(Exception e){
-            System.out.println("Login exception: " + e);
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
-                .body("Username or password does not match.");
-    }
-
-    @GetMapping(value = "/api/logout")
-    public void logout(HttpServletRequest request){
-        try {
-            System.out.println("Logging out: " + request.getSession().getAttribute("teacher"));
-            Utils.invalidateSession(request);
-        }catch(NullPointerException npe){
-            System.out.println(Arrays.toString(npe.getStackTrace()));
-        }
-    }
-
     @GetMapping(value = "/api/teacher")
     public ResponseEntity<?> getTeacher(HttpServletRequest request){
+        String jwt = request.getHeader("Authorization").substring(7);
         System.out.println("retrieving teacher..");
         try{
-           return ResponseEntity.ok(Utils.gson().toJson(tr.findTeacherByEmailAndEnabled(Utils.getSessionUser(request).getEmail(), 1)));
+           return ResponseEntity.ok(Utils.gson().toJson(tds.loadUserByUsername(jwtUtil.extractEmail(jwt))));
         }catch(NullPointerException npe){
             return ResponseEntity.ok(Utils.gson().toJson(null));
         }
+    }
+
+    @PostMapping(value = "/api/authenticate")
+    public ResponseEntity<?> createAuthToken(@RequestBody AuthRequest authRequest, HttpServletResponse resp) {
+        try {
+            authMan.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body("Username or password is incorrect");
+        }
+        teacher = (Teacher) tds.loadUserByUsername(authRequest.getUsername());
+        final String jwt = jwtUtil.generateToken(teacher);
+        System.out.println(jwt);
+        System.out.println(teacher.toString());
+        resp.addHeader("authorization", jwt);
+        return ResponseEntity.ok(Utils.gson().toJson(teacher));
     }
 
 }

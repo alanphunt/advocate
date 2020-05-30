@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import Accordion from "./accordion/Accordion";
 import Table from "./Table";
 import {Link} from "react-router-dom";
-
+import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
 
 const GoalDrilldown = (props) => {
     let stu = props.student ?? null;
@@ -119,7 +119,7 @@ const GoalDrilldown = (props) => {
                                             <p key={`tracklabel${track.label.toUpperCase()}`}>
                                                 <strong>Label: </strong>
                                                 {track.label}
-                                                <i className={`marg-left fas fa-${track.correct === 1 ? "plus comp" : "minus incomp"}-color`} />
+                                                <span className={"marg-left"}>{track.correct === 1 ? <PlusIcon className={"comp-color"}/> : <MinusIcon className={"incomp-color"}/>}</span>
                                             </p>
                                         )
                                     })

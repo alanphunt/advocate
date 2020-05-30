@@ -1,4 +1,5 @@
 import React from "react";
+import {FaChartPie as PieIcon} from "react-icons/fa";
 
 const ItemCards = (props) => {
 
@@ -37,7 +38,7 @@ const ItemCards = (props) => {
                             <div key={`itemcard${index}`} className={"itemcard"} onClick={() => {handleSelected(item.key)}}>
                                 <div className={"itemcardhead"}>
                                     <h2>
-                                        <i className="fas fa-chart-pie itemcard-i"/>
+                                        <PieIcon className="itemcard-i"/>
                                         {item.title}
                                     </h2>
                                 </div>
