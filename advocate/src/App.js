@@ -9,7 +9,7 @@ const App = () => {
 
     return (
         <div className="App">
-            <Route render={({location})=>(
+            <Route render={({location}) => (
                 <Switch location={location}>
                     <Route path="/" exact component={() => {
                         return <Home
@@ -27,7 +27,7 @@ const App = () => {
                 </Switch>
             )}/>
         </div>
-  );
+    );
 }
 
 export default App;

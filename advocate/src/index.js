@@ -2,15 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {BrowserRouter, Route} from "react-router-dom";
 import './css/reusable.css';
 import './css/styles.css';
 import './css/breakpoints.css';
 
 ReactDOM.render(
-    <Router>
+    <BrowserRouter>
         <Route path="/" component={App}/>
-    </Router>,
+    </BrowserRouter>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
