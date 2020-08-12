@@ -6,14 +6,15 @@ class SidebarDropdown extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dropped: this.props.link.menuItems.filter(item => item.link.includes(window.location.pathname)).length !== 0
+            //dropped: this.props.link.menuItems.filter(item => item.link.includes(window.location.pathname)).length !== 0
+            dropped: true
         };
     }
 
     handleClick = (e) => {
         this.setState(state => ({
             dropped: !state.dropped
-        }))
+        }));
     };
 
     handleActive = (e) => {

@@ -504,3 +504,6 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
     margin-left: auto;
 }
 
+.trialgraphwrapper{
+    margin: 2rem 0;
+}

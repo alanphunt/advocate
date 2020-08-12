@@ -212,6 +212,10 @@ form input{
     margin-bottom: 2rem;
 }
 
+.marg-top-2{
+    margin-top: 2rem;
+}
+
 .labelblock{
     display: block;
 }

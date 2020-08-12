@@ -3,15 +3,16 @@ import logo from '../../assets/advocate-sm.png'
 import Modal, {exitModal} from '../Modal'
 import {Redirect} from "react-router";
 import Loading from "../SharedComponents/Loading";
-import {FaAt as EmailIcon,
-    FaUserLock as PassIcon,
-    FaIdCard as NameIcon,
+import {
+    FaAt as EmailIcon,
     FaChartBar as ChartIcon,
-    FaSync as SyncIcon,
-    FaUsers as UsersIcon,
+    FaIdCard as NameIcon,
     FaNetworkWired as NetIcon,
+    FaSync as SyncIcon,
     FaUser as UserIcon,
-    FaUserPlus as UserPlusIcon
+    FaUserLock as PassIcon,
+    FaUserPlus as UserPlusIcon,
+    FaUsers as UsersIcon
 } from "react-icons/fa";
 
 class Home extends React.Component{
@@ -21,68 +22,23 @@ class Home extends React.Component{
             isFetching: false,
             modalState:{
                 displayed: false,
-                contentType: "",
+                contentType: "login",
             }
         };
     }
 
     handleModal = (vis, formType) => {
+        //this prevents values from being transferred from one form to the other when the modal is displayed
+        let regform = document.getElementById("regform");
+        let logform = document.getElementById("logform");
+        logform && logform.reset();
+        regform && regform.reset();
         this.setState({modalState: {displayed: vis, contentType: formType}});
     };
 
     handleForm = (event) => {
         event.preventDefault();
         this.logIn(event.currentTarget);
-    };
-
-    createForm = (formType) => {
-        return (formType === "login" ? this.loginForm() : formType === "register" ? this.registerForm() : "");
-    };
-
-    registerForm = () => {
-        return (
-            <form className={"centeredform"} onSubmit={this.handleForm}>
-                <label htmlFor={"regfirst"}>
-                    <NameIcon className={"label-i"}/>
-                    <input id="regfirst" type={"text"} placeholder={"First Name"} name={"firstName"} required autoFocus={true}/>
-                </label>
-
-                <label htmlFor={"reglast"}>
-                    <NameIcon className={"label-i"}/>
-                    <input id="reglast" type={"text"} placeholder={"Last Name"} name={"lastName"} required/>
-                </label>
-
-                <label htmlFor={"regemail"}>
-                    <EmailIcon className={"label-i"}/>
-                    <input id="regemail" type={"email"} placeholder={"Email"} name={"username"} required/>
-                </label>
-
-                <label htmlFor={"regpass"}>
-                    <PassIcon className={"label-i"}/>
-                    <input id="regpass" type={"password"} placeholder={"Password"} name={"password"} pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,20})" required/>
-                </label>
-
-                <button type={"submit"}>Submit</button>
-            </form>
-        )
-    };
-
-    loginForm = () => {
-        return (
-            <form className={"centeredform"} onSubmit={this.handleForm}>
-                <label htmlFor={"regemail"}>
-                    <EmailIcon className={"label-i"}/>
-                    <input id="regemail" type={"email"} placeholder={"Email"} name={"username"} autoFocus={true} required/>
-                </label>
-
-                <label htmlFor={"logpass"}>
-                    <PassIcon className={"label-i"}/>
-                    <input id={"logpass"} type={"password"} placeholder={"Password"} name={"password"} required/>
-                </label>
-
-                <button type={"submit"}>Submit</button>
-            </form>
-        )
     };
 
     logIn = (f) => {
@@ -114,6 +70,43 @@ class Home extends React.Component{
         let contentType = this.state.modalState.contentType;
         let displayed = this.state.modalState.displayed;
 
+        const registerForm = <form id="regform" className={"centeredform"} onSubmit={this.handleForm}>
+            <label htmlFor={"regfirst"}>
+                <NameIcon className={"label-i"}/>
+                <input id="regfirst" type={"text"} placeholder={"First Name"} name={"firstName"} required autoFocus={true}/>
+            </label>
+
+            <label htmlFor={"reglast"}>
+                <NameIcon className={"label-i"}/>
+                <input id="reglast" type={"text"} placeholder={"Last Name"} name={"lastName"} required/>
+            </label>
+
+            <label htmlFor={"regemail"}>
+                <EmailIcon className={"label-i"}/>
+                <input id="regemail" type={"email"} placeholder={"Email"} name={"username"} required/>
+            </label>
+
+            <label htmlFor={"regpass"}>
+                <PassIcon className={"label-i"}/>
+                <input id="regpass" type={"password"} placeholder={"Password"} name={"password"} pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,20})" required/>
+            </label>
+
+            <button type={"submit"}>Submit</button>
+        </form>;
+        const loginForm = <form id="logform" className={"centeredform"} onSubmit={this.handleForm}>
+            <label htmlFor={"logemail"}>
+                <EmailIcon className={"label-i"}/>
+                <input id="logemail" type={"email"} placeholder={"Email"} name={"username"} autoFocus={true} required/>
+            </label>
+
+            <label htmlFor={"logpass"}>
+                <PassIcon className={"label-i"}/>
+                <input id={"logpass"} type={"password"} placeholder={"Password"}  name={"password"} required/>
+            </label>
+
+            <button type={"submit"}>Submit</button>
+        </form>;
+
         return (
             this.props.teacher
                 ? <Redirect push to={{pathname: "/dashboard/main"}}/>
@@ -130,7 +123,7 @@ class Home extends React.Component{
                                     <h2>{contentType === "login" ? "Welcome back!" : "Let's get you started."}</h2>
                                     <hr/>
                                 </div>
-                                {this.createForm(contentType)}
+                                {contentType === "login" ? loginForm : registerForm}
                             </div>
                         </Modal>
                         <header className={"homeheader"}>

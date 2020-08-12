@@ -4,6 +4,7 @@ import Table from "./components/Table";
 import GoalDrilldown from "./components/GoalDrilldown";
 import Modal, {exitModal} from "../Modal";
 import CreateTrial from "./components/CreateTrial.js"
+import CompleteBenchmark from "./components/CompleteBenchmark";
 
 const GoalCenter = (props) =>{
 
@@ -21,6 +22,7 @@ const GoalCenter = (props) =>{
     const [selectedBenchmark, setSelectedBenchmark] = useState();
 
     const [template, setTemplate] = useState("");
+    const [modalChild, setModalChild] = useState();
 
     return (
         <div className={"dash-main-inner width-100 height-100"} onClick={e => {
@@ -30,7 +32,11 @@ const GoalCenter = (props) =>{
             });
         }}>
             <Modal displayed={displayModal} large>
-                <CreateTrial benchmark={selectedBenchmark} template={template} setTemplate={setTemplate} student={selectedStudent}/>
+                {
+                    modalChild === "createTrial"
+                        ? <CreateTrial benchmark={selectedBenchmark} template={template} setTemplate={setTemplate} student={selectedStudent}/>
+                        : <CompleteBenchmark benchmark={selectedBenchmark}/>
+                }
             </Modal>
             <div className={"card height-50 marg-bot"}>
                 <div className={"cardheader"}><h2>Goal Center</h2></div>
@@ -55,8 +61,11 @@ const GoalCenter = (props) =>{
             </div>
             <div className={"card height-50"}>
                 <GoalDrilldown
-                    handleModal={(bm) => {
+                    handleModal={(child) => {
+                        setModalChild(child);
                         setDisplayModal(prevState => !prevState);
+                    }}
+                    setBenchmark={bm => {
                         setSelectedBenchmark(bm);
                     }}
                     key={"drilldownfor"+selectedStudent?.name}

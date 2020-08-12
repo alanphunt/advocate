@@ -6,7 +6,9 @@ import {FaColumns as ColIcon, FaRegAddressBook as BookIcon, FaRegChartBar as Bar
 class SidebarLinks extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {activeLink: (window.location.pathname.split("/dashboard/")[1])};
+        this.state = {
+            activeLink: window.location.pathname.split("/dashboard/")[1]
+        };
     }
 
     render() {
@@ -35,27 +37,28 @@ class SidebarLinks extends React.Component {
                     let linktext = link.text.replace(" ", "");
                         return (
                             <div key={link.text} className={"sideitem"}>
-                            {   link.islink
-                                ?   <NavLink onClick={()=>{this.props.updateActiveLink(link.text)}} activeClassName={"active"} to={link.link}>
-                                        <div className={"itemmain"}>
+                                {   link.islink
+                                    ?   <NavLink onClick={()=>{this.props.updateActiveLink(link.text)}} activeClassName={"active"} to={link.link}>
+                                            <div className={"itemmain"}>
+                                                <div className={"itemmaininner"}>
+                                                    {link.icon}
+                                                    <span>{link.text}</span>
+                                                </div>
+                                            </div>
+                                        </NavLink>
+                                    : link.menuItems
+                                        ? <SidebarDropdown link={link} updateActiveLink={this.props.updateActiveLink} isActive={this.props.activeLink === linktext}/>
+                                        : <div className={"itemmain minmax"}>
                                             <div className={"itemmaininner"}>
                                                 {link.icon}
                                                 <span>{link.text}</span>
                                             </div>
-                                        </div>
-                                    </NavLink>
-                                : link.menuItems
-                                    ? <SidebarDropdown link={link} updateActiveLink={this.props.updateActiveLink} isActive={this.props.activeLink === linktext}/>
-                                    : <div className={"itemmain minmax"}>
-                                        <div className={"itemmaininner"}>
-                                            {link.icon}
-                                            <span>{link.text}</span>
-                                        </div>
-                                      </div>
-                            }
+                                          </div>
+                                }
                             </div>
                         )
-                })}
+                    })
+                }
             </div>
         );
     }

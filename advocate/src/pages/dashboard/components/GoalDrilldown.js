@@ -3,19 +3,20 @@ import Accordion from "./accordion/Accordion";
 import Table from "./Table";
 import {Link} from "react-router-dom";
 import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
+import TrialChart from "./TrialChart";
 
 const GoalDrilldown = (props) => {
     let stu = props.student ?? null;
-
     const [selectedGoalIndex, setSelectedGoalIndex] = useState();
     const [benchmarkRow, setBenchmarkRow] = useState();
     const [trialRow, setTrialRow] = useState();
 
     const [selectedBenchmark, setSelectedBenchmark] = useState();
+
     const [selectedTrial, setSelectedTrial] = useState();
     const [trials, setTrials] = useState([]);
-
     const trackings = selectedTrial?.trackings || null;
+    const stuWithGoals = stu && stu.goals.length !== 0;
 
     const selectedBenchmarkCallback = (obj, ind, goalindex) => {
         let bm = stu.goals[goalindex].benchmarks[ind];
@@ -32,7 +33,21 @@ const GoalDrilldown = (props) => {
         setSelectedTrial(trials[ind]);
     };
 
-    const stuWithGoals = stu && stu.goals.length !== 0;
+    const determineTrialAccuracy = () => {
+        const correct = trackings.filter(t => t.correct === 1);
+        const a = Math.floor((correct.length / trackings.length * 100));
+        let obj = {};
+        obj.accuracy = a;
+        obj.inaccuracy = 100-a;
+        obj.correct = correct.length;
+        obj.incorrect = trackings.length - correct.length;
+        obj.total = trackings.length;
+        obj.correctLabels = correct.map(trial => trial.label).join(", ");
+        obj.incorrectLabels = trackings.filter(track => track.correct !== 1).map(trial => trial.label).join(", ");
+        return obj;
+    };
+
+    const trialAccuracyResults = trackings === null ? null : determineTrialAccuracy();
 
     return (
         <div className={"drilldownwrapper"}>
@@ -64,7 +79,7 @@ const GoalDrilldown = (props) => {
                                         )
                                     })
                                 }
-                            </Accordion>
+                              </Accordion>
                             : <></>
                     }
                 </div>
@@ -73,7 +88,8 @@ const GoalDrilldown = (props) => {
                         <h2>{selectedBenchmark ? selectedBenchmark.label : "Benchmark"}</h2>
                         <button
                             onClick={() => {
-                                props.handleModal(selectedBenchmark);
+                                props.setBenchmark(selectedBenchmark);
+                                props.handleModal("createTrial");
                             }}
                             className={selectedBenchmark ? "enabled" : "disabled"}>Create Trial</button>
                     </div>
@@ -86,7 +102,7 @@ const GoalDrilldown = (props) => {
                                     <p><strong>Completed: </strong>{selectedBenchmark?.complete === 1 ? "Yes" : "No"}</p>
                                     <p><strong>Tracking type: </strong>{selectedBenchmark?.tracking}</p>
                                 </div>
-                                <div>
+                                <div className={"marg-bot-2"}>
                                     <Table key={`benchmarktablefor${benchmarkRow}`}
                                            headers={["Trials"]}
                                            selectable={trials && trials.length !== 0}
@@ -104,6 +120,9 @@ const GoalDrilldown = (props) => {
                                                    : [{text: "No trials"}]}
                                     />
                                 </div>
+                                <div>
+                                    <button onClick={props.handleModal}>Finish Benchmark</button>
+                                </div>
                             </>
                     }
                 </div>
@@ -112,7 +131,7 @@ const GoalDrilldown = (props) => {
                     {
                         selectedTrial
                             ? <div>
-                                <p className={"marg-bot"}><strong>Trial Accuracy: </strong>{(trackings.filter(t => t.correct === 1).length / trackings.length * 100 )+ "%"}</p>
+                                <p className={"marg-bot"}><strong>Trial Accuracy: </strong>{trialAccuracyResults.accuracy}%</p>
                                 {
                                     trackings.map(track => {
                                         return (
@@ -124,6 +143,7 @@ const GoalDrilldown = (props) => {
                                         )
                                     })
                                 }
+                                <TrialChart trialResults={trialAccuracyResults}/>
                                 <p className={"marg-top"}><strong>Comments: </strong></p>
                                 <p>{selectedTrial.comments}</p>
                               </div>
