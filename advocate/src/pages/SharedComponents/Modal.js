@@ -6,7 +6,7 @@ const Modal = (props) => {
     const isDisplayed = props.displayed ? "display fadeinfromtop" : "";
 
     return(
-        <div className={`modalwrapper posabs ${isDisplayed} ${props.large ? "modal-lg" : ""}`}>
+        <div className={`modalwrapper posabs ${isDisplayed} ${props.large && "modal-lg"}`}>
             <ExitIcon className={"modal-exit"}/>
             <div className={`modal bubble`}>
                 {props.children}
@@ -17,9 +17,11 @@ const Modal = (props) => {
 }
 
 export const exitModal = (event, displayed, callback) => {
-    if (displayed
-        && event.target.closest(".modal") === null
-        && event.target.closest(".promptcontainer") === null)
+    if (
+        displayed
+        && ((event.target.closest(".modal") === null && event.target.closest(".promptcontainer") === null)
+        || event.currentTarget.classList.contains("cancelButton"))
+    )
         callback(false, "");
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../../assets/advocate-sm.png'
-import Modal, {exitModal} from '../Modal'
+import Modal, {exitModal} from '../SharedComponents/Modal'
 import {Redirect} from "react-router";
 import Loading from "../SharedComponents/Loading";
 import {

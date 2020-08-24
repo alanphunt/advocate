@@ -140,6 +140,10 @@ button:hover{
     color: white;
 }
 
+.cancelButton:hover{
+    background-color: #f44336;
+}
+
 button:active{
     background-color: #51b7d5;
 }
@@ -360,6 +364,16 @@ form input{
     flex-flow: row nowrap;
 }
 
+.flex-column{
+    display: flex;
+    flex-flow: column;
+}
+
 .float-left{
     float: left;
+}
+
+.table-icon-right{
+    position: absolute;
+    right: 8px;
 }

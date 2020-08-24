@@ -2,7 +2,7 @@ import React from "react";
 import NumberPicker from "./components/NumberPicker";
 import Table from "./components/Table";
 import {Redirect} from "react-router-dom";
-import {FaAddressBook as BookIcon} from "react-icons/fa";
+import {FaAddressBook as BookIcon, FaCheck as CheckIcon} from "react-icons/fa";
 
 class CreateClassroom extends React.Component{
     constructor(props){
@@ -94,7 +94,15 @@ class CreateClassroom extends React.Component{
                             </Table>
                         </div>
                         <div className={"cardfooter"}>
-                            <button type="button" className={stuCount === 0 || this.state.className === "" ? "disabled" : ""} disabled={stuCount === 0} onClick={this.createClassroom}>Create Classroom</button>
+                            <button
+                                type="button"
+                                className={stuCount === 0 || this.state.className === "" ? "disabled" : ""}
+                                disabled={stuCount === 0}
+                                onClick={this.createClassroom}
+                            >
+                                <CheckIcon className={"i-right"}/>
+                                <span>Create Classroom</span>
+                            </button>
                         </div>
                     </div>
                   </div>

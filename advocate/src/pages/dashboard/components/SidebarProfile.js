@@ -1,5 +1,5 @@
 import React from "react";
-import imgph from "../../../assets/imgph.png";
+import imgph from "../../../assets/imgph-sm.png";
 import {NavLink} from "react-router-dom";
 import {FaCaretRight as CaretIcon} from "react-icons/fa";
 

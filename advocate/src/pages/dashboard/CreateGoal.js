@@ -3,7 +3,7 @@ import Table from "./components/Table";
 import NumberPicker from "./components/NumberPicker";
 import {useHistory} from "react-router-dom";
 import Accordion from "./components/accordion/Accordion";
-import {FaAddressBook as BookIcon, FaCalendarPlus as CalPlusIcon, FaCalendarCheck as CalCheckIcon, FaClipboard as ClipIcon} from "react-icons/fa";
+import {FaAddressBook as BookIcon, FaCalendarPlus as CalPlusIcon, FaCalendarCheck as CalCheckIcon, FaClipboard as ClipIcon, FaCheck as CheckIcon} from "react-icons/fa";
 
 const CreateGoal = (props) => {
     const history = useHistory();
@@ -185,7 +185,11 @@ const CreateGoal = (props) => {
                             className={
                                 Object.values(goal).some(v => v === "" || v.length === 0)
                                 ? "disabled" : ""}
-                            onClick={createGoal}>Create Goal</button>
+                            onClick={createGoal}
+                        >
+                            <CheckIcon className={"i-right"}/>
+                            <span>Create Goal</span>
+                        </button>
                     </div>
                 </div>
             </div>

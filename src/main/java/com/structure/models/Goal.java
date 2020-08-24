@@ -36,6 +36,13 @@ public class Goal {
     @Column(name = "student_id")
     private String studentId;
 
+    @Expose
+    @Column(name = "completion_date")
+    private Date completionDate;
+
+    @Expose
+    private int complete;
+
     @ManyToOne
     @JoinColumn(name = "student_id", insertable = false, updatable = false)
     private Student student;

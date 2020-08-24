@@ -507,3 +507,14 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 .trialgraphwrapper{
     margin: 2rem 0;
 }
+
+.toasterwrapper{
+    display: none;
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    min-width: 250px;
+    min-height: 40px;
+    background-color: #51bcda;
+    color: white;
+}

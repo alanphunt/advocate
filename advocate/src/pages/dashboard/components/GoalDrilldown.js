@@ -1,17 +1,29 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Accordion from "./accordion/Accordion";
 import Table from "./Table";
 import {Link} from "react-router-dom";
-import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
+import {FaPlus as PlusIcon, FaMinus as MinusIcon, FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon, FaCheck as CheckIcon} from "react-icons/fa";
 import TrialChart from "./TrialChart";
 
+
 const GoalDrilldown = (props) => {
+
+
+/*     function usePrev(value){
+        const ref = useRef();
+        useEffect(() => {
+            ref.current = value;
+        });
+        return ref.current
+    }*/
+
     let stu = props.student ?? null;
-    const [selectedGoalIndex, setSelectedGoalIndex] = useState();
+    const selectedGoalIndex = props.selectedGoalIndex;
+    const setSelectedGoalIndex = props.setSelectedGoalIndex;
     const [benchmarkRow, setBenchmarkRow] = useState();
     const [trialRow, setTrialRow] = useState();
-
-    const [selectedBenchmark, setSelectedBenchmark] = useState();
+    const selectedBenchmark = props.benchmark;
+    const setSelectedBenchmark = props.setBenchmark;
 
     const [selectedTrial, setSelectedTrial] = useState();
     const [trials, setTrials] = useState([]);
@@ -47,7 +59,7 @@ const GoalDrilldown = (props) => {
         return obj;
     };
 
-    const trialAccuracyResults = trackings === null ? null : determineTrialAccuracy();
+    const trialAccuracyResults = (trackings === null ? null : determineTrialAccuracy());
 
     return (
         <div className={"drilldownwrapper"}>
@@ -56,7 +68,7 @@ const GoalDrilldown = (props) => {
                     <div className={"marg-bot-2 flex-center-between"}>
                         <h2>Goals for {stu ? stu.name.charAt(0).toUpperCase() + stu.name.substring(1) : "..."}</h2>
                         <Link push="true" className={`button-a ${!stu && 'disabled'}`} to={"/dashboard/goalcenter/create"}>
-                            <button className={stu ? "enabled" : "disabled"}>Create Goal</button>
+                            <button className={stu ? "enabled" : "disabled"}><PlusIcon className={"i-right"}/>Create Goal</button>
                         </Link>
                     </div>
                     {
@@ -66,7 +78,10 @@ const GoalDrilldown = (props) => {
                                     stu.goals.map((goal, goalind) => {
                                         return (
                                             <div key={`goaldrilldowntable${goalind}`}>
-                                                <p className={"marg-bot"}><strong>Description: </strong>{goal.process}</p>
+                                                <p><strong>Description: </strong>{goal.process}</p>
+                                                <p><strong>Projected mastery date: </strong>{goal.masteryDate}</p>
+                                                <p><strong>Monitor after mastery: </strong>{goal.monitor === 0 ? "No" : "Yes"}</p>
+                                                <p className={"marg-bot"}><strong>Completion date: </strong>{goal.complete ? goal.completionDate : "N/A"}</p>
                                                 <Table
                                                     selectable={true}
                                                     selectedCallback={(obj, ind) => {selectedBenchmarkCallback(obj, ind, goalind);}}
@@ -91,16 +106,16 @@ const GoalDrilldown = (props) => {
                                 props.setBenchmark(selectedBenchmark);
                                 props.handleModal("createTrial");
                             }}
-                            className={selectedBenchmark ? "enabled" : "disabled"}>Create Trial</button>
+                            className={selectedBenchmark ? "enabled" : "disabled"}><PlusIcon className={"i-right"}/>Create Trial</button>
                     </div>
                     {
                         stuWithGoals && selectedBenchmark &&
                             <>
                                 <div className={"marg-bot-2"}>
-                                    <p><strong>Description: </strong>{selectedBenchmark?.description}</p>
-                                    <p><strong>Mastery Date: </strong>{selectedBenchmark?.masteryDate}</p>
-                                    <p><strong>Completed: </strong>{selectedBenchmark?.complete === 1 ? "Yes" : "No"}</p>
+                                    <p><strong>Projected mastery date: </strong>{selectedBenchmark?.masteryDate}</p>
+                                    <p><strong>Met date: </strong>{selectedBenchmark?.complete === 1 ? selectedBenchmark?.metDate : "N/A"}</p>
                                     <p><strong>Tracking type: </strong>{selectedBenchmark?.tracking}</p>
+                                    <p><strong>Description: </strong>{selectedBenchmark?.description}</p>
                                 </div>
                                 <div className={"marg-bot-2"}>
                                     <Table key={`benchmarktablefor${benchmarkRow}`}
@@ -120,8 +135,19 @@ const GoalDrilldown = (props) => {
                                                    : [{text: "No trials"}]}
                                     />
                                 </div>
-                                <div>
-                                    <button onClick={props.handleModal}>Finish Benchmark</button>
+                                <div className={"flex-column"}>
+                                    <button className={"marg-bot"} onClick={() => {props.handleModal("completeBenchmark")}}>
+                                        <CheckIcon className={"i-right"}/>
+                                        <span>{selectedBenchmark.complete === 0 ? "Mark Complete" : "Mark Incomplete"}</span>
+                                    </button>
+                                    <button className={"marg-bot"} onClick={() => {props.handleModal("completeBenchmark")}}>
+                                        <EditIcon className={"i-right"}/>
+                                        <span>Edit Benchmark</span>
+                                    </button>
+                                    <button onClick={() => {props.handleModal("completeBenchmark")}}>
+                                        <TrashIcon className={"i-right"}/>
+                                        <span>Delete Benchmark</span>
+                                    </button>
                                 </div>
                             </>
                     }
