@@ -1,6 +1,11 @@
 import React from "react";
 import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
-
+/*
+updateState- to add/remove objects to the parent state
+limit- the number to max out at
+object- the object to concat/remove from the objectArray
+objectArray- the length of the array to keep track of the #
+ */
 const NumberPicker = (props) => {
     let num = props.objectArray.length;
     let limit = props.limit || 100;
@@ -27,16 +32,32 @@ const NumberPicker = (props) => {
 
     return (
         <div className={"numberpickerwrapper"}>
-            <div className={`numbersub ${num === 0 ? 'disabled' : ''}`} onClick={(e)=>{
-                props.updateState(change(num-1, props.object, props.objectArray));
+            <div
+                className={`numbersub ${num === 0 ? 'disabled' : ''}`}
+                onClick={(e)=>{
+                    props.updateState(change(num-1, props.object, props.objectArray));
                 }}
-            ><MinusIcon className={"posabs"}/></div>
-            <div className={"numberinput"}><input placeholder={num} value={num} onChange={(e)=>{
-                props.updateState(change(e.currentTarget.value, props.object, props.objectArray));
-            }} type={"text"}/></div>
-            <div className={`numberadd ${num === limit ? 'disabled' : ''}`} onClick={(e)=>{
-                props.updateState(change(num+1, props.object, props.objectArray));
-            }}><PlusIcon className={"posabs"}/></div>
+            >
+                <MinusIcon className={"posabs"}/>
+            </div>
+            <div className={"numberinput"}>
+                <input
+                    type={"text"}
+                    placeholder={num}
+                    value={num}
+                    onChange={(e) => {
+                        props.updateState(change(e.currentTarget.value, props.object, props.objectArray));
+                    }}
+                />
+            </div>
+            <div
+                className={`numberadd ${num === limit ? 'disabled' : ''}`}
+                onClick={(e) => {
+                    props.updateState(change(num+1, props.object, props.objectArray));
+                }}
+            >
+                <PlusIcon className={"posabs"}/>
+            </div>
         </div>
     )
 };

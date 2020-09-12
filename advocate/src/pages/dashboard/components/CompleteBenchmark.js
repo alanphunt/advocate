@@ -1,5 +1,5 @@
 import React from "react";
-import {FaCheck as CheckIcon, FaTimes as XIcon} from "react-icons/fa";
+import ConfirmOrCancelButtons from "./ConfirmOrCancelButtons";
 
 const CompleteBenchmark = (props) => {
     //if the BM isn't complete then we're updating it as complete and vice versa
@@ -15,46 +15,41 @@ const CompleteBenchmark = (props) => {
         formData.append("complete", updatedStatus);
         formData.append("goalId", goalId || "");
 
-        fetch("/api/completeBenchmark", {method: "POST", body: formData, headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}})
+        fetch("/api/completeBenchmark",
+            {
+                method: "POST",
+                body: formData,
+                headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}
+            })
             .then(response => response.json())
             .then(data => {
-                updateTeacherCallback(data);
+                props.updateTeacher(data);
             });
     };
 
     return (
         <div className={"completebenchmarkwrapper"}>
             <div className={"marg-bot-2"}>
-                <h2 className={"marg-bot"}>Mark {props.benchmark.label} as {currentStatus ? "incomplete" : "complete"}?</h2>
+                <h2 className={"marg-bot"}>Mark {props.benchmark.label} as {currentStatus ? "not mastered" : "mastered"}?</h2>
                 {
                     currentStatus
-                        ? <span>This will clear the benchmark's met date{allBenchmarksComplete ? " and mark the goal incomplete" : ""}.</span>
+                        ? <span>This will clear the benchmark's mastery date{allBenchmarksComplete ? " and mark the goal as not mastered" : ""}.</span>
                         : <>
                             <p><strong>Projected mastery date:</strong> {props.benchmark.masteryDate}</p>
                             <p className={"marg-bot"}><strong>Today's date:</strong> {new Date().toLocaleDateString()}</p>
-                            {isLastIncompleteBenchmark ? <p>Completing this benchmark will complete the goal.</p> : <></>}
+                            {isLastIncompleteBenchmark ? <p>Mastering this benchmark will master the goal.</p> : <></>}
                           </>
                 }
             </div>
-            <div>
-                <button
-                    className={"marg-right"}
-                    onClick={() => {
-                        markBenchmarkAsComplete(
-                            props.benchmark.id,
-                            updatedStatus,
-                            ((isLastIncompleteBenchmark || allBenchmarksComplete) ? goal.id : ""),
-                            props.updateTeacher
-                        );
-                    }}>
-                    <CheckIcon className={"i-right"}/>
-                    <span>Confirm</span>
-                </button>
-                <button className={"cancelButton"} onClick={(evt) => {props.closeModal(evt);}}>
-                    <XIcon className={"i-right"}/>
-                    <span>Cancel</span>
-                </button>
-            </div>
+            <ConfirmOrCancelButtons
+                confirmCallback={() => {
+                    markBenchmarkAsComplete(
+                        props.benchmark.id,
+                        updatedStatus,
+                        ((isLastIncompleteBenchmark || allBenchmarksComplete) ? goal.id : "")
+                    );
+                }}
+                cancelCallback={props.closeModal}/>
         </div>
     );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import ScoreTrial from "./Trials/ScoreTrial";
 import TrialTemplateSelector from "./Trials/TrialTemplateSelector";
 
-const CreateTrial = ({benchmark, template, setTemplate, student}) => {
+const CreateTrial = ({benchmark, template, setTemplate, student, updateTeacher}) => {
 
     const goBack = () => {
         setTemplate("");
@@ -11,7 +11,7 @@ const CreateTrial = ({benchmark, template, setTemplate, student}) => {
     const trialOptions = (type) => {
         return {
             "": <TrialTemplateSelector benchmark={benchmark} setTemplate={setTemplate}/>,
-            "score": <ScoreTrial goBack={goBack} benchmark={benchmark} student={student}/>,
+            "score": <ScoreTrial goBack={goBack} benchmark={benchmark} student={student} updateTeacher={updateTeacher}/>,
             "cue": cueTrial(goBack),
             "wpm": wpmTrial(goBack)
         }[type];

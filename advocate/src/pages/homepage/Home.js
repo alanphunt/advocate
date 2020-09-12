@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../../assets/advocate-sm.png'
-import Modal, {exitModal} from '../SharedComponents/Modal'
+import Modal from '../SharedComponents/Modal'
 import {Redirect} from "react-router";
 import Loading from "../SharedComponents/Loading";
 import {
@@ -21,30 +21,45 @@ class Home extends React.Component{
         this.state = {
             isFetching: false,
             modalState:{
-                displayed: false,
-                contentType: "login",
+                contentType: "",
             }
         };
+        this.regFocus = React.createRef();
+        this.logFocus = React.createRef();
     }
 
-    handleModal = (vis, formType) => {
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.state.modalState.contentType !== "") {
+            this.state.modalState.contentType === "login"
+            ? this.logFocus.current.focus()
+            : this.regFocus.current.focus()
+        }
+    }
+
+    handleModal = (formType) => {
         //this prevents values from being transferred from one form to the other when the modal is displayed
         let regform = document.getElementById("regform");
         let logform = document.getElementById("logform");
         logform && logform.reset();
         regform && regform.reset();
-        this.setState({modalState: {displayed: vis, contentType: formType}});
+        this.setState({modalState: {contentType: formType}});
     };
 
-    handleForm = (event) => {
+    closeModal = (e) => {
+        if(this.state.modalState.contentType !== "") {
+            this.setState({modalState: {contentType: ""}});
+            if(!!e.target.closest(".headerregister"))
+                this.setState({modalState: {contentType: "register"}});
+            else if (!!e.target.closest(".headerlogin"))
+                this.setState({modalState: {contentType: "login"}});
+        }
+    };
+
+    logIn = (event) => {
         event.preventDefault();
-        this.logIn(event.currentTarget);
-    };
-
-    logIn = (f) => {
         this.setState({isFetching: true})
         const isLogin = this.state.modalState.contentType === "login";
-        let fdata = new FormData(f);
+        let fdata = new FormData(event.currentTarget);
         const email = fdata.get("username");
         const pw = fdata.get("password");
 
@@ -68,12 +83,20 @@ class Home extends React.Component{
 
     render() {
         let contentType = this.state.modalState.contentType;
-        let displayed = this.state.modalState.displayed;
-
-        const registerForm = <form id="regform" className={"centeredform"} onSubmit={this.handleForm}>
+        const registerForm = <form
+            id="regform"
+            className={"centeredform"}
+            onSubmit={this.logIn}>
             <label htmlFor={"regfirst"}>
                 <NameIcon className={"label-i"}/>
-                <input id="regfirst" type={"text"} placeholder={"First Name"} name={"firstName"} required autoFocus={true}/>
+                <input
+                    id="regfirst"
+                    type={"text"}
+                    placeholder={"First Name"}
+                    name={"firstName"}
+                    required
+                    ref={this.regFocus}
+                    />
             </label>
 
             <label htmlFor={"reglast"}>
@@ -93,10 +116,16 @@ class Home extends React.Component{
 
             <button type={"submit"}>Submit</button>
         </form>;
-        const loginForm = <form id="logform" className={"centeredform"} onSubmit={this.handleForm}>
+        const loginForm = <form id="logform" className={"centeredform"} onSubmit={this.logIn}>
             <label htmlFor={"logemail"}>
                 <EmailIcon className={"label-i"}/>
-                <input id="logemail" type={"email"} placeholder={"Email"} name={"username"} autoFocus={true} required/>
+                <input
+                    id="logemail"
+                    type={"email"}
+                    placeholder={"Email"}
+                    name={"username"}
+                    ref={this.logFocus}
+                    required/>
             </label>
 
             <label htmlFor={"logpass"}>
@@ -111,13 +140,14 @@ class Home extends React.Component{
             this.props.teacher
                 ? <Redirect push to={{pathname: "/dashboard/main"}}/>
                 : (
-                    <div className={"herocontainer"} onClick={(e) => {
-                            exitModal(e, displayed, ()=>{this.handleModal(false, "")})
-                        }}>
+                    <div className={"herocontainer"} onClick={this.closeModal}>
                         <div className={this.state.isFetching ? "display" : "nodisplay"}>
                             <Loading/>
                         </div>
-                        <Modal displayed={displayed}>
+                        <Modal
+                            displayed={contentType !== ""}
+                            closeModal={this.closeModal}
+                        >
                             <div className="formcontainer">
                                 <div className={"formheader"}>
                                     <h2>{contentType === "login" ? "Welcome back!" : "Let's get you started."}</h2>
@@ -129,11 +159,19 @@ class Home extends React.Component{
                         <header className={"homeheader"}>
                             <img src={logo} alt={"Advocate logo"}/>
                             <div className={"promptcontainer"}>
-                                <div onClick={() => {this.handleModal(true, "login")}} className={"headerlogin i-hover"}>
+                                <div
+                                    onClick={() => {
+                                        this.handleModal("login")}
+                                    }
+                                    className={"headerlogin i-hover"}>
                                     <UserIcon className={"i-right"}/>
                                     <span>Login</span>
                                 </div>
-                                <div onClick={() => {this.handleModal(true, "register")}} className={"headerregister i-hover"}>
+                                <div
+                                    onClick={() => {
+                                        this.handleModal("register")
+                                    }}
+                                    className={"headerregister i-hover"}>
                                     <UserPlusIcon className={"i-right"}/>
                                     <span>Register</span>
                                 </div>

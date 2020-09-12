@@ -1,6 +1,6 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import Sidebar from "./components/Sidebar";
-import {Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import DashMain from "./DashMain";
 import Classroom from "./Classroom";
 import Charts from "./Charts";
@@ -18,6 +18,7 @@ class Dashboard extends React.Component {
         let path = window.location.pathname.split("/")[2];
         this.state = {
             activeCategory: path,
+            validJWT: true
         };
         this.teacher = props.teacher;
     }
@@ -25,7 +26,10 @@ class Dashboard extends React.Component {
     refreshDataFromComponents = async () => {
         console.log("rehydrating data..");
         let resp = await fetch("/api/teacher", {headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}});
-        await resp.json().then(data => {
+        if(!resp.ok){
+            throw new Error(resp.headers.get("error"));
+        }else
+            await resp.json().then(data => {
             this.props.updateTeacher(data);
         });
     };
@@ -33,7 +37,11 @@ class Dashboard extends React.Component {
     //this is in case of page refresh
     componentDidMount() {
         if(!this.props.teacher)
-            this.refreshDataFromComponents().then();
+            this.refreshDataFromComponents().catch(e => {
+                console.log(e);
+                alert(e.message);
+                this.setState(prevState => ({...prevState, validJWT: false}));
+            });
     }
 
     handleChange = (e) => {
@@ -69,7 +77,11 @@ class Dashboard extends React.Component {
                                         <Charts teacher={teacher}/>
                                     </Route>
                                     <Route path="/dashboard/goalcenter" exact>
-                                        <GoalCenter teacher={teacher} updateTeacher={this.props.updateTeacher} refreshData={this.refreshDataFromComponents}/>
+                                        <GoalCenter
+                                            teacher={teacher}
+                                            updateTeacher={this.props.updateTeacher}
+                                            refreshData={this.refreshDataFromComponents}
+                                        />
                                     </Route>
                                     <Route path="/dashboard/goalcenter/create">
                                         <CreateGoal teacher={teacher} refreshData={this.refreshDataFromComponents}/>
@@ -80,9 +92,11 @@ class Dashboard extends React.Component {
                                 </Switch>
                             </div>
                           </>
-                        : <div className={"dashboardwrapper"}>
-                            <Loading/>
-                          </div>
+                        : this.state.validJWT
+                            ? <div className={"dashboardwrapper"}>
+                                <Loading/>
+                              </div>
+                        : <Redirect to={"/"}/>
                     }
             </div>
         );
@@ -90,3 +104,20 @@ class Dashboard extends React.Component {
 }
 
 export default Dashboard;
+
+export const fetchPost = (path, body, callback) => {
+    const formData = new FormData();
+    formData.append("body", JSON.stringify(body));
+    fetch(`/api/${path}`,
+        {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.authorization}`
+                }
+        })
+        .then(resp => resp.json())
+        .then(data => {
+            callback(data);
+        });
+};

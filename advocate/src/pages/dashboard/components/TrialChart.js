@@ -7,7 +7,7 @@ const TrialChart = (props) => {
 
     const options = {
         animationDuration: 300,
-        animationEnabled: true,
+        animationEnabled: false,
         title: {
             text: "Trial Results"
         },

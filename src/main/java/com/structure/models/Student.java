@@ -1,6 +1,7 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "students")
+@Where(clause = "enabled=1")
 public class Student {
 
     @Id
@@ -19,7 +21,7 @@ public class Student {
     private Classroom classroom;
 
     @Expose
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Goal> goals;
 
     @Expose

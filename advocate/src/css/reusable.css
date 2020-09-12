@@ -41,6 +41,10 @@ img{
     transition: .3s ease;
 }
 
+.hover-color:hover{
+    color: #51bcda;
+}
+
 .i-hover:hover{
     color: #51bcda;
 }
@@ -74,6 +78,17 @@ img{
     }
 }
 
+@keyframes fadeInFromBottom{
+    0%{
+        bottom: -10%;
+        opacity: 0;
+    }
+    100%{
+        bottom: 2rem;
+        opacity: 1;
+    }
+}
+
 .fadein{
     animation: fadein .3s ease 0s 1 normal forwards;
     z-index: 1;
@@ -81,6 +96,11 @@ img{
 
 .fadeinfromtop{
     animation: fadeinFromTop .3s ease 0s 1 normal forwards;
+    z-index: 1;
+}
+
+.fadeInFromBottom{
+    animation: fadeInFromBottom .3s ease 0s 1 normal forwards;
     z-index: 1;
 }
 
@@ -121,6 +141,10 @@ label:focus-within svg{
 }
 
 label:focus-within input{
+    border: 1px solid #51bcda;
+}
+
+label:focus-within select{
     border: 1px solid #51bcda;
 }
 
@@ -320,11 +344,15 @@ form input{
 
 .selected-bg{
     background-color: #51bcda !important;
-    color: #fff;
+    color: #000;
 }
 
 .selected-bg:hover{
     background-color: #51bcda !important;
+}
+
+.selected-bg svg:hover {
+    color: #454545;
 }
 
 .drilldownwrapper{
@@ -373,7 +401,29 @@ form input{
     float: left;
 }
 
+.float-right{
+    float: right;
+}
+
 .table-icon-right{
     position: absolute;
     right: 8px;
+}
+
+.td-icon{
+    border-right: none;
+}
+
+.success{
+    color: forestgreen;
+}
+
+.flex-center-vert{
+    display: flex;
+    align-items: center;
+}
+
+.flex-center-horz{
+    display: flex;
+    justify-content: center;
 }

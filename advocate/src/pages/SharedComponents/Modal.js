@@ -1,13 +1,21 @@
 import React from "react";
 import {FaRegTimesCircle as ExitIcon} from "react-icons/fa";
 
-const Modal = (props) => {
+const preventPropagation = (e) => {
+    //prevents click from bubbling and being captured by closeModal event listener on
+    //the parent element
+    e.stopPropagation();
+};
 
+const Modal = (props) => {
     const isDisplayed = props.displayed ? "display fadeinfromtop" : "";
 
     return(
-        <div className={`modalwrapper posabs ${isDisplayed} ${props.large && "modal-lg"}`}>
-            <ExitIcon className={"modal-exit"}/>
+        <div
+            className={`modalwrapper posabs ${isDisplayed} ${props.large && "modal-lg"}`}
+            onClick={preventPropagation}
+        >
+            <ExitIcon className={"modal-exit"} onClick={props.closeModal}/>
             <div className={`modal bubble`}>
                 {props.children}
             </div>
@@ -15,14 +23,5 @@ const Modal = (props) => {
 
     )
 }
-
-export const exitModal = (event, displayed, callback) => {
-    if (
-        displayed
-        && ((event.target.closest(".modal") === null && event.target.closest(".promptcontainer") === null)
-        || event.currentTarget.classList.contains("cancelButton"))
-    )
-        callback(false, "");
-};
 
 export default Modal;

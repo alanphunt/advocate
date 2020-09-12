@@ -5,6 +5,7 @@ import com.structure.models.Teacher;
 import com.structure.utilities.JWTUtil;
 import com.structure.utilities.TeacherDetailsService;
 import com.structure.utilities.Utils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +62,8 @@ public class LoginRegistration {
         String jwt = request.getHeader("Authorization").substring(7);
         System.out.println("retrieving teacher..");
         try{
-           return ResponseEntity.ok(Utils.gson().toJson(tds.loadUserByUsername(jwtUtil.extractEmail(jwt))));
+            String teacher = Utils.gson().toJson(tds.loadUserByUsername(jwtUtil.extractEmail(jwt)));
+            return ResponseEntity.ok(teacher);
         }catch(NullPointerException npe){
             return ResponseEntity.ok(Utils.gson().toJson(null));
         }
@@ -74,6 +76,8 @@ public class LoginRegistration {
         }catch(Exception e){
             return ResponseEntity.badRequest().body("Username or password is incorrect");
         }
+
+
         teacher = (Teacher) tds.loadUserByUsername(authRequest.getUsername());
         final String jwt = jwtUtil.generateToken(teacher);
         System.out.println(jwt);

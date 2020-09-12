@@ -17,13 +17,13 @@ const App = () => {
                             updateTeacher={updateTeacher}
                         />;
                     }}/>
-                    <Route path="/dashboard/:page" component={() => {
+                    <Route path="/dashboard/:page" exact component={() => {
                         return <Dashboard
                             teacher={teacher}
                             updateTeacher={updateTeacher}
                         />;
                     }}/>
-                    <Redirect from={"/dashboard"} to={"/dashboard/main"}/>
+                    <Redirect from={"/dashboard"} exact to={"/dashboard/main"}/>
                 </Switch>
             )}/>
         </div>

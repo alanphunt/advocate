@@ -1,5 +1,7 @@
 package com.structure.models;
 
+import org.hibernate.annotations.Where;
+
 import java.util.Arrays;
 
 import javax.persistence.Column;
@@ -10,6 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "thumbnails", schema = "advocate")
+@Where(clause = "enabled=1")
 public class Thumbnail {
     @Id
     private String id;

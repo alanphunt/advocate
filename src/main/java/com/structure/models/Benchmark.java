@@ -1,6 +1,7 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "benchmarks")
+@Where(clause = "enabled=1")
 public class Benchmark {
 
     @Id
@@ -42,9 +44,18 @@ public class Benchmark {
     @Column(name = "met_date")
     private Date metDate;
 
-    @OneToMany(mappedBy = "benchmark")
+    @OneToMany(mappedBy = "benchmark", cascade = CascadeType.ALL, orphanRemoval = true)
     @Expose
+    @OrderBy("trialNumber ASC")
     private List<Trial> trials;
+
+    public List<Trial> getTrials() {
+        return trials;
+    }
+
+    public void setTrials(List<Trial> trials) {
+        this.trials = trials;
+    }
 
     public Benchmark() {
     }

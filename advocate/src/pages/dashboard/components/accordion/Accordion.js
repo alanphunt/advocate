@@ -3,16 +3,21 @@ import AccordionItem from "./AccordionItem";
 
 
 const Accordion = (props) => {
-    //const name = Object.keys(props.array[0]).filter(k => k.toLowerCase().includes("name"));
-    const name = props.name;
-    const opened = props.open;
-
+    const {data, icons, sendIndexUp, allOpen, openIndex} = {...props};
     return (
         <div className={"accordion"}>
             {
-                props.array.map((value, index) => {
+                data.map((value, index) => {
                     return(
-                        <AccordionItem open={opened} key={`acc-item${index}`} header={typeof name === "object" ? name[index] : name} object={value} index={index}>
+                        <AccordionItem
+                            open={allOpen || openIndex === index}
+                            key={`acc-item${index}`}
+                            header={typeof data === "object" ? data[index] : data}
+                            object={value}
+                            index={index}
+                            icons={icons || null}
+                            sendIndexUp={sendIndexUp}
+                        >
                             {
                                 props.children[index]
                             }

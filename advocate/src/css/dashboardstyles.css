@@ -187,6 +187,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 .dash-main-inner{
     padding: 1rem;
     position: relative;
+    overflow: hidden;
 }
 
 .cardwrapperrow{
@@ -288,6 +289,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 
 .table{
     border: 1px solid #e4e4e4;
+    border-left: none;
     position: relative;
 }
 
@@ -310,20 +312,37 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 }
 
 .th:not(:last-child) {
-    border-right: 1px solid #e4e4e4;
+    border-left: 1px solid #e4e4e4;
 }
 
 .th, .td{
     flex: 1;
     padding: 1rem 5px;
-    justify-content: center;
     display: flex;
+    border-left: 1px solid #e4e4e4;
+    position: relative;
+}
+
+.th{
     flex-flow: column;
 }
 
+.td{
+    align-items: center;
+    justify-content: space-between;
+}
+
+.td-icon{
+    justify-content: flex-end;
+    border-left: none !important;
+}
+
+
+/*
 .td:not(:last-of-type){
     border-right: 1px solid #e4e4e4;
 }
+*/
 
 .table input, .table select{
     border-radius: 8px;
@@ -331,7 +350,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
     width: 90%;
 }
 
-.table input:focus{
+.table input:focus, select:focus        {
     border-color: #51bcda;
 }
 
@@ -416,10 +435,12 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 .acc-item-head{
     cursor: pointer;
     padding: 1rem 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .acc-item-main{
-    padding: 1rem 10px;
+    padding: 1rem 10px 2rem 10px;
     display: none;
 }
 /*******END ACCORDION STYLES*******/
@@ -511,10 +532,15 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 .toasterwrapper{
     display: none;
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 2rem;
+    right: 3rem;
     min-width: 250px;
     min-height: 40px;
     background-color: #51bcda;
     color: white;
+    padding: 0 1rem;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .3s ease;
 }

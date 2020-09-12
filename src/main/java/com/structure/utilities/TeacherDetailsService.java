@@ -15,7 +15,7 @@ public class TeacherDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return tr.findTeacherByUsernameAndEnabled(username, 1);
+        return tr.findTeacherByUsername(username);
     }
 
     public Teacher saveTeacher(Teacher teacher){

@@ -1,11 +1,13 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "trackings")
+@Where(clause = "enabled=1")
 public class Tracking {
     @Expose
     @Id

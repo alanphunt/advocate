@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React from "react";
 import Accordion from "./accordion/Accordion";
 import Table from "./Table";
 import {Link} from "react-router-dom";
@@ -6,43 +6,44 @@ import {FaPlus as PlusIcon, FaMinus as MinusIcon, FaRegTrashAlt as TrashIcon, Fa
 import TrialChart from "./TrialChart";
 
 
-const GoalDrilldown = (props) => {
+const GoalDrilldown = (
+    {
+        handleModal,
+        student,
+        goal,
+        setGoal,
+        goalIndex,
+        setGoalIndex,
+        benchmark,
+        setBenchmark,
+        benchmarkIndex,
+        setBenchmarkIndex,
+        trial,
+        setTrial,
+        trialIndex,
+        setTrialIndex
+    }) =>
+{
 
+    const stuWithGoals = student && student.goals.length !== 0;
+    const trials = benchmark?.trials || null;
+    const trackings = trials !== null && trials[trialIndex]?.trackings || null;
 
-/*     function usePrev(value){
-        const ref = useRef();
-        useEffect(() => {
-            ref.current = value;
-        });
-        return ref.current
-    }*/
-
-    let stu = props.student ?? null;
-    const selectedGoalIndex = props.selectedGoalIndex;
-    const setSelectedGoalIndex = props.setSelectedGoalIndex;
-    const [benchmarkRow, setBenchmarkRow] = useState();
-    const [trialRow, setTrialRow] = useState();
-    const selectedBenchmark = props.benchmark;
-    const setSelectedBenchmark = props.setBenchmark;
-
-    const [selectedTrial, setSelectedTrial] = useState();
-    const [trials, setTrials] = useState([]);
-    const trackings = selectedTrial?.trackings || null;
-    const stuWithGoals = stu && stu.goals.length !== 0;
-
-    const selectedBenchmarkCallback = (obj, ind, goalindex) => {
-        let bm = stu.goals[goalindex].benchmarks[ind];
-        setSelectedGoalIndex(goalindex);
-        setBenchmarkRow(ind);
-        setSelectedBenchmark(bm);
-        setTrials(bm.trials);
-        setSelectedTrial(null);
-        setTrialRow(999);
+    const selectedBenchmarkCallback = (obj, benchmarkIndex, goalIndex) => {
+        let goal =  student.goals[goalIndex];
+        let bm = goal.benchmarks[benchmarkIndex];
+        setGoalIndex(goalIndex);
+        //setGoal(goal);
+        setBenchmarkIndex(benchmarkIndex);
+        //setBenchmark(bm);
+        //resets the trial switching between benchmarks
+        //setTrial(null);
+        setTrialIndex(999);
     };
 
-    const selectedTrialCallback = (obj, ind) => {
-        setTrialRow(ind);
-        setSelectedTrial(trials[ind]);
+    const selectedTrialCallback = (obj, trialIndex) => {
+        setTrialIndex(trialIndex);
+        //setTrial(benchmark.trials[trialIndex]);
     };
 
     const determineTrialAccuracy = () => {
@@ -59,36 +60,74 @@ const GoalDrilldown = (props) => {
         return obj;
     };
 
-    const trialAccuracyResults = (trackings === null ? null : determineTrialAccuracy());
+    const handleGoalAction = (action, index) => {
+        //setGoalIndex(index);
+        setGoal(student.goals[index]);
+        handleModal(action);
+    };
+
+    const trialAccuracyResults = (trackings !== null && determineTrialAccuracy());
+    const benchmarkIconSet = <span className={"success"}><CheckIcon/></span>;
+    const iconSet = {
+        'editGoal': <EditIcon className={"i-right hover-color selectable"}/>,
+        'deleteGoal': <TrashIcon className={"hover-color selectable"}/>
+    };
+
+    const trialIcons = (trial) => {
+        return <span>
+            {
+                Object.keys(iconSet).map((icon, ind) =>
+                        <span key={`Trial${trial.id}IconNo${ind}`} onClick={(e) => {
+                            e.stopPropagation();
+                            setTrial(trial);
+                            handleModal(icon === "editGoal" ? "editTrial" : "deleteTrial");
+                        }}
+                >{iconSet[icon]}</span>
+                )
+            }
+        </span>
+    };
 
     return (
         <div className={"drilldownwrapper"}>
             <div className={"drilldown"}>
                 <div className={"drilldown-goals"}>
                     <div className={"marg-bot-2 flex-center-between"}>
-                        <h2>Goals for {stu ? stu.name.charAt(0).toUpperCase() + stu.name.substring(1) : "..."}</h2>
-                        <Link push="true" className={`button-a ${!stu && 'disabled'}`} to={"/dashboard/goalcenter/create"}>
-                            <button className={stu ? "enabled" : "disabled"}><PlusIcon className={"i-right"}/>Create Goal</button>
+                        <h2>Goals for {student ? student.name.charAt(0).toUpperCase() + student.name.substring(1) : "..."}</h2>
+                        <Link push="true" className={`button-a ${!student && 'disabled'}`} to={"/dashboard/goalcenter/create"}>
+                            <button className={student ? "enabled" : "disabled"}><PlusIcon className={"i-right"}/>Create Goal</button>
                         </Link>
                     </div>
                     {
                         stuWithGoals
-                            ? <Accordion open={true} array={stu.goals} name={stu.goals.map(goal => goal.goalName)}>
+                            ? <Accordion
+                                allOpen
+                                data={student.goals.map(goal => goal.goalName)}
+                                icons={iconSet}
+                                sendIndexUp={handleGoalAction}
+                            >
                                 {
-                                    stu.goals.map((goal, goalind) => {
+                                    student.goals.map((goal, goalind) => {
                                         return (
                                             <div key={`goaldrilldowntable${goalind}`}>
+                                                <p><strong>Goal: </strong>{goal.goal}</p>
                                                 <p><strong>Description: </strong>{goal.process}</p>
+                                                <p><strong>Start date: </strong>{goal.startDate}</p>
                                                 <p><strong>Projected mastery date: </strong>{goal.masteryDate}</p>
-                                                <p><strong>Monitor after mastery: </strong>{goal.monitor === 0 ? "No" : "Yes"}</p>
-                                                <p className={"marg-bot"}><strong>Completion date: </strong>{goal.complete ? goal.completionDate : "N/A"}</p>
+                                                <p><strong>Mastery date: </strong>{goal.complete ? goal.completionDate : "N/A"}</p>
+                                                <p className={"marg-bot"}><strong>Monitor after mastery: </strong>{goal.monitor === 0 ? "No" : "Yes"}</p>
                                                 <Table
-                                                    selectable={true}
+                                                    headers={[`Benchmarks (${goal.benchmarks.length})`]}
+                                                    selectable={goal.benchmarks.length !== 0}
                                                     selectedCallback={(obj, ind) => {selectedBenchmarkCallback(obj, ind, goalind);}}
-                                                    selectedRowIndexes={selectedGoalIndex === goalind ? benchmarkRow : null}
-                                                    data={goal.benchmarks.map(bm => {
-                                                        return {label: bm.label}
-                                                    })}
+                                                    selectedRowIndexes={goalIndex == goalind && goal.benchmarks.length !== 0 ? benchmarkIndex : null}
+                                                    data={
+                                                        goal.benchmarks.length === 0
+                                                            ? [{text: "Edit goal to add benchmarks"}]
+                                                            : goal.benchmarks.map(bm => {
+                                                                return {label: bm.label, icon: bm.complete ? benchmarkIconSet: ""};
+                                                              })
+                                                    }
                                                 />
                                             </div>
                                         )
@@ -100,62 +139,64 @@ const GoalDrilldown = (props) => {
                 </div>
                 <div className={"drilldown-trials"}>
                     <div className={"marg-bot-2 flex-center-between"}>
-                        <h2>{selectedBenchmark ? selectedBenchmark.label : "Benchmark"}</h2>
+                        <h2>{benchmark ? benchmark.label : "Benchmark"}</h2>
                         <button
                             onClick={() => {
-                                props.setBenchmark(selectedBenchmark);
-                                props.handleModal("createTrial");
+                                handleModal("createTrial");
                             }}
-                            className={selectedBenchmark ? "enabled" : "disabled"}><PlusIcon className={"i-right"}/>Create Trial</button>
+                            className={benchmark ? "enabled" : "disabled"}>
+                            <PlusIcon className={"i-right"}/>
+                            <span>Create Trial</span>
+                        </button>
                     </div>
                     {
-                        stuWithGoals && selectedBenchmark &&
+                        stuWithGoals && benchmark &&
                             <>
                                 <div className={"marg-bot-2"}>
-                                    <p><strong>Projected mastery date: </strong>{selectedBenchmark?.masteryDate}</p>
-                                    <p><strong>Met date: </strong>{selectedBenchmark?.complete === 1 ? selectedBenchmark?.metDate : "N/A"}</p>
-                                    <p><strong>Tracking type: </strong>{selectedBenchmark?.tracking}</p>
-                                    <p><strong>Description: </strong>{selectedBenchmark?.description}</p>
+                                    <p><strong>Projected mastery date: </strong>{benchmark?.masteryDate}</p>
+                                    <p><strong>Mastery date: </strong>{benchmark?.complete == 1 ? benchmark?.metDate : "N/A"}</p>
+                                    <p><strong>Tracking type: </strong>{benchmark?.tracking}</p>
+                                    <p><strong>Description: </strong>{benchmark?.description}</p>
                                 </div>
                                 <div className={"marg-bot-2"}>
-                                    <Table key={`benchmarktablefor${benchmarkRow}`}
-                                           headers={["Trials"]}
+                                    <Table key={`benchmarktablefor${benchmarkIndex}`}
+                                           headers={[`Trials (${benchmark.trials.length})`]}
                                            selectable={trials && trials.length !== 0}
-                                           selectedRowIndexes={trialRow}
+                                           selectedRowIndexes={benchmark.trials.length !== 0 ? trialIndex : null}
                                            selectedCallback={
                                                (obj, ind) => {
                                                    selectedTrialCallback(obj, ind);
                                                }
                                            }
                                            data={
-                                               trials && trials.length !== 0
-                                                   ? trials.map((t, i) =>{
-                                                       return {text: `Trial ${i+1} - ${t.dateStarted}`}
+                                               trials.length !== 0
+                                                   ? trials.map(trial => {
+                                                       return {
+                                                           text: `Trial #${trial.trialNumber} - ${trial.dateStarted}`,
+                                                           icon: trialIcons(trial)
+                                                       }
                                                     })
-                                                   : [{text: "No trials"}]}
+                                                   : [{text: "No trials"}]
+                                           }
                                     />
                                 </div>
                                 <div className={"flex-column"}>
-                                    <button className={"marg-bot"} onClick={() => {props.handleModal("completeBenchmark")}}>
+
+                                    <button className={"marg-bot"}
+                                            onClick={() => {
+                                                handleModal("completeBenchmark");
+                                            }}>
                                         <CheckIcon className={"i-right"}/>
-                                        <span>{selectedBenchmark.complete === 0 ? "Mark Complete" : "Mark Incomplete"}</span>
-                                    </button>
-                                    <button className={"marg-bot"} onClick={() => {props.handleModal("completeBenchmark")}}>
-                                        <EditIcon className={"i-right"}/>
-                                        <span>Edit Benchmark</span>
-                                    </button>
-                                    <button onClick={() => {props.handleModal("completeBenchmark")}}>
-                                        <TrashIcon className={"i-right"}/>
-                                        <span>Delete Benchmark</span>
+                                        <span>{benchmark.complete === 0 ? "Master" : "Unmaster"} benchmark</span>
                                     </button>
                                 </div>
                             </>
                     }
                 </div>
                 <div className={"drilldown-trialmeta"}>
-                    <h2 className={"marg-bot-2"}>Trial Tracking</h2>
+                    <h2 className={"marg-bot-2"}>Tracking for trial {trialIndex !== null ? trial?.trialNumber : ".."}</h2>
                     {
-                        selectedTrial
+                        trackings !== null
                             ? <div>
                                 <p className={"marg-bot"}><strong>Trial Accuracy: </strong>{trialAccuracyResults.accuracy}%</p>
                                 {
@@ -171,7 +212,7 @@ const GoalDrilldown = (props) => {
                                 }
                                 <TrialChart trialResults={trialAccuracyResults}/>
                                 <p className={"marg-top"}><strong>Comments: </strong></p>
-                                <p>{selectedTrial.comments}</p>
+                                <p>{trial.comments}</p>
                               </div>
                             : <></>
                     }

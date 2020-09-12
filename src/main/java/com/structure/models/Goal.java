@@ -1,6 +1,7 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,11 +9,15 @@ import java.util.List;
 
 @Entity
 @Table(name = "goals")
+@Where(clause = "enabled=1")
 public class Goal {
 
     @Id
     @Expose
     private String id;
+
+    @Expose
+    private String goal;
 
     @Expose
     @Column(name = "goal_name")
@@ -47,15 +52,16 @@ public class Goal {
     @JoinColumn(name = "student_id", insertable = false, updatable = false)
     private Student student;
 
-    @OneToMany(mappedBy = "goal")
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("label ASC")
     @Expose
     private List<Benchmark> benchmarks;
 
     public Goal(){}
 
-    public Goal(String id, String goalName, String process, String studentId, Date startDate, Date masteryDate, int monitor) {
+    public Goal(String id, String goal, String goalName, String process, String studentId, Date startDate, Date masteryDate, int monitor) {
         this.id = id;
+        this.goal = goal;
         this.goalName = goalName;
         this.process = process;
         this.studentId = studentId;
@@ -63,6 +69,14 @@ public class Goal {
         this.masteryDate = masteryDate;
         this.monitor = monitor;
         this.enabled = 1;
+    }
+
+    public String getGoal() {
+        return goal;
+    }
+
+    public void setGoal(String goal) {
+        this.goal = goal;
     }
 
     public String getId() {
@@ -127,6 +141,14 @@ public class Goal {
 
     public void setStudentId(String studentId) {
         this.studentId = studentId;
+    }
+
+    public void setBenchmarks(List<Benchmark> benchmarks) {
+        this.benchmarks = benchmarks;
+    }
+
+    public List<Benchmark> getBenchmarks () {
+        return benchmarks;
     }
 
     @Override

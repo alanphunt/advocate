@@ -1,6 +1,7 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,11 +9,16 @@ import java.util.List;
 
 @Entity
 @Table(name = "trials")
+@Where(clause = "enabled=1")
 public class Trial {
 
     @Id
     @Expose
     private String id;
+
+    @Expose
+    @Column(name = "trial_number")
+    private int trialNumber;
 
     @Expose
     @Column(name = "date_started")
@@ -34,7 +40,7 @@ public class Trial {
     private Benchmark benchmark;
 
     @Expose
-    @OneToMany(mappedBy = "trial")
+    @OneToMany(mappedBy = "trial", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("label ASC")
     private List<Tracking> trackings;
 
@@ -43,8 +49,9 @@ public class Trial {
 
     public Trial (){}
 
-    public Trial(String id, Date dateStarted, String comments, String benchmarkId) {
+    public Trial(String id, int trialNumber, Date dateStarted, String comments, String benchmarkId) {
         this.id = id;
+        this.trialNumber = trialNumber;
         this.dateStarted = dateStarted;
         this.comments = comments;
         this.benchmarkId = benchmarkId;
@@ -57,6 +64,14 @@ public class Trial {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getTrialNumber() {
+        return trialNumber;
+    }
+
+    public void setTrialNumber(int trialNumber) {
+        this.trialNumber = trialNumber;
     }
 
     public Date getDateStarted() {
@@ -97,6 +112,14 @@ public class Trial {
 
     public void setEnabled(int enabled) {
         this.enabled = enabled;
+    }
+
+    public List<Tracking> getTrackings() {
+        return trackings;
+    }
+
+    public void setTrackings(List<Tracking> trackings) {
+        this.trackings = trackings;
     }
 
     @Override

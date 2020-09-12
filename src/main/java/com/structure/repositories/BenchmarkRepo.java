@@ -20,6 +20,11 @@ public interface BenchmarkRepo extends CrudRepository<Benchmark, String> {
     @Modifying
     @Transactional(timeout = 5)
     @Query("UPDATE Benchmark bm SET bm.enabled = 0 WHERE bm.id = ?1")
-    int deleteBenchmarkById(String id);
+    int softDeleteBenchmarkById(String id);
+
+    @Modifying
+    @Transactional(timeout = 5)
+    @Query("UPDATE Benchmark bm SET bm.enabled = 0 WHERE bm.goalId = ?1")
+    int softDeleteAllBenchmarksByGoalId(String id);
 
 }

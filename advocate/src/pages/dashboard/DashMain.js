@@ -3,7 +3,6 @@ import GetStarted from "./components/GetStarted";
 import ProfileCard from "./components/ProfileCard";
 import Table from "./components/Table";
 import Accordion from "./components/accordion/Accordion";
-import {FaPlus as PlusIcon} from "react-icons/fa";
 
 class DashMain extends React.Component{
     teacher = this.props.teacher;
@@ -13,7 +12,6 @@ class DashMain extends React.Component{
         return (
             <div className={"card width-100"}>
                 <GetStarted to={"/dashboard/classroom/create"}>
-                    <PlusIcon className={"marg-bot"}/>
                     <h2>Get started by creating a classroom</h2>
                 </GetStarted>
             </div>
@@ -34,9 +32,10 @@ class DashMain extends React.Component{
                             </div>
                             <div className={"cardmain"}>
                                 <Accordion
+                                    onlyFirstOpen={true}
                                     array={this.teacher.classrooms}
-                                    name={this.teacher.classrooms.map(cr => cr.className)}
-                                    open={true}>
+                                    data={this.teacher.classrooms.map(cr => cr.className)}
+                                >
                                     {
                                         this.teacher.classrooms.map((cr, crInd) =>
                                             <Table

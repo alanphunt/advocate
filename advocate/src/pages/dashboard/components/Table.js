@@ -10,6 +10,7 @@ class Table extends React.Component {
         };
     }
 
+    //should be updated to be able to filter whatever columns are provided to the comopnent
     filterArray = (type, inputVal) => {
         let opt = {};
         switch(type){
@@ -102,8 +103,14 @@ class Table extends React.Component {
                                             onClick={this.props.selectable ? () => {this.handleSelect(student, index)} : null}>
                                             {
                                                 this.props.studentTable
-                                                    ? mainStudentKeys.map((key, ind) => <div key={`tableTD${key}${ind}`} className={"td"}>{student[key]}</div>)
-                                                    : Object.keys(student).map((key, ind) => <div key={`tableTD${key}${ind}`} className={"td"}>{student[key]}</div>)
+                                                    ? mainStudentKeys.map((key, ind) =>
+                                                        <div key={`tableTD${key}${ind}`} className={"td"}>{student[key]}</div>
+                                                    )
+                                                    : Object.keys(student).map((key, ind) =>
+                                                        <div key={`tableTD${key}${ind}`} className={`td ${key === "icon" ? "td-icon" : ""}`}>
+                                                            {student[key]}
+                                                        </div>
+                                                    )
                                             }
                                         </div>
                                     )

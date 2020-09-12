@@ -27,19 +27,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authHeader = httpServletRequest.getHeader("Authorization");
         String username = null;
         String jwt = null;
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
-            jwt = authHeader.substring(7);
-            username = jwtUtil.extractEmail(jwt);
-        }
-
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            Teacher teacher = (Teacher) tds.loadUserByUsername(username);
-            if(jwtUtil.validateToken(jwt, teacher)){
-                UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(teacher, null, teacher.getAuthorities());
-                upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                SecurityContextHolder.getContext().setAuthentication(upat);
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                jwt = authHeader.substring(7);
+                username = jwtUtil.extractEmail(jwt);
             }
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                Teacher teacher = (Teacher) tds.loadUserByUsername(username);
+                if (jwtUtil.validateToken(jwt, teacher)) {
+                    UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(teacher, null, teacher.getAuthorities());
+                    upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                    SecurityContextHolder.getContext().setAuthentication(upat);
+                }
+            }
+
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
+        } catch(Exception e){
+            httpServletResponse.setHeader("error", "JWT exception, please log back in.");
+            httpServletResponse.setStatus(403);
         }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }

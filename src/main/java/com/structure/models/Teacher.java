@@ -1,6 +1,7 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "teachers")
+@Where(clause = "enabled=1")
 public class Teacher implements UserDetails {
 
     @Id
@@ -41,7 +43,7 @@ public class Teacher implements UserDetails {
     private String description;
 
     @Expose
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Classroom> classrooms;
 
     public Teacher(){}

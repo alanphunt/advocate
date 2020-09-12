@@ -21,5 +21,10 @@ public interface GoalRepo extends CrudRepository<Goal, String> {
     @Modifying
     @Transactional(timeout = 5)
     @Query("UPDATE Goal goal SET goal.enabled = 0 WHERE goal.id = ?1")
-    int deleteGoalById(String id);
+    int softDeleteGoalById(String id);
+
+    @Modifying
+    @Transactional(timeout = 5)
+    @Query("DELETE FROM Goal goal WHERE goal.id = ?1")
+    int hardDeleteGoalById(String id);
 }

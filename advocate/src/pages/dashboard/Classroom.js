@@ -11,8 +11,9 @@ const Classroom = (props) => {
                     <h2>Classrooms</h2>
                 </div>
                 <div className={"cardmain"}>
-                    <Accordion open={true} array={props.teacher.classrooms}
-                               name={props.teacher.classrooms.map(v => v.className)}>
+                    <Accordion
+                        array={props.teacher.classrooms}
+                        data={props.teacher.classrooms.map(v => v.className)}>
                         {
                             props.teacher.classrooms.map((cr, ind) =>
                                 <Table
