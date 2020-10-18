@@ -1,4 +1,4 @@
-package com.structure.utilities;
+package com.structure.services;
 
 import com.structure.models.Teacher;
 import com.structure.repositories.JwtKeyRepo;
@@ -6,15 +6,19 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
-public class JWTUtil {
+public class JWTService {
 
     @Autowired
     private JwtKeyRepo jkr;
@@ -49,10 +53,21 @@ public class JWTUtil {
         return createToken(claims, teacher.getUsername());
     }
 
-    private String createToken(Map<String, Object> claims, String subject){
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 3))
-                .signWith(SignatureAlgorithm.HS256, retrieveKey()).compact();
+    private String createToken(Map<String, Object> claims, String username){
+//        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+//                .commaSeparatedStringToAuthorityList("ROLE_USER");
+
+        return Jwts.builder()
+                   .setClaims(claims)
+/*                   .claim("authorities",
+                           grantedAuthorities.stream()
+                                             .map(GrantedAuthority::getAuthority)
+                                             .collect(Collectors.toList()))*/
+                   .setSubject(username)
+                   .setIssuedAt(new Date(System.currentTimeMillis()))
+                   .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 3)) //3 hours
+                   .signWith(SignatureAlgorithm.HS256, retrieveKey())
+                   .compact();
     }
 
     public boolean validateToken(String token, Teacher teacher){

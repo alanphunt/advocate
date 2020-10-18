@@ -1,10 +1,11 @@
 import React from "react";
 import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
 /*
-updateState- to add/remove objects to the parent state
-limit- the number to max out at
-object- the object to concat/remove from the objectArray
-objectArray- the length of the array to keep track of the #
+Props:
+    updateState- to add/remove objects to the parent state
+    limit- the number to max out at
+    object- the object to concat/remove from the objectArray
+    objectArray- used for the length of the array to keep track of the #
  */
 const NumberPicker = (props) => {
     let num = props.objectArray.length;
@@ -34,7 +35,7 @@ const NumberPicker = (props) => {
         <div className={"numberpickerwrapper"}>
             <div
                 className={`numbersub ${num === 0 ? 'disabled' : ''}`}
-                onClick={(e)=>{
+                onClick={()=>{
                     props.updateState(change(num-1, props.object, props.objectArray));
                 }}
             >
@@ -52,7 +53,7 @@ const NumberPicker = (props) => {
             </div>
             <div
                 className={`numberadd ${num === limit ? 'disabled' : ''}`}
-                onClick={(e) => {
+                onClick={() => {
                     props.updateState(change(num+1, props.object, props.objectArray));
                 }}
             >

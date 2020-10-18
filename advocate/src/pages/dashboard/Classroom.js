@@ -1,17 +1,17 @@
 import React from 'react';
 import Table from "./components/Table";
 import Accordion from "./components/accordion/Accordion";
+import DashCard from "./components/DashCard";
 
 
 const Classroom = (props) => {
     return (
-        <div className={"dash-main-inner"}>
-            <div className={"card width-100"}>
-                <div className={"cardheader"}>
-                    <h2>Classrooms</h2>
-                </div>
-                <div className={"cardmain"}>
-                    <Accordion
+        <DashCard
+            header={"Classrooms"}
+        >
+            {
+                props.teacher.classrooms.length > 0
+                    ? <Accordion
                         array={props.teacher.classrooms}
                         data={props.teacher.classrooms.map(v => v.className)}>
                         {
@@ -25,9 +25,9 @@ const Classroom = (props) => {
                             )
                         }
                     </Accordion>
-                </div>
-            </div>
-        </div>
+                    : <></>
+            }
+        </DashCard>
     )
 }
 

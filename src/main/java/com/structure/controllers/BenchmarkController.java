@@ -23,7 +23,9 @@ public class BenchmarkController {
     GoalRepo gr;
 
     @Autowired
-    LoginRegistration lr;
+    private LoginController LC;
+
+    //private final LoginController LC = new LoginController();
 
     @PostMapping(value = "/api/completeBenchmark")
     public ResponseEntity<?> completeBenchmark(String benchmarkId, int complete, String goalId, HttpServletRequest req){
@@ -33,20 +35,20 @@ public class BenchmarkController {
 
         System.out.println(bmr.updateBenchmark(benchmarkId, complete, incomplete ? null : new Date()));
 
-        return lr.getTeacher(req);
+        return LC.getTeacher(req);
     }
 
     @PostMapping(value = "/api/editBenchmark")
     public ResponseEntity<?> editBenchmark(HttpServletRequest req, @RequestParam Map<String, String> body){
         bmr.save(Utils.gson().fromJson(body.get("body"), Benchmark.class));
-        return lr.getTeacher(req);
+        return LC.getTeacher(req);
     }
 
     @PostMapping(value = "/api/deleteBenchmark")
     public ResponseEntity<?> deleteBenchmark(HttpServletRequest req, @RequestParam Map<String, String> body){
 
         bmr.delete(Utils.gson().fromJson(body.get("body"), Benchmark.class));
-        return lr.getTeacher(req);
+        return LC.getTeacher(req);
     }
 
 }

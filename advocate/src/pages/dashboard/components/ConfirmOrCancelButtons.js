@@ -1,34 +1,35 @@
 import React from "react";
 import {FaCheck as CheckIcon, FaTimes as XIcon} from "react-icons/fa";
 
-const ConfirmOrCancelButtons = (props) => {
+//takes in 2 callback methods to either confirm or cancel an action
+const ConfirmOrCancelButtons = ({confirmCallback, cancelCallback, confirmText, cancelText}) => {
     const onEnterConfirm = (e) => {
         if(e.key === "Enter")
-            props.confirmCallback();
+            confirmCallback();
     };
 
     const onEnterCancel = (e) => {
         if(e.key === "Enter")
-            props.cancelCallback();
+            cancelCallback();
     };
 
     return (
         <div className={""}>
             <button
                 className={"marg-right"}
-                onClick={props.confirmCallback}
+                onClick={confirmCallback}
                 onKeyPress={onEnterConfirm}
             >
                 <CheckIcon className={"i-right"}/>
-                <span>Confirm</span>
+                <span>{confirmText || 'Confirm'}</span>
             </button>
             <button
                 className={"cancelButton"}
-                onClick={props.cancelCallback}
+                onClick={cancelCallback}
                 onKeyPress={onEnterCancel}
             >
                 <XIcon className={"i-right"}/>
-                <span>Cancel</span>
+                <span>{cancelText || 'Cancel'}</span>
             </button>
         </div>
     )

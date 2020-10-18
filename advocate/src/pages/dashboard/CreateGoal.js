@@ -4,21 +4,35 @@ import Accordion from "./components/accordion/Accordion";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import GoalForm from "./components/GoalForm";
 import GetStarted from "./components/GetStarted";
+import DashWidget from "./components/DashWidget";
+import DashCard from "./components/DashCard";
+import {Redirect} from "react-router";
+import Modal from "../SharedComponents/Modal";
 
-const CreateGoal = (props) => {
+const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents }) => {
 
     const [goal, setGoal] = useState({
         goalName: "",
         startDate: "",
         masteryDate: "",
         process: "",
-        monitor: "",
+        monitor: 0,
         benchmarks: [],
         studentId: ""
     });
-
+    const [goalCreated, setGoalCreated] = useState(false);
     const [selectedStuObj, setSelectedStuObj] = useState({crInd: 999, stuInd: 999});
-
+    const [displayModal, setDisplayModal] = useState(false);
+    const formInputs = {
+        goalName: "",
+        goal: "",
+        masteryDate: "",
+        startDate: "",
+        process: "",
+        benchmarks: ""
+    };
+    const [formErrors, setFormErrors] = useState({ formInputs });
+    const [newTeacherData, setNewTeacherData] = useState(null);
     const handleSelected = (stu, stuIndex, crInd) => {
         let selected = {crInd: crInd, stuInd: stuIndex};
 
@@ -35,6 +49,11 @@ const CreateGoal = (props) => {
 
     };
 
+    const confirmGoalCreation = () => {
+        updateTeacher(newTeacherData);
+        setGoalCreated(true);
+    };
+
     const createGoal = () => {
         const fd = new FormData();
         let updatedGoals = JSON.parse(JSON.stringify(goal));
@@ -43,32 +62,52 @@ const CreateGoal = (props) => {
             fd.append(key, (key === "benchmarks" ? JSON.stringify(updatedGoals[key]) : updatedGoals[key]));
         });
         fetch("/api/creategoal", {method: "POST", body: fd, headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}})
-            .then(r => r.text())
-            .then(d => {
-                alert("Successfully created a new goal! You'll be redirected to the goal center.")
-                window.location = "/dashboard/goalcenter";
+            .then(response => Promise.all([response.ok, response.json(), response.headers]))
+            .then(([ok, data, headers]) => {
+                if(ok){
+                    setDisplayModal(true);
+                    setNewTeacherData(data);
+                }else{
+                    setFormErrors(data);
+                }
         });
     };
 
+    const closeModal = () => {
+        setDisplayModal(prevState => !prevState);
+    };
+
     return (
-        props.teacher.classrooms.length === 0 || props.teacher.classrooms[0]?.students.length === 0
-            ? <div className={"card height-50"}>
+        !hasClassroomsWithStudents
+            ? <DashWidget flexSize={1} className={"height-100"}>
                 <GetStarted to={"/dashboard/classroom/create"}>
-                    <h2>Create a classroom with students to get started.</h2>
+                    <h2>Get started by creating a classroom</h2>
                 </GetStarted>
-              </div>
-            : <div className={"dash-main-inner"}>
-                <div className={"card width-100"}>
-                    <div className={"cardheader"}><h2>Create a Goal</h2></div>
-                    <div className={"cardmain"}>
-                        <GoalForm goal={goal} updateGoal={setGoal}/>
+            </DashWidget>
+            : goalCreated
+                ? <Redirect to={"/dashboard/goalcenter"}/>
+                : <DashCard header={"Create a Goal"}>
+                    <Modal
+                        displayed={displayModal}
+                        closeModal={closeModal}
+                        successModal={
+                            {
+                                successMessage: "Would you like to redirect to the goal center or create another goal?",
+                                confirmCallback: confirmGoalCreation,
+                                cancelCallback: closeModal,
+                                cancelText: "Create another goal",
+                                confirmText: "Go to Goal Center"
+                            }}
+                    />
+                    <GoalForm goal={goal} updateGoal={setGoal} formErrors={formErrors}/>
+                    <div className={"marg-bot-2"}>
                         <h3 className={"i-bottom"}>Apply to which student</h3>
                         <Accordion
-                            array={props.teacher.classrooms}
-                            data={props.teacher.classrooms.map(cr => cr.className)}
+                            array={teacher.classrooms}
+                            data={teacher.classrooms.map(cr => cr.className)}
                         >
                             {
-                                props.teacher.classrooms.map((cr, crInd) =>
+                                teacher.classrooms.map((cr, crInd) =>
                                     <Table
                                         selectable={true}
                                         selectedCallback={(stu, ind) => {
@@ -83,19 +122,15 @@ const CreateGoal = (props) => {
                             }
                         </Accordion>
                     </div>
-                    <div className={"cardfooter"}>
-                        <button
-                            className={
-                                Object.values(goal).some(v => v === "" || v.length === 0)
+                    <button
+                        className={
+                            Object.values(goal).some(v => v === "" || v.length === 0)
                                 ? "disabled" : ""}
-                            onClick={createGoal}
-                        >
-                            <CheckIcon className={"i-right"}/>
-                            <span>Create Goal</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+                        onClick={createGoal}>
+                        <CheckIcon className={"i-right"}/>
+                        <span>Create Goal</span>
+                    </button>
+                  </DashCard>
     )
 };
 

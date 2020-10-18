@@ -159,7 +159,7 @@ button{
     outline: none;
 }
 
-button:hover{
+button:hover, button:focus{
     background-color: #51bcda;
     color: white;
 }
@@ -186,14 +186,21 @@ label{
     position: absolute;
     font-size: 20px;
     color: #ccc;
-    top: -7px;
-    left: -7px;
+    top: -10px;
+    left: -8px;
     transition: .3s ease;
 }
 
 form input{
-    margin-bottom: 1.5rem;
+    /*margin-bottom: 1.5rem;*/
     width: 100%
+}
+
+.inputerror{
+    color: indianred;
+    margin-left: 8px;
+    font-size: .8rem;
+    line-height: 1.4rem;
 }
 
 .height-100{
@@ -214,6 +221,26 @@ form input{
 
 .width-50{
     width: 50%;
+}
+
+.flex-half{
+    flex: .5;
+}
+
+.flex-1{
+    flex: 1;
+}
+
+.flex-2{
+    flex: 2;
+}
+
+.flex-3{
+    flex: 3;
+}
+
+.flex-4{
+    flex: 4;
 }
 
 .width-25{

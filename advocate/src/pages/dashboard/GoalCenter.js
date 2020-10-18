@@ -10,15 +10,20 @@ import ModalBody from "./components/ModalBody";
 import {fetchPost} from "./Dashboard.js";
 import GoalForm from "./components/GoalForm";
 import ScoreTrial from "./components/Trials/ScoreTrial";
+import DashCard from "./components/DashCard";
+import DashWidget from "./components/DashWidget";
+
 /*
-    Index states are used to update the table component to highlite the selected row and send the object
-    to the drilldown component.
-    Actual state objects are ONLY used for editing/deleting
+Props:
+    updateTeacher- to update the teacher object in the parent component
+    teacher- the teacher object
+    hasClassroomsWithStudents- whether or not the user has created a classroom w/ students yet
  */
-const GoalCenter = (props) =>{
-    const updateTeacher = props.updateTeacher;
+const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents}) =>{
+    //const updateTeacher = props.updateTeacher;
     const ws = window.sessionStorage;
-    const teacher = props.teacher;
+    //const teacher = props.teacher;
+    //const hasClassroomsWithStudents = props.hasClassroomsWithStudents;
 
     const [studentIndex, setStudentIndex] = useState(ws.studentIndex || 999);
     const [classroomIndex, setClassroomIndex] = useState(ws.classroomIndex || 999);
@@ -160,6 +165,7 @@ const GoalCenter = (props) =>{
             setTimeout(() => {setDisplayToaster(false)}, 3500);
     }, [displayToaster]);
 
+    //needs fixing, will popup on component mount
     useEffect(() => {
         //anytime the teacher is updated, presumably after mutating database values, clear the session storage
         //and set the toaster to display
@@ -167,7 +173,7 @@ const GoalCenter = (props) =>{
             clearStorage();
             setDisplayToaster(true);
         }
-    }, [props.teacher]);
+    }, [teacher]);
 
     const handleSelectedStudent = (stu, ind, classInd) => {
         setStudentIndex(ind);
@@ -210,37 +216,44 @@ const GoalCenter = (props) =>{
     };
 
     return (
-        <div className={"dash-main-inner width-100 height-100"} onClick={closeModal}>
+        <DashCard noCanvas className={"height-100"} onClick={closeModal}>
             <Toaster display={displayToaster} setDisplay={setDisplayToaster}/>
             <Modal displayed={modalChild !== ""} closeModal={closeModal} large={modalSize}>
                 {determineModalChild(modalChild)}
             </Modal>
-            <div className={"card height-50 marg-bot"}>
-                <div className={"cardheader"}><h2>Goal Center</h2></div>
-                <div className={"cardmain"}>
-                    <Accordion
-                        allOpen
-                        array={props.teacher.classrooms}
-                        data={props.teacher.classrooms.map(cr => cr.className)}
-                    >
-                        {
-                            props.teacher.classrooms.map((cr, crind) =>
-                                <Table
-                                    selectable={true}
-                                    selectedCallback={(stu, ind) => {
-                                        handleSelectedStudent(stu, ind, crind);
-                                    }}
-                                    selectedRowIndexes={classroomIndex == crind ? studentIndex : 999}
-                                    headers={["Name", "Goal Focus", "Goal Count", "Goal Completion %"]}
-                                    key={"studentgoaltable"+crind}
-                                    data={studentGoalMeta(cr.students)}
-                                />
-                            )
-                        }
-                    </Accordion>
-                </div>
-            </div>
-            <div className={"card height-50"}>
+            <DashWidget
+                className={"goalcenterrow goalcenterrowmarg"}
+                header={"Goal Center"}
+            >
+                {
+                    hasClassroomsWithStudents
+                        ? <Accordion
+                            allOpen
+                            array={teacher.classrooms}
+                            data={teacher.classrooms.map(cr => cr.className)}
+                        >
+                            {
+                                teacher.classrooms.map((cr, crind) =>
+                                    <Table
+                                        selectable={true}
+                                        selectedCallback={(stu, ind) => {
+                                            handleSelectedStudent(stu, ind, crind);
+                                        }}
+                                        selectedRowIndexes={classroomIndex == crind ? studentIndex : 999}
+                                        headers={["Name", "Goal Focus", "Goal Count", "Goal Completion %"]}
+                                        key={"studentgoaltable"+crind}
+                                        data={studentGoalMeta(cr.students)}
+                                    />
+                                )
+                            }
+                        </Accordion>
+                        : <></>
+                }
+            </DashWidget>
+            <DashWidget
+                className={"goalcenterrow"}
+                cardMainHeight
+            >
                 <GoalDrilldown
                     key={"drilldownfor"+student?.name}
                     handleModal={setModalChild}
@@ -259,8 +272,8 @@ const GoalCenter = (props) =>{
                     benchmarkIndex={benchmarkIndex}
                     setBenchmarkIndex={setBenchmarkIndex}
                 />
-            </div>
-        </div>
+            </DashWidget>
+        </DashCard>
     )
 };
 

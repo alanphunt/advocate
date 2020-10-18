@@ -21,22 +21,24 @@ class Dashboard extends React.Component {
             validJWT: true
         };
         this.teacher = props.teacher;
+        this.updateTeacher = props.updateTeacher;
+        this.hasClassroomsWithStudents = this.teacher?.classrooms?.length > 0 && this.teacher?.classrooms[0].students.length > 0;
     }
 
     refreshDataFromComponents = async () => {
         console.log("rehydrating data..");
         let resp = await fetch("/api/teacher", {headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}});
         if(!resp.ok){
-            throw new Error(resp.headers.get("error"));
+            throw new Error(resp.headers.get("Yikes! Something went wrong on the server."));
         }else
             await resp.json().then(data => {
-            this.props.updateTeacher(data);
+            this.updateTeacher(data);
         });
     };
 
     //this is in case of page refresh
     componentDidMount() {
-        if(!this.props.teacher)
+        if(!this.teacher)
             this.refreshDataFromComponents().catch(e => {
                 console.log(e);
                 alert(e.message);
@@ -54,24 +56,25 @@ class Dashboard extends React.Component {
         return (
             <div className={"dashboardwrapper"}>
                 {
-                    this.props.teacher
+                    teacher
                         ? <>
                             <Sidebar
                                 teacher={teacher}
                                 navHandler={{updateActiveCategory: this.handleChange, activeCategory: this.state.activeCategory}}
                                 updateTeacher={this.props.updateTeacher}
-                                updateLoggedIn={this.props.updateLoggedIn}
                             />
                             <div className={"dash-main-wrapper"}>
                                 <Switch>
-                                    <Route path="/dashboard/main">
+                                    <Route path="/dashboard/main" exact>
                                         <DashMain teacher={teacher}/>
                                     </Route>
                                     <Route path="/dashboard/classroom" exact>
                                         <Classroom teacher={teacher}/>
                                     </Route>
-                                    <Route path="/dashboard/classroom/create">
-                                        <CreateClassroom navHandler={this.handleChange} refreshData={this.refreshDataFromComponents}/>
+                                    <Route path="/dashboard/classroom/create" exact>
+                                        <CreateClassroom
+                                            updateTeacher={this.updateTeacher}
+                                        />
                                     </Route>
                                     <Route path="/dashboard/charts" exact>
                                         <Charts teacher={teacher}/>
@@ -79,14 +82,20 @@ class Dashboard extends React.Component {
                                     <Route path="/dashboard/goalcenter" exact>
                                         <GoalCenter
                                             teacher={teacher}
-                                            updateTeacher={this.props.updateTeacher}
+                                            updateTeacher={this.updateTeacher}
                                             refreshData={this.refreshDataFromComponents}
+                                            hasClassroomsWithStudents={this.hasClassroomsWithStudents}
                                         />
                                     </Route>
-                                    <Route path="/dashboard/goalcenter/create">
-                                        <CreateGoal teacher={teacher} refreshData={this.refreshDataFromComponents}/>
+                                    <Route path="/dashboard/goalcenter/create" exact>
+                                        <CreateGoal
+                                            teacher={teacher}
+                                            refreshData={this.refreshDataFromComponents}
+                                            updateTeacher={this.updateTeacher}
+                                            hasClassroomsWithStudents={this.hasClassroomsWithStudents}
+                                        />
                                     </Route>
-                                    <Route path="/dashboard/profile">
+                                    <Route path="/dashboard/profile" exact>
                                         <Profile teacher={teacher}/>
                                     </Route>
                                 </Switch>

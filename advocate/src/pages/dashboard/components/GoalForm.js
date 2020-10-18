@@ -10,13 +10,25 @@ import {
 } from "react-icons/fa";
 import NumberPicker from "./NumberPicker";
 import Table from "./Table";
+import FormElement from "../../SharedComponents/FormElement";
 
 const GoalForm = (props) => {
     const goal = props.goal || null;
+    console.log(goal);
     const updateGoal = props.updateGoal || null;
+    const formErrors = props.formErrors || null;
 
     const [warning, setWarning] = useState("");
     const warningMessage = "You've deleted a benchmark that had associated trial data. Clicking confirm will make these changes permanent. Click cancel to undo.";
+
+    const benchmark = {
+        label: "",
+        description: "",
+        masteryDate: "",
+        tracking: ""
+    };
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     const updateBenchmark = (index, event, key) => {
         let val = event.currentTarget.value;
@@ -50,86 +62,89 @@ const GoalForm = (props) => {
         updateGoal({...goal, benchmarks: objArray});
     };
 
-    const benchmark = {
-        label: "",
-        description: "",
-        masteryDate: "",
-        tracking: ""
-    };
-
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     return (
-        <div className={""}>
+        <div>
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom"}>Goal name</h3>
-                <label>
-                    <BookIcon className={"label-i"}/>
-                    <input
-                        placeholder={"Name"}
-                        value={goal?.goalName || ""}
-                        onChange={(e) => {updateGoalLogic(e, "goalName")}}
-                        autoFocus
-                    />
-                </label>
+                <FormElement
+                    label={"Goal Name"}
+                    placeholder={"Name"}
+                    icon={<BookIcon/>}
+                    value={goal?.goalName || ""}
+                    onChange={(e) => {updateGoalLogic(e, "goalName")}}
+                    errorMessage={formErrors?.goalName}
+                />
             </div>
 
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom"}>Goal</h3>
-                <label>
-                    <BookIcon className={"label-i"}/>
-                    <input placeholder={"Goal"}  value={goal?.goal || ""} onChange={(e) => {updateGoalLogic(e, "goal")}}/>
-                </label>
+                <FormElement
+                    icon={<BookIcon/>}
+                    placeholder={"Goal"}
+                    label={"Goal"}
+                    value={goal?.goal || ""}
+                    onChange={(e) => {updateGoalLogic(e, "goal")}}
+                    errorMessage={formErrors?.goal}
+                />
             </div>
 
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom"}>Projected mastery date</h3>
-                <label>
-                    <CalCheckIcon className={"label-i"}/>
-                    <input placeholder={"MM/DD/YYYY"} value={goal?.masteryDate || ""} onChange={(e) => {updateGoalLogic(e, "masteryDate")}}/>
-                </label>
+                <FormElement
+                    label={"Projected Mastery Date"}
+                    icon={<CalCheckIcon/>}
+                    placeholder={"MM/DD/YYYY"}
+                    value={goal?.masteryDate || ""}
+                    onChange={(e) => {updateGoalLogic(e, "masteryDate")}}
+                    errorMessage={formErrors?.masteryDate}
+                />
             </div>
 
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom"}>Start date</h3>
-                <label>
-                    <CalPlusIcon className={"label-i"}/>
-                    <input placeholder={"MM/DD/YYYY"} value={goal?.startDate || ""} onChange={(e) => {updateGoalLogic(e, "startDate")}}/>
-                </label>
+                <FormElement
+                    label={"Start Date"}
+                    icon={<CalPlusIcon/>}
+                    placeholder={"MM/DD/YYYY"}
+                    value={goal?.startDate || ""}
+                    onChange={(e) => {updateGoalLogic(e, "startDate")}}
+                    errorMessage={formErrors?.startDate}
+                />
             </div>
 
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom flex-center-vert"}>Monitor after mastery?
-                {
-                    goal?.monitor
-                        ? <CheckedIcon
-                            tabIndex={0}
-                            className={"i-left selectable"}
-                            onClick={() => {updateGoalLogic(null, "monitor", 0)}}
-                            onKeyPress={(e) => {
-                                if (e.key === "Enter")
-                                    updateGoalLogic(null, "monitor", 0)
-                            }}
-                        />
-                        : <UncheckedIcon
-                            tabIndex={0}
-                            className={"i-left selectable"}
-                            onClick={() => {updateGoalLogic(null, "monitor", 1)}}
-                            onKeyPress={(e) => {
-                                if (e.key === "Enter")
-                                    updateGoalLogic(null, "monitor", 1)
-                            }}
-                        />
-                }
-                </h3>
+                <FormElement>
+                    <h3 className={"i-bottom flex-center-vert"}>Monitor after mastery?
+                        {
+                            goal?.monitor
+                                ? <CheckedIcon
+                                    tabIndex={0}
+                                    className={"i-left selectable"}
+                                    onClick={() => {updateGoalLogic(null, "monitor", 0)}}
+                                    onKeyPress={(e) => {
+                                        if (e.key === "Enter")
+                                            updateGoalLogic(null, "monitor", 0)
+                                    }}
+                                />
+                                : <UncheckedIcon
+                                    tabIndex={0}
+                                    className={"i-left selectable"}
+                                    onClick={() => {updateGoalLogic(null, "monitor", 1)}}
+                                    onKeyPress={(e) => {
+                                        if (e.key === "Enter")
+                                            updateGoalLogic(null, "monitor", 1)
+                                    }}
+                                />
+                        }
+                    </h3>
+                </FormElement>
             </div>
 
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom"}>How to implement goal</h3>
-                <label>
-                    <ClipIcon className={"label-i"}/>
-                    <input placeholder={"Process"}  value={goal?.process || ""} onChange={(e) => {updateGoalLogic(e, "process")}}/>
-                </label>
+                <FormElement
+                    label={"How to implement goal"}
+                    icon={<ClipIcon/>}
+                    placeholder={"Process"}
+                    value={goal?.process || ""}
+                    onChange={(e) => {updateGoalLogic(e, "process")}}
+                    errorMessage={formErrors?.process}
+                />
             </div>
 
             <div className={"marg-bot-2"}>
@@ -142,6 +157,11 @@ const GoalForm = (props) => {
                         objectArray={goal?.benchmarks}
                     />
                 </div>
+                {
+                    formErrors?.benchmarks
+                        ? <p className={"inputerror marg-bot"}>{formErrors?.benchmarks}</p>
+                        : <></>
+                }
                 <Table headers={["Label", "Benchmark", "Mastery Date", "Tracking Type"]}>
                     <div>
                         {

@@ -3,24 +3,24 @@ import '../../../css/dashboardstyles.css';
 import puzzle from '../../../assets/puzzle-sm.png';
 import SidebarLinks from "./SidebarLinks";
 import SidebarProfile from "./SidebarProfile";
-import {Link} from "react-router-dom";
 
-const Sidebar = (props) => {
-    const active = props.navHandler.activeCategory;
-    const changeActive = props.navHandler.updateActiveCategory;
-    const teacher = props.teacher;
+const Sidebar = ({teacher, navHandler, updateTeacher}) => {
+    const active = navHandler.activeCategory;
+    const changeActive = navHandler.updateActiveCategory;
 
     return(
         <div className={"sidebarwrapper"}>
             <div className={"sidebar"}>
                 <div className={"sidebarheader sidebarpad"}>
-                    <Link to={"/"}
-                          onClick={() => {
-                              window.sessionStorage.clear();
-                              window.location.replace("/");
-                    }}>
-                        <img src={puzzle} alt={"logo"}/>
-                    </Link>
+                    <img
+                        src={puzzle}
+                        className={"selectable"}
+                        alt={"logo"}
+                        onClick={() => {
+                            sessionStorage.clear();
+                            window.location.replace("/");
+                        }}
+                    />
                 </div>
                 <div className={"sidebarmain sidebarpad sideflex"}>
                     <SidebarLinks updateActiveLink={changeActive} activeLink={active}/>

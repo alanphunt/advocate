@@ -1,113 +1,149 @@
-import React from "react";
+import React, {useState} from "react";
 import NumberPicker from "./components/NumberPicker";
 import Table from "./components/Table";
 import {Redirect} from "react-router-dom";
 import {FaAddressBook as BookIcon, FaCheck as CheckIcon} from "react-icons/fa";
+import DashCard from "./components/DashCard";
+import FormElement from "../SharedComponents/FormElement";
+import Modal from "../SharedComponents/Modal";
 
-class CreateClassroom extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            students: [],
-            className: "",
-            createdClassroom: false
-        }
-        props.navHandler("classroom");
-    }
-
-    student = {
+const CreateClassroom = ({updateTeacher}) => {
+    const student = {
         name: '',
         goalFocus: '',
         eligibility: '',
         skills: ''
     };
 
-    updateStudent = (i, event) => {
+    const formElements = {
+        className: null,
+        students: null
+    };
+
+    const [students, setStudents] = useState([]);
+    const [className, setClassName] = useState("");
+    const [createdClassroom, setCreatedClassroom] = useState(false);
+    const [formErrors, setFormErrors] = useState(formElements);
+    const [displayModal, setDisplayModal] = useState(false);
+    const [newTeacherData, setNewTeacherData] = useState(null);
+
+    let stuCount = students.length;
+
+    const updateStudent = (i, event) => {
         let attr = event.currentTarget.getAttribute("name");
         let val = event.currentTarget.value;
         //parse/stringify deep copies the array so we prevent direct state mutation
-        let studentsCopy = JSON.parse(JSON.stringify(this.state.students));
+        let studentsCopy = JSON.parse(JSON.stringify(students));
         studentsCopy[i][attr] = val;
-        this.setState({students: studentsCopy});
+        setStudents([...studentsCopy]);
     };
 
-    updateStudents = (updatedArray) => {
-        this.setState({students: updatedArray});
+    const updateStudents = (updatedArray) => {
+        setStudents([...updatedArray]);
     };
 
-    createClassroom = () => {
-        let form = new FormData();
-        form.append("students", JSON.stringify(this.state.students));
-        form.append("className", this.state.className);
-        fetch("/api/createclassroom", {method: "POST", body: form, headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}})
-            .then(response => response)
-            .then(data => {
-                this.props.refreshData();
-                alert("Successfully created a new classroom! You will be redirected to the Classroom manager.");
-                this.setState({createdClassroom: true});
-                //window.location = "/dashboard/classroom";
+    const updateClassName = (e) => {
+        setClassName(e.currentTarget.value);
+    };
+
+    const createClassroom = () => {
+            let form = new FormData();
+            form.append("students", JSON.stringify(students));
+            form.append("className", className);
+            fetch("/api/createclassroom", {
+                method: "POST",
+                body: form,
+                headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}
             })
-            .catch(e => console.log(e));
+                .then(response => Promise.all([response.ok, response.json()]))
+                .then(([ok, body]) => {
+                    if(ok) {
+                        //refreshData();
+                        //alert("Successfully created a new classroom! You will be redirected to the Classroom manager.");
+                        setDisplayModal(true);
+                    }else {
+                        setFormErrors({
+                            className: body.className,
+                            students: body.students
+                        });
+                    }
+                });
     };
 
-    updateClassName = (e) => {
-        this.setState({className: e.currentTarget.value})
+    const confirmClassroomCompletion = (data) => {
+        updateTeacher(data);
+        setCreatedClassroom(true);
     };
 
-    render() {
-        let students = this.state.students;
-        let stuCount = students.length;
+    const closeModal = () => {
+        setDisplayModal(false);
+    };
 
-        return (
-              this.state.createdClassroom
-                ? <Redirect push to={"/dashboard/classroom"}/>
-                : <div className={"dash-main-inner"}>
-                    <div className={"card width-100"}>
-                        <div className={"cardheader"}>
-                            <h2>Create a Classroom</h2>
+    return (
+        createdClassroom
+            ? <Redirect push to={"/dashboard/classroom"}/>
+            : <DashCard header={"Create a Classroom"}>
+            <Modal
+                closeModal={closeModal}
+                displayed={displayModal}
+                successModal={
+                    {
+                        successMessage: "Would you like to create another classroom or proceed to the classroom page?",
+                        confirmCallback: confirmClassroomCompletion,
+                        cancelCallback: closeModal,
+                        confirmText: "Create another",
+                        cancelText: "Go to classrooms"
+                    }
+                }/>
+                <div className={"marg-bot-2"}>
+                    <FormElement
+                        icon={<BookIcon/>}
+                        label={"Class Name"}
+                        onChange={updateClassName}
+                        placeholder={"Class Name"}
+                        name={"className"}
+                        errorMessage={formErrors.className}
+                    />
+                </div>
+                <div className="marg-bot-2">
+                    <h3 className={"i-bottom"}>Number of students</h3>
+                    <NumberPicker updateState={updateStudents} object={student} objectArray={students}/>
+                </div>
+                <div className={"marg-bot-2"}>
+                    {
+                        formErrors.students !== null
+                            ? <p className={"inputerror"}>{formErrors.students}</p>
+                            : <></>
+                    }
+                    <Table studentTable={true}>
+                        <div>
+                            {
+                                students.map((v, i) =>{
+                                    return(
+                                        <div key={"student"+i} className={"tr"}>
+                                            <div className="td">
+                                                <input onChange={(e)=>{updateStudent(i, e)}} key={`name${i}`} placeholder='Name' name='name'/>
+                                            </div>
+                                            <div className="td"><input onChange={(e)=>{updateStudent(i, e)}} key={`goals${i}`} placeholder='Goal Focus' name='goalFocus'/></div>
+                                            <div className="td"><input onChange={(e)=>{updateStudent(i, e)}} key={`eligibility${i}`} placeholder='Eligibility' name='eligibility'/></div>
+                                            <div className="td"><input onChange={(e)=>{updateStudent(i, e)}} key={`skills${i}`} placeholder='Skills' name='skills'/></div>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
-                        <div className={"cardmain"}>
-                            <h3 className={"i-bottom"}>Class Name</h3>
-                            <label htmlFor={"className"}>
-                                <BookIcon className={"label-i"}/>
-                                <input onChange={this.updateClassName} className={"width-25 marg-bot-2"} id="className" type={"text"} placeholder={"Class Name"} name={"className"}/>
-                            </label>
-                            <div className="marg-bot-2">
-                                <h3 className={"i-bottom"}>Number of students</h3>
-                                <NumberPicker updateState={this.updateStudents} object={this.student} objectArray={this.state.students}/>
-                            </div>
-                            <Table studentTable={true}>
-                                <div>
-                                    {
-                                        students.map((v, i) =>{
-                                            return(
-                                                <div key={"student"+i} className={"tr"}>
-                                                    <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`name${i}`} placeholder='Name' name='name' required/></div>
-                                                    <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`goals${i}`} placeholder='Goal Focus' name='goalFocus' required/></div>
-                                                    <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`eligibility${i}`} placeholder='Eligibility' name='eligibility' required/></div>
-                                                    <div className="td"><input onChange={(e)=>{this.updateStudent(i, e)}} key={`skills${i}`} placeholder='Skills' name='skills' required/></div>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </Table>
-                        </div>
-                        <div className={"cardfooter"}>
-                            <button
-                                type="button"
-                                className={stuCount === 0 || this.state.className === "" ? "disabled" : ""}
-                                disabled={stuCount === 0}
-                                onClick={this.createClassroom}
-                            >
-                                <CheckIcon className={"i-right"}/>
-                                <span>Create Classroom</span>
-                            </button>
-                        </div>
-                    </div>
-                  </div>
-        )
-    }
-}
+                    </Table>
+                </div>
+                <button
+                    type="button"
+                    className={stuCount === 0 ||className === "" ? "disabled" : ""}
+                    disabled={stuCount === 0}
+                    onClick={createClassroom}>
+                    <CheckIcon className={"i-right"}/>
+                    <span>Create Classroom</span>
+                </button>
+            </DashCard>
+    );
+};
 
 export default CreateClassroom;

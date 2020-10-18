@@ -11,8 +11,8 @@ const TrialChart = (props) => {
         title: {
             text: "Trial Results"
         },
-        width: 300,
-        height: 300,
+        width: 275,
+        height: 275,
         data: [{
             type: "pie",
             startAngle: 90,

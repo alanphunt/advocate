@@ -9,7 +9,7 @@ const ProfileCard = (props) => {
     let teacher = props.teacher;
 
     return (
-        <div className={"card profilecard"}>
+        <div className={"posabs profilecard"}>
             <div className={"profilecarddheader"}>
                 <div className={"cropped"} onMouseEnter={() => {setPicHovered(true)}} onMouseLeave={() => {setPicHovered(false)}}>
                     <img src={imgph} alt={"user"}/>

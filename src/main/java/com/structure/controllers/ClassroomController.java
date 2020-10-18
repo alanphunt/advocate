@@ -1,61 +1,87 @@
 package com.structure.controllers;
 
-import com.google.gson.reflect.TypeToken;
 import com.structure.models.Classroom;
 import com.structure.models.Student;
 import com.structure.models.Teacher;
 import com.structure.repositories.ClassroomRepo;
 import com.structure.repositories.StudentRepo;
-import com.structure.utilities.JWTUtil;
-import com.structure.utilities.TeacherDetailsService;
+import com.structure.services.JWTService;
+import com.structure.services.TeacherDetailsService;
 import com.structure.utilities.Utils;
+import com.structure.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
 public class ClassroomController {
+    @Autowired
+    private StudentRepo sr;
 
     @Autowired
-    StudentRepo sr;
+    private ClassroomRepo cr;
 
     @Autowired
-    ClassroomRepo cr;
+    private TeacherDetailsService TDS;
 
     @Autowired
-    TeacherDetailsService tds;
+    private JWTService JWT_UTIL;
 
     @Autowired
-    JWTUtil jwtUtil;
+    private LoginController LC;
+    //    private final TeacherDetailsService TDS = new TeacherDetailsService();
+    //    private final JWTService JWT_UTIL = new JWTService();
+    //    private final LoginController LC = new LoginController();
+
+
 
     @PostMapping(value = "/api/createclassroom")
     public ResponseEntity<?> createClassroom(HttpServletRequest request, @RequestParam String students, @RequestParam String className){
-        try {
-            String username = jwtUtil.extractEmail(request.getHeader("Authorization").substring(7));
-            Teacher teacher = (Teacher) tds.loadUserByUsername(username);
-            Type listType = new TypeToken<ArrayList<Student>>() {}.getType();
-            ArrayList<Student> studentArray = Utils.gson().fromJson(students, listType);
-            Classroom classroom = cr.save(new Classroom(Utils.generateUniqueId(), className, teacher.getId()));
+        String username = JWT_UTIL.extractEmail(request.getHeader("Authorization").substring(7));
+        Teacher teacher = (Teacher) TDS.loadUserByUsername(username);
 
+        ArrayList<Student> studentArray = Utils.gson().fromJson(students, Utils.getListType(Student.class));
+        Classroom classroom = new Classroom(Utils.generateUniqueId(), className, teacher.getId());
+        Map<String, String> errs = determineClassroomError(studentArray, classroom);
+
+        if(errs.size() == 0){
             studentArray.forEach(stu -> {
                 stu.setId(Utils.generateUniqueId());
                 stu.setClassroomId(classroom.getId());
                 stu.setEnabled(1);
-                sr.save(stu);
             });
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .header(HttpHeaders.LOCATION, "/classroom")
-                    .build();
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to authenticate");
+            classroom.setStudents(studentArray);
+            cr.save(classroom);
+            return LC.getTeacher(request);
         }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Utils.gson().toJson(errs));
+
+    }
+
+    private Map<String, String> determineClassroomError(ArrayList<Student> students, Classroom classroom){
+        Map<String, String> errs = new HashMap<>();
+        if(classroom.getClassName().isBlank())
+            errs.put("className", Constants.CLASSNAME_EMPTY_RESPONSE);
+
+        for (Student student : students) {
+            if ( student.getName().isBlank()
+                    || student.getGoalFocus().isBlank()
+                    || student.getEligibility().isBlank()
+                    || student.getSkills().isBlank()){
+                errs.put("students", Constants.STUDENTS_EMPTY_RESPONSE);
+                break;
+            }
+        }
+        return errs;
+
     }
 }

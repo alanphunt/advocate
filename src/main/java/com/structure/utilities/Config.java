@@ -1,4 +1,3 @@
-/*
 package com.structure.utilities;
 
 import com.structure.services.TeacherDetailsService;
@@ -14,14 +13,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class Config extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    TeacherDetailsService TDS;
+    private TeacherDetailsService TDS;
 
     @Autowired
     private JwtRequestFilter JWT_REQ_FILTER;
@@ -68,4 +66,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-}*/
+}

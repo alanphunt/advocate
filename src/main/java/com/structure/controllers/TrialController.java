@@ -31,7 +31,9 @@ public class TrialController {
     BenchmarkRepo bmr;
 
     @Autowired
-    LoginRegistration lr;
+    private LoginController LC;
+
+    //private final LoginController LC = new LoginController();
 
     @PostMapping(value = "/api/createTrial")
     public ResponseEntity<?> createTrial(HttpServletRequest req, @RequestParam Map<String, String> body){
@@ -48,7 +50,7 @@ public class TrialController {
 
         tr.save(trial);
 
-        return lr.getTeacher(req);
+        return LC.getTeacher(req);
     }
 
     @PostMapping(value = "/api/editTrial")
@@ -59,7 +61,7 @@ public class TrialController {
                 setTrackingInfo(t, trial.getId());
         }
         tr.save(trial);
-        return lr.getTeacher(req);
+        return LC.getTeacher(req);
     }
 
     private void setTrackingInfo(Tracking t, String trialId){

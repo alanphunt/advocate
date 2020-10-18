@@ -44,7 +44,7 @@ public class Trial {
     @OrderBy("label ASC")
     private List<Tracking> trackings;
 
-    @Expose
+    @Expose(serialize = false)
     private int enabled;
 
     public Trial (){}

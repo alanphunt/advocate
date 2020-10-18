@@ -15,7 +15,7 @@ public class Classroom {
     @Expose
     private String id;
 
-    @Expose
+    @Expose(serialize = false)
     private int enabled;
 
     @Expose
@@ -100,7 +100,7 @@ public class Classroom {
                 ", className=" + className +
                 ", teacherId=" + teacherId +
                 ", students=" + Arrays.toString(students.toArray()) +
-        '}';
+                '}';
     }
 
 }

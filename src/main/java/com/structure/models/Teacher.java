@@ -18,7 +18,7 @@ public class Teacher implements UserDetails {
     @Expose
     private String id;
 
-    @Expose
+    @Expose(serialize = false)
     private int enabled;
 
     @Expose
@@ -48,11 +48,10 @@ public class Teacher implements UserDetails {
 
     public Teacher(){}
 
-    public Teacher(String firstName, String lastName, String username, String password, String id) {
+    public Teacher(String firstName, String lastName, String username, String id) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
-        this.password = password;
         this.id = id;
         this.enabled = 1;
         this.dateCreated = new Date();

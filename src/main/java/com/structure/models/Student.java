@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -35,7 +34,7 @@ public class Student {
     @Column(name = "classroom_id")
     private String classroomId;
 
-    @Expose
+    @Expose(serialize = false)
     private int enabled;
 
     public Student(){}
