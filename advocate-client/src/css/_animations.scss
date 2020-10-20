@@ -1,0 +1,109 @@
+
+@keyframes fadein {
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+
+@keyframes fadeinFromTop {
+  0%{
+    top: 40%;
+    opacity: 0;
+  }
+  100%{
+    top: 50%;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInFromBottom{
+  0%{
+    bottom: -10%;
+    opacity: 0;
+  }
+  100%{
+    bottom: 2rem;
+    opacity: 1;
+  }
+}
+
+.fadein{
+  animation: fadein .3s ease 0s 1 normal forwards;
+  z-index: 1;
+}
+
+.fadeinfromtop{
+  animation: fadeinFromTop .3s ease 0s 1 normal forwards;
+  z-index: 1;
+}
+
+.fadeInFromBottom{
+  animation: fadeInFromBottom .3s ease 0s 1 normal forwards;
+  z-index: 1;
+}
+
+/**LOADING ANIMATION **/
+@keyframes ldio-qw71tr0evte {
+  0% { transform: rotate(0) }
+  100% { transform: rotate(360deg) }
+}
+
+.ldio-qw71tr0evte div { box-sizing: border-box!important }
+
+.ldio-qw71tr0evte > div {
+  position: absolute;
+  @include wid-hei(76px, 76px);
+  top: 62px;
+  left: 62px;
+  border-radius: 50%;
+  border: 4px solid $black;
+  border-color: $primary transparent $primary transparent;
+  animation: ldio-qw71tr0evte 1.2048192771084336s linear infinite;
+}
+
+.ldio-qw71tr0evte > div:nth-child(2) { border-color: transparent }
+
+.ldio-qw71tr0evte > div:nth-child(2) div {
+  position: absolute;
+  @include wid-hei(100%, 100%);
+  transform: rotate(45deg);
+}
+
+.ldio-qw71tr0evte > div:nth-child(2) div:before, .ldio-qw71tr0evte > div:nth-child(2) div:after {
+  content: "";
+  display: block;
+  position: absolute;
+  @include wid-hei(4px, 4px);
+  top: -4px;
+  left: 32px;
+  background: $primary;
+  border-radius: 50%;
+  box-shadow: 0 72px 0 0 $primary;
+}
+
+.ldio-qw71tr0evte > div:nth-child(2) div:after {
+  left: -4px;
+  top: 32px;
+  box-shadow: 72px 0 0 0 $primary;
+}
+
+.loadingio-spinner-dual-ring-uq8lhoxnro {
+  @include wid-hei(150px, 150px);
+  display: inline-block;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.ldio-qw71tr0evte {
+  @include wid-hei(100%, 100%);
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+
+.ldio-qw71tr0evte div { box-sizing: content-box; }
+/**END LOADING ANIMATION **/

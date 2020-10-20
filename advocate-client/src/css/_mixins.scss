@@ -1,0 +1,50 @@
+@mixin wid-hei($width: initial, $height: initial){
+  width: $width;
+  height: $height;
+}
+
+@mixin pri-bor(){
+  border: 1px solid $primary;
+}
+
+@mixin lig-bor(){
+  border: 1px solid $lig-gra;
+}
+
+@mixin med-bor(){
+  border-bottom: 1px solid #8e8e8e;
+}
+
+@mixin flex($fle-flo: row nowrap, $ali-ite: stretch, $jus-con: flex-start){
+  display: flex;
+  flex-flow: $fle-flo;
+  align-items: $ali-ite;
+  justify-content: $jus-con;
+}
+
+@mixin bor-rad($radius: 8px){
+  border-radius: $radius;
+}
+
+@mixin cur-poi($poi: pointer){
+  cursor: $poi;
+}
+
+@mixin transition($transition: .3s ease){
+  transition: $transition;
+}
+
+@mixin padding($padding: 1rem){
+  padding: $padding;
+}
+
+@mixin lin-hei($height: 1.75rem){
+  line-height: $height;
+}
+
+@mixin pos-abs-cen(){
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

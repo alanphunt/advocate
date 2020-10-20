@@ -1,0 +1,112 @@
+@import "./_variables";
+@import "./_mixins";
+@import "./_root-elements";
+@import "./_breakpoints";
+@import "./_animations";
+@import "./_dashboard-styles";
+@import "./_shared-styles";
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600&display=swap');
+
+/*
+Naming conventions for methods, variables
+spell out single words
+or
+first 3 letters concatenated with hyphens
+ */
+
+.App{
+  @include wid-hei(100%, 100%);
+  position: relative;
+}
+
+.herocontainer{
+  background:
+          url("../images/teacherandstudent-sm.jpg")
+          center / cover
+          no-repeat
+          fixed;
+  @include wid-hei(100%, 100%);
+  color: $white;
+}
+
+.homeheader{
+  background-color: RGBA(0, 0, 0, .8);
+  padding: 5px 2rem;
+  @include flex($ali-ite: center, $jus-con: space-between);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+.homeheader img{
+  max-width: 200px;
+}
+
+.homeheader .promptcontainer{
+  width: 200px;
+  @include flex($ali-ite: center, $jus-con: space-between);
+}
+
+.homebubble{
+  @include wid-hei(350px, 450px);
+  background-color: RGBA(255, 255, 255, .8);
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.herotext{
+  position: absolute;
+  left: 2rem;
+  top: 40%;
+  transform: translate(0, -40%);
+  max-width: 550px;
+}
+
+.herotext h3{
+  color: $primary;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.herotext h2{
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.herotext p {
+  font-size: 1.4rem;
+  margin: 0 0 1rem .5rem;
+}
+
+.modal{
+  background: $white;
+  padding: 1rem 2rem;
+  width: 100%;
+  color: $dar-gra;
+  overflow: auto;
+}
+
+.modal-lg{
+  @include wid-hei(85%, 85%);
+}
+
+.modal-exit{
+  position: absolute;
+  top: 17px;
+  right: 1rem;
+  font-size: 2rem;
+  @include cur-poi;
+  @include transition;
+  color: $primary;
+}
+
+.formcontainer{
+  min-width: 400px;
+}
+
+.modalwrapper{
+  z-index: 2;
+  display: none;
+  padding: 2rem;
+}

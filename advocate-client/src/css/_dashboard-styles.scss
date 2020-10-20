@@ -1,0 +1,534 @@
+
+.dashboardwrapper{
+  @include wid-hei(100%, 100%);
+  position: relative;
+  font-family: Montserrat, sans-serif;
+  @include flex;
+}
+
+.sidebarwrapper{
+  @include wid-hei(100%, 100%);
+  max-width: 250px;
+  min-width: 225px;
+  padding: 1rem;
+  background: linear-gradient(#66615b,#000 80%);
+  color: $lig-gra;
+  font-size: 12px;
+  box-shadow: -7px 0 20px 0 black;
+  z-index: 2;
+}
+
+.sidebar{
+  @include flex(column, $jus-con: space-between);
+  height: 100%;
+}
+
+.sidebarpad{
+  @include padding;
+}
+
+.sidebarheader{
+  @include med-bor;
+  padding-top: 0;
+}
+
+.sidebarheader img{
+  max-width: 100px;
+  margin: 0 auto;
+  display: block;
+}
+
+.sidebarmain{
+  height: 100%;
+  @include med-bor;
+  font-weight: 600;
+  overflow-y: auto;
+}
+
+.sidebarfooter{
+  @include med-bor;
+  @include flex($ali-ite: center);
+  position: relative;
+}
+
+.sidebar label{
+  width: 50px;
+  cursor: pointer;
+}
+
+.sidebarfooter label img{
+  width: 100%;
+  @include bor-rad;
+}
+
+.sidecaret{
+  font-size: 16px;
+}
+
+.sideitemwrapper{
+  height: 100%;
+  position: relative;
+}
+
+.sideitem{
+  padding: 1rem 0;
+  @include flex($ali-ite: center);
+}
+
+.itemmain:hover{
+  color: $white;
+}
+
+a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
+  color: $primary;
+}
+
+.itemmain{
+  width: 100%;
+  @include flex($ali-ite: center, $jus-con: space-between);
+  @include cur-poi;
+  text-transform: uppercase;
+}
+
+.itemmaininner svg{
+  font-size: 24px;
+  margin-right: 10px;
+  width: 30px;
+}
+
+.dash-main-wrapper{
+  background-color: $med-whi;
+  width: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.itemmaininner{
+  @include flex($ali-ite: center);
+  @include transition;
+}
+
+.transition{
+  @include transition;
+}
+
+.caretflip{
+  transform: rotate(180deg);
+}
+
+.dropdownwrapper{
+  width: 100%;
+  @include flex(column);
+}
+
+.dropdown{
+  display: none;
+  width: 100%;
+  @include transition;
+}
+
+.dropdownactive{
+  display: block;
+}
+
+.dropdown li{
+  list-style: none;
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.dropdown li a{
+  @include flex($ali-ite: center);
+  @include transition;
+}
+
+.dropdown li a:hover{
+  color: $white;
+}
+
+.dropdown ul li:last-child{
+  margin-bottom: 0;
+}
+
+.dropdown li span:first-child{
+  font-size: 1rem;
+  margin-right: 6px;
+  opacity: .5;
+  width: 30px
+}
+
+.dropdown ul{
+  padding: 1rem 0 0 4px;
+}
+
+.active{
+  color: $primary;
+}
+
+.sidebar-default-pic{
+  @include bor-rad;
+  width: 50px;
+}
+
+.dash-main-inner{
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cardwrapperrow{
+  @include flex;
+  @include wid-hei(100%, 450px);
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.card{
+  padding: 1rem;
+  @include bor-rad;
+  box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
+  background-color: $white;
+  overflow: auto;
+  position: relative;
+}
+
+.cardwrapperrow .card{
+  margin-right: 2rem;
+}
+
+.cardwrapperrow .card:last-child{
+  margin-right: 0;
+}
+
+.profilecard{
+  width: 100%;
+  position: relative;
+  @include flex($fle-flo: column, $jus-con: space-evenly);
+}
+
+.profilecard h2{
+  text-align: center;
+  color: $primary;
+}
+
+.infocard{
+  width: 100%;
+  min-height: 400px;
+}
+
+.cropped {
+  max-width: 150px;
+  width: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  @include flex($ali-ite: center, $jus-con: center);
+  margin: 0 auto 1rem auto;
+  position: relative;
+}
+
+.addpic{
+  display: none;
+  background-color: #00000070;
+  @include wid-hei(100%, 100%);
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  color: $white;
+  font-size: 2rem;
+  @include cur-poi;
+}
+
+.piccardinfo{
+  width: 100%;
+  padding: 1rem;
+  color: $lig-gra;
+  text-align: center;
+}
+
+.quote{
+  margin: 1rem;
+  letter-spacing: .1rem;
+  font-weight: 100;
+}
+
+.infocard form{
+  margin: 2rem 0 0 7px;
+}
+
+.infocard label:not(:last-of-type){
+  display: inline-block;
+  margin-right: 2rem;
+}
+
+.minmax{
+  position: absolute;
+  bottom: 0;
+}
+
+.cardheader{
+  margin-bottom: 2rem;
+}
+
+.cardheader h2{
+  font-weight: bold;
+}
+
+/*************TABLE STYLES**************/
+
+.table{
+  @include lig-bor;
+  border-left: none;
+  position: relative;
+}
+
+.tr{
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid $dar-whi;
+}
+
+.tbody .tr:last-of-type{
+  border-bottom: none;
+}
+
+.tbody .tr:nth-of-type(odd){
+  background-color: $med-whi;
+}
+
+.tbody .tr:hover {
+  background-color: $med-whi;
+}
+
+.th:not(:last-child) {
+  border-left: 1px solid $dar-whi;
+}
+
+.th, .td{
+  flex: 1;
+  padding: 1rem 5px;
+  display: flex;
+  border-left: 1px solid $dar-whi;
+  position: relative;
+}
+
+.th{
+  flex-flow: column;
+}
+
+.td{
+  align-items: center;
+  justify-content: space-between;
+}
+
+.td-icon{
+  justify-content: flex-end;
+  border-left: none !important;
+}
+
+.table input, .table select{
+  @include bor-rad;
+  padding: 10px 10px 10px 5px;
+  width: 90%;
+}
+
+.table input:focus, select:focus        {
+  border-color: $primary;
+}
+
+.tcols h3{
+  font-weight: bold;
+}
+
+.getstarted{
+  @include wid-hei(100%, 100%);
+  background-color: $lig-gra;
+  color: $med-gra;
+  @include flex(column, center, center);
+  @include cur-poi;
+  text-align: center;
+}
+
+.goalcenterrow{
+  height: 49%;
+}
+
+.goalcenterrowmarg{
+  margin-bottom: 2%;
+}
+
+.getstarted:hover{
+  color: $primary;
+}
+
+/*******NUMBER PICKER STYLES*******/
+.numberpickerwrapper{
+  position: relative;
+  @include flex($jus-con: space-between);
+  width: max-content;
+}
+
+.numberinput{
+}
+
+.numberinput input{
+  margin: 0;
+  border-radius: 0;
+  width: 50px;
+  padding: 10px;
+  text-align: center;
+  border-left: none;
+  border-right: none;
+}
+
+.numbersub, .numberadd{
+  background-color: $primary;
+  color: $white;
+  font-size: 1.3rem;
+  position: relative;
+  @include bor-rad;
+  @include cur-poi;
+  width: 38px;
+}
+
+.numbersub{
+  border-radius: $rad8px 0 0 $rad8px;
+  background-color: $incomplete;
+}
+
+.numberadd{
+  border-radius: 0 $rad8px $rad8px 0;
+}
+
+/*******END NUMBER PICKER STYLES*******/
+
+/*******ACCORDION STYLES*******/
+.accordion{
+  width: 100%;
+  position: relative;
+  @include lig-bor;
+}
+
+.acc-item {
+  border-bottom: 1px solid $lig-gra;
+  &:last-of-type{
+    border-bottom: none;
+  }
+}
+
+/*.acc-item:last-of-type{
+  border-bottom: none;
+}*/
+
+.acc-item-head{
+  @include cur-poi;
+  padding: 1rem 10px;
+  @include flex($jus-con: space-between);
+}
+
+.acc-item-main{
+  padding: 1rem 10px 2rem 10px;
+  display: none;
+}
+/*******END ACCORDION STYLES*******/
+
+/*******STUDENTCARD STYLES*******/
+.itemcard{
+  display: inline-flex;
+  min-width: 200px;
+  min-height: 200px;
+  flex: 1;
+  flex-flow: column;
+  @include cur-poi;
+  @include lig-bor;
+  box-shadow: none;
+  position: relative;
+  margin: 0 1rem 1rem 0;
+  padding: 1rem;
+}
+
+.itemcardcontainer{
+  @include flex($fle-flo: row wrap);
+}
+
+.itemcardhead{
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid $lig-gra;
+  padding: 0 0 10px 0;
+}
+
+.itemcardhead h2{
+  position: relative;
+}
+
+.itemcard-i{
+  position: absolute;
+  left: 0;
+  top: 3px;
+}
+
+.itemcard:hover{
+  box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
+}
+
+/*******END STUDENTCARD STYLES*******/
+
+.createtrialwrapper{
+  width: 100%;
+}
+
+.itemsuccess{
+  @include wid-hei(100%, 100%);
+  @include flex($ali-ite: center);
+  @include cur-poi;
+  font-size: 1.3rem;
+}
+
+.grayscale{
+  filter: grayscale(100%);
+  &:hover{
+    filter: grayscale(0);
+  }
+}
+
+.comp-color{
+  color: $primary;
+}
+
+.incomp-color{
+  color: $incomplete;
+}
+
+/*
+.grayscale:hover{
+  filter: grayscale(0);
+}
+*/
+
+.stuinfocardwrapper{
+  @include bor-rad;
+  padding: 1rem;
+  @include lig-bor;
+  width: 75%;
+  margin-left: auto;
+}
+
+.trialgraphwrapper{
+  margin: 2rem 0;
+}
+
+.toasterwrapper{
+  display: none;
+  position: absolute;
+  bottom: 2rem;
+  right: 3rem;
+  min-width: 250px;
+  min-height: 40px;
+  background-color: $primary;
+  color: $white;
+  padding: 0 1rem;
+  align-items: center;
+  font-weight: bold;
+  @include cur-poi;
+  @include transition;
+}

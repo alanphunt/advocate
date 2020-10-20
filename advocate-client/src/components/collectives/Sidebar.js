@@ -1,5 +1,4 @@
 import React from "react";
-import 'css/dashboardstyles.css';
 import puzzle from "images/puzzle-sm.png";
 import SidebarLinks from "components/collectives/SidebarLinks";
 import SidebarProfile from "components/singletons/SidebarProfile";

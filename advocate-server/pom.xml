@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.structure</groupId>
-    <artifactId>advocate</artifactId>
+    <artifactId>advocateIEP</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>advocate</name>
-    <description>Adversary for Growth</description>
+    <name>Advocate IEP</name>
+    <description>Advocacy for growth through Data</description>
 
     <properties>
         <java.version>1.8</java.version>

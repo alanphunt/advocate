@@ -1,0 +1,238 @@
+.i-right{
+  margin-right: 8px;
+}
+
+.i-left{
+  margin-left: 8px;
+}
+
+.i-top{
+  margin-top: 8px;
+}
+
+.i-bottom{
+  margin-bottom: 8px;
+}
+
+.i-hover{
+  @include cur-poi;
+  @include transition;
+}
+
+.hover-color:hover{
+  color: $primary;
+}
+
+.i-hover:hover{
+  color: $primary;
+}
+
+.i-gray{
+  color: gray;
+}
+
+.bubble{
+  @include bor-rad;
+  box-shadow: 0 0 20px 0 rgba(51, 51, 51, 0.48);
+}
+
+
+.display{
+  display: flex !important;
+}
+
+.nodisplay{
+  display: none !important;
+}
+
+.centeredform{
+  @include flex($fle-flo: column);
+  width: 75%;
+  margin: 0 auto 1rem auto;
+}
+
+.cancelButton:hover{
+  background-color: $incomplete;
+}
+
+.label-i{
+  position: absolute;
+  font-size: 20px;
+  color: $lig-gra;
+  top: -10px;
+  left: -8px;
+
+}
+.inputerror{
+  color: $incomplete;
+  margin-left: 8px;
+  font-size: .8rem;
+  line-height: 1.4rem;
+}
+
+.height-100{
+  height: 100%;
+}
+
+.height-50{
+  height: 50%;
+}
+
+.width-100{
+  width: 100%;
+}
+
+.width-75{
+  width: 75%;
+}
+
+.width-50{
+  width: 50%;
+}
+
+.flex-half{
+  flex: .5;
+}
+
+.flex-1{
+  flex: 1;
+}
+
+.flex-2{
+  flex: 2;
+}
+
+.flex-3{
+  flex: 3;
+}
+
+.flex-4{
+  flex: 4;
+}
+
+.width-25{
+  width: 25%;
+}
+
+.marg-right{
+  margin-right: 1rem;
+}
+
+.marg-left{
+  margin-left: 1rem;
+}
+
+.marg-bot{
+  margin-bottom: 1rem;
+}
+
+.marg-top{
+  margin-top: 1rem;
+}
+
+.marg-bot-2{
+  margin-bottom: 2rem;
+}
+
+.marg-top-2{
+  margin-top: 2rem;
+}
+
+.labelblock{
+  display: block;
+}
+
+.br{
+  @include bor-rad;
+}
+
+.disabled, .disabled-a{
+  pointer-events: none;
+  background-color: $lig-gra;
+  color: $dar-gra;
+}
+
+.button-a{
+  width: unset;
+  border-radius: 25px;
+}
+
+.posabs{
+  @include pos-abs-cen;
+}
+
+.selectable{
+  @include cur-poi;
+}
+
+.selected-bg{
+  background-color: $primary !important;
+  color: $black;
+}
+
+.selected-bg:hover{
+  background-color: $primary !important;
+}
+
+.selected-bg svg:hover {
+  color: $dar-gra;
+}
+
+.drilldownwrapper{
+  height: 100%;
+}
+
+.drilldown{
+  @include flex($jus-con: space-between);
+  height: 100%;
+}
+
+.drilldown-goals, .drilldown-trials, .drilldown-trialmeta{
+  flex: 1;
+  margin-right: 1rem;
+  @include lig-bor;
+  @include bor-rad;
+  padding: 10px 1rem;
+  overflow: auto;
+}
+
+.drilldown-trialmeta{
+  margin-right: 0;
+}
+
+.flex-center-between{
+  @include flex($ali-ite: center, $jus-con: space-between);
+}
+
+.flex-column{
+  @include flex($fle-flo: column);
+}
+
+.float-left{
+  float: left;
+}
+
+.float-right{
+  float: right;
+}
+
+.table-icon-right{
+  position: absolute;
+  right: 8px;
+}
+
+.td-icon{
+  border-right: none;
+}
+
+.success{
+  color: $success;
+}
+
+.flex-center-vert{
+  @include flex($ali-ite: center);
+}
+
+.flex-center-horz{
+  @include flex($jus-con: center);
+}

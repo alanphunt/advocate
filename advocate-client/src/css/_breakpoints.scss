@@ -1,0 +1,20 @@
+
+@media screen and (max-width: 485px){
+  .homeheader{
+    justify-content: center;
+    flex-flow: column;
+  }
+
+  .homeheader img{
+    margin-bottom: 2rem;
+  }
+
+  .herotext{
+    position: relative;
+    left: 0;
+    top: 0;
+    transform: none;
+    padding: 2rem;
+  }
+}
+
