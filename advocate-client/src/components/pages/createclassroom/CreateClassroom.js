@@ -1,13 +1,15 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import NumberPicker from "components/singletons/NumberPicker";
 import Table from "components/collectives/Table";
 import {Redirect} from "react-router-dom";
-import {FaAddressBook as BookIcon, FaCheck as CheckIcon} from "react-icons/fa";
+import {FaAddressBook as BookIcon, FaCheck as CheckIcon, FaRegCopy as CopyIcon} from "react-icons/fa";
 import DashCard from "components/collectives/DashCard";
 import FormElement from "components/singletons/FormElement";
-import Modal from "components/collectives/Modal";
+import CompletionModal from "components/collectives/CompletionModal";
+import Button from "components/singletons/Button";
+import {checkLocalForCreated} from "components/functions/functions";
 
-const CreateClassroom = ({updateTeacher}) => {
+const CreateClassroom = ({teacher, updateTeacher, logout}) => {
     const student = {
         name: '',
         goalFocus: '',
@@ -22,12 +24,13 @@ const CreateClassroom = ({updateTeacher}) => {
 
     const [students, setStudents] = useState([]);
     const [className, setClassName] = useState("");
-    const [createdClassroom, setCreatedClassroom] = useState(false);
     const [formErrors, setFormErrors] = useState(formElements);
     const [displayModal, setDisplayModal] = useState(false);
     const [newTeacherData, setNewTeacherData] = useState(null);
 
     let stuCount = students.length;
+
+    const classroomWasCreated = !!localStorage.getItem("classroomWasCreated") || false;
 
     const updateStudent = (i, event) => {
         let attr = event.currentTarget.getAttribute("name");
@@ -48,58 +51,60 @@ const CreateClassroom = ({updateTeacher}) => {
 
     const createClassroom = () => {
             let form = new FormData();
+            form.append("teacherId", teacher.id);
             form.append("students", JSON.stringify(students));
             form.append("className", className);
             fetch("/api/createclassroom", {
                 method: "POST",
-                body: form,
-                headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}
+                body: form
             })
-                .then(response => Promise.all([response.ok, response.json()]))
-                .then(([ok, body]) => {
+                .then(res => Promise.all([res.ok, res.ok ? res.json() : res.text(), res.status]))
+                .then(([ok, body, status]) => {
                     if(ok) {
-                        //refreshData();
-                        //alert("Successfully created a new classroom! You will be redirected to the Classroom manager.");
+                        setNewTeacherData(body);
                         setDisplayModal(true);
-                    }else {
-                        setFormErrors({
-                            className: body.className,
-                            students: body.students
-                        });
-                    }
+                    }else if(status !== 403){
+                        setFormErrors(JSON.parse(body));
+                    }else
+                        logout();
                 });
     };
 
     const confirmClassroomCompletion = (data) => {
-        updateTeacher(data);
-        setCreatedClassroom(true);
+        localStorage.setItem("classroomWasCreated", "true");
+        updateTeacher(newTeacherData);
     };
 
+    useEffect(() => {
+        return () => {
+            checkLocalForCreated("classroomWasCreated");
+        };
+    }, [])
+
     const closeModal = () => {
+        setStudents([]);
+        setClassName("");
+        setFormErrors(formElements);
         setDisplayModal(false);
     };
 
     return (
-        createdClassroom
+        classroomWasCreated
             ? <Redirect push to={"/dashboard/classroom"}/>
             : <DashCard header={"Create a Classroom"}>
-            <Modal
-                closeModal={closeModal}
-                displayed={displayModal}
-                successModal={
-                    {
-                        successMessage: "Would you like to create another classroom or proceed to the classroom page?",
-                        confirmCallback: confirmClassroomCompletion,
-                        cancelCallback: closeModal,
-                        confirmText: "Create another",
-                        cancelText: "Go to classrooms"
-                    }
-                }/>
+                <CompletionModal
+                    closeModal={closeModal}
+                    displayed={displayModal}
+                    successMessage={"Would you like to create another classroom or proceed to the classroom page?"}>
+                    <Button text={"Go to classrooms"} className={"marg-right"} onClick={confirmClassroomCompletion} icon={<CheckIcon className={"i-right"}/>}/>
+                    <Button text={"Create another"} onClick={closeModal} icon={<CopyIcon className={"i-right"}/>}/>
+                </CompletionModal>
                 <div className={"marg-bot-2"}>
                     <FormElement
                         icon={<BookIcon/>}
                         label={"Class Name"}
                         onChange={updateClassName}
+                        value={className}
                         placeholder={"Class Name"}
                         name={"className"}
                         errorMessage={formErrors.className}
@@ -134,14 +139,12 @@ const CreateClassroom = ({updateTeacher}) => {
                         </div>
                     </Table>
                 </div>
-                <button
-                    type="button"
+                <Button
                     className={stuCount === 0 ||className === "" ? "disabled" : ""}
-                    disabled={stuCount === 0}
-                    onClick={createClassroom}>
-                    <CheckIcon className={"i-right"}/>
-                    <span>Create Classroom</span>
-                </button>
+                    onClick={createClassroom}
+                    icon={<CheckIcon className={"i-right"}/>}
+                    text={"Create Classroom"}
+                />
             </DashCard>
     );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import ConfirmOrCancelButtons from "components/collectives/ConfirmOrCancelButtons";
+import {ERROR_STATUS, STORAGE} from "utils/constants";
 
 const CompleteBenchmark = (props) => {
     //if the BM isn't complete then we're updating it as complete and vice versa
@@ -9,7 +10,7 @@ const CompleteBenchmark = (props) => {
     const isLastIncompleteBenchmark = goal.benchmarks.filter(bm => bm.complete === 0).length === 1;
     const allBenchmarksComplete = goal.benchmarks.filter(bm => !bm.complete).length === 0;
 
-    const markBenchmarkAsComplete = (benchmarkId, updatedStatus, goalId, updateTeacherCallback, miscCallback) => {
+    const markBenchmarkAsComplete = (benchmarkId, updatedStatus, goalId) => {
         let formData = new FormData();
         formData.append("benchmarkId", benchmarkId);
         formData.append("complete", updatedStatus);
@@ -18,12 +19,12 @@ const CompleteBenchmark = (props) => {
         fetch("/api/completeBenchmark",
             {
                 method: "POST",
-                body: formData,
-                headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}
+                body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                props.updateTeacher(data);
+            .then(response => [response.ok, (response.ok ? response.json() : response.text()), response.status])
+            .then(([ok, data, status]) => {
+                if (ok)
+                    props.updateTeacher(data);
             });
     };
 

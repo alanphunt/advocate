@@ -6,7 +6,9 @@ import com.structure.models.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -45,9 +47,9 @@ public class Utils {
         return builder.create();
     }
 
-    private String extractJwtFromCookie (HttpServletRequest request) throws NoSuchElementException {
-        return Arrays.stream(request.getCookies()).filter(t ->
-                "jwt".equals(t.getName())).findFirst().orElseThrow().getValue();
+    public static Optional<Cookie> extractJwtFromCookie (HttpServletRequest request) throws NoSuchElementException {
+         return Arrays.stream(request.getCookies()).filter(cookie ->
+                 cookie.getName().equals("jwt")).findFirst();
     }
 
     public static String generateUniqueId() {
@@ -72,4 +74,13 @@ public class Utils {
     public static String escape(String text){
         return StringEscapeUtils.escapeJava(text);
     }
+
+    public static void createAndAddJwtToCookie(String JWT, HttpServletResponse res){
+        Cookie cookie = new Cookie("jwt", JWT);
+        cookie.setMaxAge(Constants.COOKIE_LIFE_SECONDS);
+        cookie.setHttpOnly(true);
+        //cookie.setSecure(true);
+        res.addCookie(cookie);
+    }
+
 }

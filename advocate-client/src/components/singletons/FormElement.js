@@ -16,11 +16,10 @@ const FormElement = props => {
     } = {...props};
 
     const ele = useRef(null);
-
     useEffect(() => {
-        if(autoFocus)
+        if (autoFocus)
             ele.current.focus();
-    }, [props]);
+    }, []);
 
     return (
         <div className={"marg-bot"}>
@@ -40,11 +39,12 @@ const FormElement = props => {
                             id={id || undefined}
                             type={type || "text"}
                             placeholder={placeholder}
-                            value={value || undefined}
+                            value={value || ''}
                             onChange={onChange}
                             required={required || false}
                             name={name}
                             ref={ele}
+                            autoFocus
                         />
                 }
             </label>

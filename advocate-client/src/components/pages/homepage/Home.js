@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import logo from 'images/logo-sm.png'
 import Modal from 'components/collectives/Modal'
 import {Redirect} from "react-router";
@@ -15,227 +15,224 @@ import {
     FaUserPlus as UserPlusIcon,
     FaUsers as UsersIcon
 } from "react-icons/fa";
+import {SERVER_ERROR} from "utils/constants";
 
-class Home extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            isFetching: false,
-            modalContent: "",
-            errors: {
-                login: "",
-                registerUsername: "",
-                registerPassword: "",
-                registerFirstName: "",
-                registerLastName: ""
-            }
-        };
-        this.regFocus = React.createRef();
-        this.logFocus = React.createRef();
-    }
+const Home = ({teacher, userLogin, failedToRetrieveTeacher}) => {
+    const loginObj = {
+        username: '',
+        password: ''
+    };
+    
+    const registerObj = {
+        username: '',
+        password: '',
+        firstName: '',
+        lastName: '',
 
-    handleModal = (formType) => {
-        //this prevents values from being transferred from one form to the other when the modal is displayed
-        let regform = document.getElementById("regform");
-        let logform = document.getElementById("logform");
-        logform && logform.reset();
-        regform && regform.reset();
-        this.setState({...this.state, modalContent: formType});
     };
 
-    closeModal = (e) => {
-        if(this.state.modalContent !== "") {
-            this.setState({...this.state, modalContent: ""});
+    const errorObj = {
+        login: "",
+        registerUsername: "",
+        registerPassword: "",
+        registerFirstName: "",
+        registerLastName: ""
+    };
+        
+    const [login, setLogin] = useState(loginObj);
+    const [register, setRegister] = useState(registerObj)
+    const [isFetching, setIsFetching] = useState(false);
+    const [modalContent, setModalContent] = useState("");
+    const [errors, setErrors] = useState(errorObj);
+
+    const resetForms = () => {
+        setLogin(loginObj);
+        setRegister(registerObj);
+        setErrors(errorObj);
+    };
+
+    const closeModal = (e) => {
+        if(modalContent !== "") {
+            setModalContent("");
             if(!!e.target.closest(".headerregister"))
-                this.setState({...this.state, modalContent: "register"});
+                setModalContent("register");
             else if (!!e.target.closest(".headerlogin"))
-                this.setState({...this.state, modalContent: "login"});
+                setModalContent("login");
+            resetForms();
         }
     };
 
-    handleForm = (e) => {
+    const handleForm = (e) => {
         e.preventDefault();
-        this.setState({...this.state, isFetching: true})
-        const fdata = new FormData(e.currentTarget);
-        if(this.state.modalContent === "login")
-            this.logIn(fdata);
-        else
-            this.register(fdata);
+        setIsFetching(true);
+        handleFormSubmission();
     };
 
-    handleServerError = () => {
-        this.setState({...this.state, isFetching: false});
-        alert("Uh oh! Having a hard time connecting to the server.");
+    const handleServerError = () => {
+        setIsFetching(false);
+        alert(SERVER_ERROR);
     };
 
-    logIn = (formData) => {
-        const newData = JSON.stringify({username: formData.get("username"), password: formData.get("password")});
-        fetch("/api/authenticate", {method: "POST", body: newData, headers: {"Content-Type": "application/json"}})
-            .then(response => Promise.all([response.ok, response.json(), response.headers, response.status]))
-            .then(([ok, body, headers, status]) => {
-                this.setState({...this.state, isFetching: false})
+    const handleFormSubmission = () => {
+        const isLogin = modalContent === "login";
+        const data = isLogin ? login : register;
+        const path =  isLogin ? 'authenticate' : 'createuser';
+
+        fetch(`/api/${path}`, {method: "POST", body: JSON.stringify(data), headers: {"Content-Type": "application/json"}})
+            .then(response => Promise.all([response.ok, response.json()]))
+            .then(([ok, body]) => {
+                setIsFetching(false);
                 if(ok){
-                    this.handleFormCompletion(body, headers);
+                    userLogin(body);
                 }else{
-                    this.setState({...this.state, errors: {
-                            ...this.state.errors,
-                            login: body.error
-                        }})
+                    setErrors({
+                            login: body.error || "",
+                            registerFirstName: body.firstName || "",
+                            registerLastName: body.lastName || "",
+                            registerUsername: body.username || "",
+                            registerPassword: body.password || "",
+                        });
                 }
             })
-            .catch(e => {
-                this.handleServerError();
-            });
+            .catch(handleServerError);
     };
 
-    register = (formData) => {
-        fetch("/api/createuser", {method: "POST", body: formData})
-            .then(response => Promise.all([response.ok, response.json(), response.headers]))
-            .then(([ok, body, headers]) => {
-                this.setState({...this.state, isFetching: false})
-                if(ok){
-                    this.handleFormCompletion(body, headers);
-                }else{
-                    this.setState({...this.state, errors: {
-                            registerFirstName: body.firstName,
-                            registerLastName: body.lastName,
-                            registerUsername: body.username,
-                            registerPassword: body.password,
-                        }});
-                }
-            })
-            .catch(e => {
-                this.handleServerError();
-            });
-    };
-
-    handleFormCompletion = (body, headers) => {
-        window.sessionStorage.setItem("authorization", headers.get("jwt"));
-        this.props.updateTeacher(body);
-    };
-
-    divKeyPressEvent = (event, formType) => {
+    const divKeyPressEvent = (event, formType) => {
         if(event.key === "Enter")
-            this.handleModal(formType);
+            setModalContent(formType);
     };
 
-    render() {
-        let contentType = this.state.modalContent;
-        const registerForm =
-            <form
-                id="regform"
-                className={"centeredform"}
-                onSubmit={this.handleForm}>
-                <FormElement
-                    icon={<NameIcon/>}
-                    placeholder={"First Name"}
-                    name={"firstName"}
-                    errorMessage={this.state.errors.registerFirstName}
-                    autoFocus
-                />
-                <FormElement
-                    icon={<NameIcon/>}
-                    placeholder={"Last Name"}
-                    name={"lastName"}
-                    errorMessage={this.state.errors.registerLastName}
-                />
-                <FormElement
-                    icon={<EmailIcon/>}
-                    placeholder={"Email"}
-                    name={"username"}
-                    errorMessage={this.state.errors.registerUsername}
-                />
-                <FormElement
-                    icon={<PassIcon/>}
-                    type={"password"}
-                    placeholder={"Password"}
-                    name={"password"}
-                    errorMessage={this.state.errors.registerPassword}
-                />
-            <button tabIndex={0} type={"submit"}>Submit</button>
-        </form>;
+    const updateFormValues = (e, key) => {
+        if(modalContent === "login")
+            setLogin({...login, [key]: e.currentTarget.value});
+        else
+            setRegister({...register, [key]: e.currentTarget.value})
+    };
 
-        const loginForm =
-            <form
-                id="logform"
-                className={"centeredform"}
-                onSubmit={this.handleForm}>
-                <FormElement
-                    icon={<EmailIcon/>}
-                    placeholder={"Email"}
-                    name={"username"}
-                    autoFocus
-                />
-                <FormElement
-                    icon={<PassIcon/>}
-                    /*type={"password"}*/
-                    placeholder={"Password"}
-                    name={"password"}
-                />
-                {
-                    this.state.errors.login !== ""
-                        ? <p className={"inputerror marg-bot"}>{ this.state.errors.login }</p>
-                        : <></>
-                }
-                <button type={"submit"}>Submit</button>
-            </form>;
+    const registerForm =
+        <>
+            <FormElement
+                value={register.firstName}
+                icon={<NameIcon/>}
+                placeholder={"First Name"}
+                name={"firstName"}
+                errorMessage={errors.registerFirstName}
+                onChange={(e) => {updateFormValues(e, "firstName")}}
+                autoFocus
+            />
+            <FormElement
+                value={register.lastName}
+                icon={<NameIcon/>}
+                placeholder={"Last Name"}
+                name={"lastName"}
+                errorMessage={errors.registerLastName}
+                onChange={(e) => {updateFormValues(e, "lastName")}}
+            />
+            <FormElement
+                value={register.username}
+                icon={<EmailIcon/>}
+                placeholder={"Email"}
+                name={"username"}
+                errorMessage={errors.registerUsername}
+                onChange={(e) => {updateFormValues(e, "username")}}
+            />
+            <FormElement
+                onChange={(e) => {updateFormValues(e, "password")}}
+                value={register.password}
+                icon={<PassIcon/>}
+                type={"password"}
+                placeholder={"Password"}
+                name={"password"}
+                errorMessage={errors.registerPassword}
+            />
+        </>;
 
-        return (
-            this.props.teacher
-                ? <Redirect push to={{pathname: "/dashboard/main"}}/>
-                : <div className={"herocontainer"} onClick={this.closeModal}>
-                        <div className={this.state.isFetching ? "display" : "nodisplay"}>
-                            <Loading/>
+    const loginForm =
+        <>
+            <FormElement
+                onChange={(e) => {updateFormValues(e, "username")}}
+                value={login.username}
+                icon={<EmailIcon/>}
+                placeholder={"Email"}
+                name={"username"}
+                autoFocus
+            />
+            <FormElement
+                value={login.password}
+                icon={<PassIcon/>}
+                /*type={"password"}*/
+                placeholder={"Password"}
+                name={"password"}
+                onChange={(e) => {updateFormValues(e, "password")}}
+            />
+            {
+                errors.login !== ""
+                    ? <p className={"inputerror marg-bot"}>{ errors.login }</p>
+                    : <></>
+            }
+        </>;
+
+    return (
+        teacher && !failedToRetrieveTeacher
+            ? <Redirect push to={{pathname: "/dashboard/main"}}/>
+            : <div className={"herocontainer"} onClick={closeModal}>
+                <div className={isFetching ? "display" : "nodisplay"}>
+                    <Loading/>
+                </div>
+                <Modal
+                    displayed={modalContent !== ""}
+                    closeModal={closeModal}
+                >
+                    <div className="formcontainer">
+                        <div className={"formheader"}>
+                            <h2>{modalContent === "login" ? "Welcome back!" : "Let's get you started."}</h2>
+                            <hr/>
                         </div>
-                        <Modal
-                            displayed={contentType !== ""}
-                            closeModal={this.closeModal}
+                        <form
+                            className={"centeredform"}
+                            onSubmit={handleForm}
                         >
-                            <div className="formcontainer">
-                                <div className={"formheader"}>
-                                    <h2>{contentType === "login" ? "Welcome back!" : "Let's get you started."}</h2>
-                                    <hr/>
-                                </div>
-                                {contentType === "login" ? loginForm : registerForm}
-                            </div>
-                        </Modal>
-                        <header className={"homeheader"}>
-                            <img src={logo} alt={"Advocate logo"}/>
-                            <div className={"promptcontainer"}>
-                                <div
-                                    onClick={() => {
-                                        this.handleModal("login")}
-                                    }
-                                    onKeyPress={event => {this.divKeyPressEvent(event, "login");}}
-                                    tabIndex={0}
-                                    className={"headerlogin i-hover"}>
-                                    <UserIcon className={"i-right"}/>
-                                    <span>Login</span>
-                                </div>
-                                <div
-                                    onClick={() => {
-                                        this.handleModal("register")
-                                    }}
-                                    onKeyPress={event => {this.divKeyPressEvent(event, "register");}}
-                                    tabIndex={0}
-                                    className={"headerregister i-hover"}>
-                                    <UserPlusIcon className={"i-right"}/>
-                                    <span>Register</span>
-                                </div>
-                            </div>
-                        </header>
-                        <div className={"herotext"}>
-                            <h3>Advocate through data.</h3>
-                            <h2>Spend less time with data collection and more time impacting lives.</h2>
-                            <br/>
-                            <p><ChartIcon className={"i-right"}/> Visualize student growth</p>
-                            <p><SyncIcon className={"i-right"}/> Create templates to reuse goals</p>
-                            <p><UsersIcon className={"i-right"}/>Manage all of your classrooms</p>
-                            <p><NetIcon className={"i-right"}/>Multiple methods to track progress</p>
+                            {modalContent === "login" ? loginForm : modalContent === "register" ? registerForm : null}
+                            <button tabIndex={0} type={"submit"}>Submit</button>
+                        </form>
+                    </div>
+                </Modal>
+                <header className={"homeheader"}>
+                    <img src={logo} alt={"Advocate logo"}/>
+                    <div className={"promptcontainer"}>
+                        <div
+                            onClick={() => {
+                                setModalContent("login")}
+                            }
+                            onKeyPress={event => {divKeyPressEvent(event, "login");}}
+                            tabIndex={0}
+                            className={"headerlogin i-hover"}>
+                            <UserIcon className={"i-right"}/>
+                            <span>Login</span>
+                        </div>
+                        <div
+                            onClick={() => {
+                                setModalContent("register")
+                            }}
+                            onKeyPress={event => {divKeyPressEvent(event, "register");}}
+                            tabIndex={0}
+                            className={"headerregister i-hover"}>
+                            <UserPlusIcon className={"i-right"}/>
+                            <span>Register</span>
                         </div>
                     </div>
-        );
-    }
-}
+                </header>
+                <div className={"herotext"}>
+                    <h3>Advocate through data.</h3>
+                    <h2>Spend less time with data collection and more time impacting lives.</h2>
+                    <br/>
+                    <p><ChartIcon className={"i-right"}/> Visualize student growth</p>
+                    <p><SyncIcon className={"i-right"}/> Create templates to reuse goals</p>
+                    <p><UsersIcon className={"i-right"}/>Manage all of your classrooms</p>
+                    <p><NetIcon className={"i-right"}/>Multiple methods to track progress</p>
+                </div>
+            </div>
+    )
+};
 
 export default Home;

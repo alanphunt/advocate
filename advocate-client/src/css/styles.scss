@@ -88,13 +88,13 @@ first 3 letters concatenated with hyphens
 }
 
 .modal-lg{
-  @include wid-hei(85%, 85%);
+  @include wid-hei(75%, 75%);
 }
 
 .modal-exit{
   position: absolute;
-  top: 17px;
-  right: 1rem;
+  top: -30px;
+  right: -30px;
   font-size: 2rem;
   @include cur-poi;
   @include transition;
@@ -108,5 +108,4 @@ first 3 letters concatenated with hyphens
 .modalwrapper{
   z-index: 2;
   display: none;
-  padding: 2rem;
 }

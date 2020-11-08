@@ -1,9 +1,9 @@
 package com.structure.config;
 
 import com.structure.models.Teacher;
-import com.structure.repositories.TeacherRepo;
 import com.structure.services.JWTService;
 import com.structure.services.TeacherDetailsService;
+import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,9 +13,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -25,12 +27,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = httpServletRequest.getHeader("Authorization");
+        System.out.println("Filtering incoming request..");
+        Optional<Cookie> jwtCookie = Utils.extractJwtFromCookie(httpServletRequest);
         String username = null;
         String jwt = null;
-        //try {
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                jwt = authHeader.substring(7);
+        try {
+            if (jwtCookie.isPresent()) {
+                jwt = jwtCookie.get().getValue();
                 username = JWT_UTIL.extractEmail(jwt);
             }
 
@@ -42,11 +45,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(upat);
                 }
             }
-
             filterChain.doFilter(httpServletRequest, httpServletResponse);
-/*        } catch(Exception e){
-            httpServletResponse.setHeader("error", "JWT exception, please log back in.");
-            httpServletResponse.setStatus(403);
-        }*/
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            httpServletResponse.sendError(403);
+        }
     }
 }

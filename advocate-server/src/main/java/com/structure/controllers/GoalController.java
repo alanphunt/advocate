@@ -40,8 +40,6 @@ public class GoalController {
     @Autowired
     private LoginController LC;
 
-    //private final LoginController LC = new LoginController();
-
     @PostMapping(value = "/creategoal")
     public ResponseEntity<?>createGoal(@RequestParam Map<String, String> body, HttpServletRequest req) throws ParseException {
         Map<String, String> errors = determineGoalCreationErrors(body);

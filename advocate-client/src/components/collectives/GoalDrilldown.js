@@ -10,28 +10,33 @@ const GoalDrilldown = (
     {
         handleModal,
         student,
-        goal,
+        studentIndex,
         setGoal,
         goalIndex,
         setGoalIndex,
         benchmark,
-        setBenchmark,
         benchmarkIndex,
         setBenchmarkIndex,
         trial,
         setTrial,
         trialIndex,
-        setTrialIndex
+        setTrialIndex,
+        classroomIndex
     }) =>
 {
 
     const stuWithGoals = student && student.goals.length !== 0;
     const trials = benchmark?.trials || null;
-    const trackings = trials !== null && trials[trialIndex]?.trackings || null;
+    const trackings = (trials !== null && trials[trialIndex]?.trackings) || null;
+    const createGoalFor = {
+        student: student,
+        classroomIndex: classroomIndex,
+        studentIndex: studentIndex
+    };
 
     const selectedBenchmarkCallback = (obj, benchmarkIndex, goalIndex) => {
-        let goal =  student.goals[goalIndex];
-        let bm = goal.benchmarks[benchmarkIndex];
+        //let goal =  student.goals[goalIndex];
+        //let bm = goal.benchmarks[benchmarkIndex];
         setGoalIndex(goalIndex);
         //setGoal(goal);
         setBenchmarkIndex(benchmarkIndex);
@@ -94,7 +99,7 @@ const GoalDrilldown = (
                 <div className={"drilldown-goals"}>
                     <div className={"marg-bot-2 flex-center-between"}>
                         <h2>Goals for {student ? student.name.charAt(0).toUpperCase() + student.name.substring(1) : "..."}</h2>
-                        <Link push="true" className={`button-a ${!student && 'disabled'}`} to={"/dashboard/goalcenter/create"}>
+                        <Link push="true" className={`button-a ${!student && 'disabled'}`} to={{pathname: "/dashboard/goalcenter/create", state: createGoalFor}}>
                             <button className={student ? "enabled" : "disabled"}><PlusIcon className={"i-right"}/>Create Goal</button>
                         </Link>
                     </div>
@@ -120,7 +125,7 @@ const GoalDrilldown = (
                                                     headers={[`Benchmarks (${goal.benchmarks.length})`]}
                                                     selectable={goal.benchmarks.length !== 0}
                                                     selectedCallback={(obj, ind) => {selectedBenchmarkCallback(obj, ind, goalind);}}
-                                                    selectedRowIndexes={goalIndex == goalind && goal.benchmarks.length !== 0 ? benchmarkIndex : null}
+                                                    selectedRowIndexes={goalIndex === goalind && goal.benchmarks.length !== 0 ? benchmarkIndex : null}
                                                     data={
                                                         goal.benchmarks.length === 0
                                                             ? [{text: "Edit goal to add benchmarks"}]
@@ -154,7 +159,7 @@ const GoalDrilldown = (
                             <>
                                 <div className={"marg-bot-2"}>
                                     <p><strong>Projected mastery date: </strong>{benchmark?.masteryDate}</p>
-                                    <p><strong>Mastery date: </strong>{benchmark?.complete == 1 ? benchmark?.metDate : "N/A"}</p>
+                                    <p><strong>Mastery date: </strong>{benchmark?.complete === 1 ? benchmark?.metDate : "N/A"}</p>
                                     <p><strong>Tracking type: </strong>{benchmark?.tracking}</p>
                                     <p><strong>Description: </strong>{benchmark?.description}</p>
                                 </div>

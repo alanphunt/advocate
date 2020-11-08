@@ -17,24 +17,20 @@ import java.util.Map;
 public class BenchmarkController {
 
     @Autowired
-    BenchmarkRepo bmr;
+    private BenchmarkRepo bmr;
 
     @Autowired
-    GoalRepo gr;
+    private GoalRepo gr;
 
     @Autowired
     private LoginController LC;
-
-    //private final LoginController LC = new LoginController();
 
     @PostMapping(value = "/api/completeBenchmark")
     public ResponseEntity<?> completeBenchmark(String benchmarkId, int complete, String goalId, HttpServletRequest req){
         boolean incomplete = complete == 0;
         if(!goalId.equals(""))
             gr.updateCompletionStatus(goalId, complete, incomplete ? null : new Date());
-
         System.out.println(bmr.updateBenchmark(benchmarkId, complete, incomplete ? null : new Date()));
-
         return LC.getTeacher(req);
     }
 
@@ -46,7 +42,6 @@ public class BenchmarkController {
 
     @PostMapping(value = "/api/deleteBenchmark")
     public ResponseEntity<?> deleteBenchmark(HttpServletRequest req, @RequestParam Map<String, String> body){
-
         bmr.delete(Utils.gson().fromJson(body.get("body"), Benchmark.class));
         return LC.getTeacher(req);
     }

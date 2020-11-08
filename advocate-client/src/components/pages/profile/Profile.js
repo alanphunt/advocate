@@ -8,8 +8,7 @@ import {
     FaCommentDots as DotsIcon
 } from "react-icons/fa";
 
-const Profile = (props) => {
-    let teacher = props.teacher;
+const Profile = ({teacher, updateTeacher, logout}) => {
 
     return (
         <div className={"dash-main-inner"}>

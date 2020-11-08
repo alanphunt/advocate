@@ -295,8 +295,12 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   background-color: $med-whi;
 }
 
-.tbody .tr:hover {
-  background-color: $med-whi;
+.tbody{
+  & .tr{
+    &:hover{
+      background-color: $gray;
+    }
+  }
 }
 
 .th:not(:last-child) {

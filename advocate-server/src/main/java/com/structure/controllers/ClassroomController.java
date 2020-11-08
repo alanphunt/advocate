@@ -36,19 +36,11 @@ public class ClassroomController {
 
     @Autowired
     private LoginController LC;
-    //    private final TeacherDetailsService TDS = new TeacherDetailsService();
-    //    private final JWTService JWT_UTIL = new JWTService();
-    //    private final LoginController LC = new LoginController();
-
-
 
     @PostMapping(value = "/api/createclassroom")
-    public ResponseEntity<?> createClassroom(HttpServletRequest request, @RequestParam String students, @RequestParam String className){
-        String username = JWT_UTIL.extractEmail(request.getHeader("Authorization").substring(7));
-        Teacher teacher = (Teacher) TDS.loadUserByUsername(username);
-
+    public ResponseEntity<?> createClassroom(HttpServletRequest request, @RequestParam String students, @RequestParam String className, @RequestParam String teacherId){
         ArrayList<Student> studentArray = Utils.gson().fromJson(students, Utils.getListType(Student.class));
-        Classroom classroom = new Classroom(Utils.generateUniqueId(), className, teacher.getId());
+        Classroom classroom = new Classroom(Utils.generateUniqueId(), className, teacherId);
         Map<String, String> errs = determineClassroomError(studentArray, classroom);
 
         if(errs.size() == 0){

@@ -14,7 +14,6 @@ import FormElement from "components/singletons/FormElement";
 
 const GoalForm = (props) => {
     const goal = props.goal || null;
-    console.log(goal);
     const updateGoal = props.updateGoal || null;
     const formErrors = props.formErrors || null;
 
@@ -72,6 +71,7 @@ const GoalForm = (props) => {
                     value={goal?.goalName || ""}
                     onChange={(e) => {updateGoalLogic(e, "goalName")}}
                     errorMessage={formErrors?.goalName}
+                    autoFocus
                 />
             </div>
 

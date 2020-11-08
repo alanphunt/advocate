@@ -2,8 +2,9 @@ import React from "react";
 import puzzle from "images/puzzle-sm.png";
 import SidebarLinks from "components/collectives/SidebarLinks";
 import SidebarProfile from "components/singletons/SidebarProfile";
+import {STORAGE} from "utils/constants";
 
-const Sidebar = ({teacher, navHandler, updateTeacher}) => {
+const Sidebar = ({teacher, navHandler, logout}) => {
     const active = navHandler.activeCategory;
     const changeActive = navHandler.updateActiveCategory;
 
@@ -16,8 +17,12 @@ const Sidebar = ({teacher, navHandler, updateTeacher}) => {
                         className={"selectable"}
                         alt={"logo"}
                         onClick={() => {
-                            sessionStorage.clear();
-                            window.location.replace("/");
+                            fetch("/api/logout")
+                                .then(() => {})
+                                .then(() => {
+                                    STORAGE.clear();
+                                    logout();
+                                });
                         }}
                     />
                 </div>

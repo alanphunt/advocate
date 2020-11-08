@@ -33,8 +33,6 @@ public class TrialController {
     @Autowired
     private LoginController LC;
 
-    //private final LoginController LC = new LoginController();
-
     @PostMapping(value = "/api/createTrial")
     public ResponseEntity<?> createTrial(HttpServletRequest req, @RequestParam Map<String, String> body){
         String trialId = Utils.generateUniqueId();

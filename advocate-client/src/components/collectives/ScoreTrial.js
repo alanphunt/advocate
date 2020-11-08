@@ -3,6 +3,7 @@ import NumberPicker from "components/singletons/NumberPicker";
 import Table from "components/collectives/Table";
 import StudentInfoCard from "components/singletons/StudentInfoCard";
 import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
+import {STORAGE} from "utils/constants";
 
 /*
     goback- for creating a new trial and going back a page to select a new template
@@ -37,7 +38,7 @@ const ScoreTrial = ({goBack, benchmark, student, mutableTrial, updateMutableTria
         formData.append("trialNumber", benchmark.trials.length + 1);
         formData.append("tracking", JSON.stringify(trackingArray));
         formData.append("benchmarkId", benchmark.id);
-        fetch("/api/createTrial", {method: "POST", body: formData, headers: {"Authorization": `Bearer ${sessionStorage.authorization}`}})
+        fetch("/api/createTrial", {method: "POST", body: formData})
             .then(r => r.json())
             .then(data => {
                 updateTeacher(data);

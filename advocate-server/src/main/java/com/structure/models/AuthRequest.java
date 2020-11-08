@@ -1,7 +1,9 @@
 package com.structure.models;
 
-public class AuthRequest {
+import com.google.gson.annotations.Expose;
 
+public class AuthRequest {
+    @Expose
     private String username, password;
 
     public AuthRequest () {}

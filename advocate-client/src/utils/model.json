@@ -1,0 +1,75 @@
+{
+  "id": "hjdXrlyJCpX",
+  "dateCreated": "05/08/2020",
+  "firstName": "alan",
+  "lastName": "hunt",
+  "username": "ad@min.com",
+  "description": "",
+  "classrooms": [
+    {
+      "id": "5oOWg0J6CXP",
+      "className": "schiller's scholars",
+      "teacherId": "hjdXrlyJCpX",
+      "students": [
+        {
+          "id": "IVIvAfu7OKB",
+          "classroomId": "5oOWg0J6CXP",
+          "eligibility": "brit",
+          "goalFocus": "make tea",
+          "name": "crine",
+          "skills": "crimpets",
+          "goals": [
+            {
+              "id": "UIMrdZDItKe",
+              "goal": "Learn to read at 30 WPM",
+              "goalName": "Reading",
+              "process": "The student will do such and such in order to achieve this goal. Such and such, things and stuff, as well etcetera.",
+              "enabled": 1,
+              "monitor": 1,
+              "startDate": "09/10/2020",
+              "masteryDate": "10/31/2020",
+              "studentId": "IVIvAfu7OKB",
+              "completionDate": "10/17/2020",
+              "complete": 1,
+              "benchmarks": [
+                {
+                  "id": "9FDnYHlPCYp",
+                  "goalId": "UIMrdZDItKe",
+                  "enabled": 1,
+                  "complete": 1,
+                  "label": "Benchmark A.",
+                  "description": "10 WPM",
+                  "tracking": "score",
+                  "masteryDate": "11/30/2020",
+                  "metDate": "09/10/2020",
+                  "trials": [
+                    {
+                      "id": "DJQyV9f8pNP",
+                      "trialNumber": 1,
+                      "dateStarted": "10/27/2020",
+                      "comments": "a",
+                      "benchmarkId": "9FDnYHlPCYp",
+                      "trackings": [
+                        {
+                          "id": "8u6J0OKXaYe",
+                          "label": "a",
+                          "cueCount": 0,
+                          "durationInSeconds": 0,
+                          "accuracyPercentage": 0.0,
+                          "trialId": "DJQyV9f8pNP",
+                          "enabled": 1,
+                          "correct": 0,
+                          "frequency": 0
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

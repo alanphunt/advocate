@@ -1,5 +1,6 @@
 import React from "react";
 import {FaCheck as CheckIcon, FaTimes as XIcon} from "react-icons/fa";
+import Button from "components/singletons/Button";
 
 //takes in 2 callback methods to either confirm or cancel an action
 const ConfirmOrCancelButtons = ({confirmCallback, cancelCallback, confirmText, cancelText}) => {
@@ -15,22 +16,20 @@ const ConfirmOrCancelButtons = ({confirmCallback, cancelCallback, confirmText, c
 
     return (
         <div className={""}>
-            <button
+            <Button
                 className={"marg-right"}
                 onClick={confirmCallback}
                 onKeyPress={onEnterConfirm}
-            >
-                <CheckIcon className={"i-right"}/>
-                <span>{confirmText || 'Confirm'}</span>
-            </button>
-            <button
+                icon={<CheckIcon className={"i-right"}/>}
+                text={confirmText || "Confirm"}
+            />
+            <Button
                 className={"cancelButton"}
                 onClick={cancelCallback}
                 onKeyPress={onEnterCancel}
-            >
-                <XIcon className={"i-right"}/>
-                <span>{cancelText || 'Cancel'}</span>
-            </button>
+                icon={<XIcon className={"i-right"}/>}
+                text={cancelText || "Cancel"}
+            />
         </div>
     )
 };
