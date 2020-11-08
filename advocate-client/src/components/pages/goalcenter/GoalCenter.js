@@ -1,3 +1,4 @@
+<<<<<<< HEAD:advocate-client/src/components/pages/goalcenter/GoalCenter.js
 import React, {useState, useRef, useEffect} from "react";
 import Accordion from "components/collectives/Accordion";
 import Table from "components/collectives/Table";
@@ -23,6 +24,34 @@ Props:
     hasClassroomsWithStudents- boolean- whether or not the user has created a classroom w/ students yet
  */
 const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout}) =>{
+=======
+import React, {useEffect, useState} from "react";
+import Accordion from "./components/accordion/Accordion";
+import Table from "./components/Table";
+import GoalDrilldown from "./components/GoalDrilldown";
+import Modal from "../SharedComponents/Modal";
+import CreateTrial from "./components/CreateTrial.js"
+import CompleteBenchmark from "./components/CompleteBenchmark";
+import Toaster from "../SharedComponents/Toaster";
+import ModalBody from "./components/ModalBody";
+import {fetchPost} from "./Dashboard.js";
+import GoalForm from "./components/GoalForm";
+import ScoreTrial from "./components/Trials/ScoreTrial";
+import DashCard from "./components/DashCard";
+import DashWidget from "./components/DashWidget";
+
+/*
+Props:
+    updateTeacher- to update the teacher object in the parent component
+    teacher- the teacher object
+    hasClassroomsWithStudents- whether or not the user has created a classroom w/ students yet
+ */
+const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents}) =>{
+    //const updateTeacher = props.updateTeacher;
+    const ws = window.sessionStorage;
+    //const teacher = props.teacher;
+    //const hasClassroomsWithStudents = props.hasClassroomsWithStudents;
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:advocate/src/pages/dashboard/GoalCenter.js
 
     const [studentIndex, setStudentIndex] = useState(+STORAGE.studentIndex);
     const [classroomIndex, setClassroomIndex] = useState(+STORAGE.classroomIndex);
@@ -158,15 +187,31 @@ const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout})
     };
 
     useEffect(() => {
+<<<<<<< HEAD:advocate-client/src/components/pages/goalcenter/GoalCenter.js
         if(STORAGE.length) {
+=======
+        //the timer for the toaster
+        if(displayToaster)
+            setTimeout(() => {setDisplayToaster(false)}, 3500);
+    }, [displayToaster]);
+
+    //needs fixing, will popup on component mount
+    useEffect(() => {
+        //anytime the teacher is updated, presumably after mutating database values, clear the session storage
+        //and set the toaster to display
+        if(sessionStorage.length > 1 ) {
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:advocate/src/pages/dashboard/GoalCenter.js
             clearStorage();
             setDisplayToaster(true);
         }
     }, [teacher]);
+<<<<<<< HEAD:advocate-client/src/components/pages/goalcenter/GoalCenter.js
 
     const cleanupCrudOp = (data) => {
         updateTeacher(data);
     };
+=======
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:advocate/src/pages/dashboard/GoalCenter.js
 
     const handleSelectedStudent = (stu, ind, classInd) => {
         setStudentIndex(ind);
@@ -203,7 +248,11 @@ const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout})
     };
 
     return (
+<<<<<<< HEAD:advocate-client/src/components/pages/goalcenter/GoalCenter.js
         <DashCard noCanvas className={"height-100"} closeModal={modalChild !== "" ? closeModal : null}>
+=======
+        <DashCard noCanvas className={"height-100"} onClick={closeModal}>
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:advocate/src/pages/dashboard/GoalCenter.js
             <Toaster display={displayToaster} setDisplay={setDisplayToaster}/>
             <Modal displayed={modalChild !== ""} closeModal={closeModal} large={modalSize}>
                 {determineModalChild(modalChild)}
@@ -226,7 +275,11 @@ const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout})
                                         selectedCallback={(stu, ind) => {
                                             handleSelectedStudent(stu, ind, crind);
                                         }}
+<<<<<<< HEAD:advocate-client/src/components/pages/goalcenter/GoalCenter.js
                                         selectedRowIndexes={parseInt(classroomIndex) === crind ? studentIndex : 999}
+=======
+                                        selectedRowIndexes={classroomIndex == crind ? studentIndex : 999}
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:advocate/src/pages/dashboard/GoalCenter.js
                                         headers={["Name", "Goal Focus", "Goal Count", "Goal Completion %"]}
                                         key={"studentgoaltable"+crind}
                                         data={studentGoalMeta(cr.students)}

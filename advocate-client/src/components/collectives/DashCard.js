@@ -6,7 +6,7 @@ import React from "react";
         className: string - additional class names for the card
         closeModal: function - the callback to close the modal of the parent
         header: String - the header for the card
-        noCanvas: boolean - if you just want a widget layout w/ no background
+        noCanvas: boolean - if you just want a widget layout
  */
 
 const DashCard = (props) => {

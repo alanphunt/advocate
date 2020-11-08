@@ -21,6 +21,7 @@ import java.util.Map;
 @RequestMapping(path=Constants.API_PATH, method = {RequestMethod.POST})
 public class RegistrationController {
 
+    private Teacher teacher;
     @Autowired
     private PasswordEncoder pe;
     @Autowired
@@ -28,17 +29,20 @@ public class RegistrationController {
     @Autowired
     private JWTService JWT_UTIL;
 
+    //    private final TeacherDetailsService TDS = new TeacherDetailsService();
+    //    private final JWTService JWT_UTIL = new JWTService();
+
     @PostMapping(value = "/createuser")
-    public ResponseEntity<?> createUser(@RequestBody Map<String, String> body, HttpServletResponse response, HttpServletRequest req){
+    public ResponseEntity<?> createUser(@RequestParam Map<String, String> body, HttpServletResponse response, HttpServletRequest req){
         Map<String, String> errors = determineRegistrationError(body);
         if(errors.size() == 0) {
-            Teacher teacher = new Teacher(body.get("firstName"), body.get("lastName"), body.get("username"), Utils.generateUniqueId());
+            teacher = new Teacher(body.get("firstName"), body.get("lastName"), body.get("username"), Utils.generateUniqueId());
             teacher.setPassword(pe.encode(body.get("password")));
             teacher.setClassrooms(new ArrayList<>());
             TDS.saveTeacher(teacher);
             String jsonTeacher = Utils.gson().toJson(teacher);
             final String JWT = JWT_UTIL.generateToken(teacher);
-            Utils.createAndAddJwtToCookie(JWT, response);
+            response.addHeader("jwt", JWT);
             return new ResponseEntity<>(jsonTeacher, HttpStatus.ACCEPTED);
         }
 

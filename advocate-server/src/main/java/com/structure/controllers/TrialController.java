@@ -32,6 +32,11 @@ public class TrialController {
 
     @Autowired
     private LoginController LC;
+<<<<<<< HEAD:advocate-server/src/main/java/com/structure/controllers/TrialController.java
+=======
+
+    //private final LoginController LC = new LoginController();
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:src/main/java/com/structure/controllers/TrialController.java
 
     @PostMapping(value = "/api/createTrial")
     public ResponseEntity<?> createTrial(HttpServletRequest req, @RequestParam Map<String, String> body){

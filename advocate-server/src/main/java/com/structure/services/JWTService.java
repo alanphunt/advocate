@@ -7,12 +7,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JWTService {
@@ -62,7 +66,11 @@ public class JWTService {
                                              .collect(Collectors.toList()))*/
                    .setSubject(username)
                    .setIssuedAt(new Date(System.currentTimeMillis()))
+<<<<<<< HEAD:advocate-server/src/main/java/com/structure/services/JWTService.java
                    .setExpiration(new Date(System.currentTimeMillis() + Constants.COOKIE_LIFE_MS)) //3 hours
+=======
+                   .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 3)) //3 hours
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:src/main/java/com/structure/utilities/JWTUtil.java
                    .signWith(SignatureAlgorithm.HS256, retrieveKey())
                    .compact();
     }

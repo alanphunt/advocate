@@ -9,15 +9,14 @@ import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(path="/api", method = {RequestMethod.GET, RequestMethod.POST})
 public class LoginController {
+    private Teacher teacher;
     //private final TeacherDetailsService TDS = new TeacherDetailsService();
     //private final JWTService JWT_UTIL = new JWTService();
 
@@ -33,31 +33,37 @@ public class LoginController {
     @Autowired private JWTService JWT_UTIL;
     @Autowired AuthenticationManager authMan;
 
+    public LoginController() {}
+
     @GetMapping(value = "/teacher")
     public ResponseEntity<?> getTeacher(HttpServletRequest request){
+        final String JWT = request.getHeader("Authorization").substring(7);
         System.out.println("retrieving teacher..");
         try{
-            final String JWT = Utils.extractJwtFromCookie(request).orElseThrow().getValue();
+            //final String JWT = extractJwtFromCookie(request);
             String teacher = Utils.gson().toJson(TDS.loadUserByUsername(JWT_UTIL.extractEmail(JWT)));
             return ResponseEntity.ok(teacher);
         }catch(Exception npe){
             Arrays.stream(npe.getStackTrace()).forEach(System.out::print);
-            return ResponseEntity.ok(Utils.gson().toJson("{'sorry':'about that!'}"));
+            return ResponseEntity.ok(Utils.gson().toJson("{'sorry': 'about that!'}"));
         }
     }
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthToken(@RequestBody AuthRequest authRequest, HttpServletResponse resp) {
         try {
+            //System.out.println(authRequest.toString());
             authMan.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         }catch(Exception e){
+            //Arrays.stream(e.getStackTrace()).forEach(System.out::println);
             return ResponseEntity.badRequest().body(Utils.gson().toJson(determineLoginErrors(authRequest)));
         }
-        Teacher teacher = (Teacher) TDS.loadUserByUsername(authRequest.getUsername());
+        teacher = (Teacher) TDS.loadUserByUsername(authRequest.getUsername());
         final String JWT = JWT_UTIL.generateToken(teacher);
         System.out.println(JWT);
         System.out.println(teacher.toString());
-        Utils.createAndAddJwtToCookie(JWT, resp);
+
+        resp.addHeader("jwt", JWT);
         return ResponseEntity.ok(Utils.gson().toJson(teacher));
     }
 
@@ -65,13 +71,6 @@ public class LoginController {
     public @ResponseBody String testing(@RequestParam String username) throws SQLException {
         //getMySqlDataSource(username);
         return Utils.gson().toJson("");
-    }
-
-    @GetMapping(value = "/logout")
-    public void logout(HttpServletRequest req, HttpServletResponse res){
-        Cookie jwtCookie = Utils.extractJwtFromCookie(req).orElseThrow();
-        jwtCookie.setMaxAge(0);
-        res.addCookie(jwtCookie);
     }
 
     private Map<String, String> determineLoginErrors(AuthRequest auth){

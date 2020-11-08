@@ -1,9 +1,4 @@
-<<<<<<< HEAD:advocate-server/src/main/java/com/structure/config/Config.java
-package com.structure.config;
-=======
-/*
 package com.structure.utilities;
->>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:src/main/java/com/structure/utilities/SecurityConfig.java
 
 import com.structure.services.TeacherDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +13,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 @Configuration
 @EnableWebSecurity
 public class Config extends WebSecurityConfigurerAdapter {
 
     @Autowired
-<<<<<<< HEAD:advocate-server/src/main/java/com/structure/config/Config.java
     private TeacherDetailsService TDS;
-=======
-    TeacherDetailsService TDS;
->>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:src/main/java/com/structure/utilities/SecurityConfig.java
 
     @Autowired
     private JwtRequestFilter JWT_REQ_FILTER;
@@ -76,8 +66,4 @@ public class Config extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-<<<<<<< HEAD:advocate-server/src/main/java/com/structure/config/Config.java
 }
-=======
-}*/
->>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:src/main/java/com/structure/utilities/SecurityConfig.java

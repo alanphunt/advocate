@@ -10,10 +10,15 @@ import {
 } from "react-icons/fa";
 import NumberPicker from "components/singletons/NumberPicker";
 import Table from "./Table";
+<<<<<<< HEAD:advocate-client/src/components/collectives/GoalForm.js
 import FormElement from "components/singletons/FormElement";
+=======
+import FormElement from "../../SharedComponents/FormElement";
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:advocate/src/pages/dashboard/components/GoalForm.js
 
 const GoalForm = (props) => {
     const goal = props.goal || null;
+    console.log(goal);
     const updateGoal = props.updateGoal || null;
     const formErrors = props.formErrors || null;
 
@@ -71,7 +76,10 @@ const GoalForm = (props) => {
                     value={goal?.goalName || ""}
                     onChange={(e) => {updateGoalLogic(e, "goalName")}}
                     errorMessage={formErrors?.goalName}
+<<<<<<< HEAD:advocate-client/src/components/collectives/GoalForm.js
                     autoFocus
+=======
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:advocate/src/pages/dashboard/components/GoalForm.js
                 />
             </div>
 

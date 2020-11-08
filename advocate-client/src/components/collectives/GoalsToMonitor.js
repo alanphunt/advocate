@@ -1,5 +1,5 @@
 import React from "react";
-import Table from "components/collectives/Table";
+import Table from "./Table";
 
 const GoalsToMonitor = (props) => {
     const teacher = props.teacher;

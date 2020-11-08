@@ -24,6 +24,11 @@ public class BenchmarkController {
 
     @Autowired
     private LoginController LC;
+<<<<<<< HEAD:advocate-server/src/main/java/com/structure/controllers/BenchmarkController.java
+=======
+
+    //private final LoginController LC = new LoginController();
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:src/main/java/com/structure/controllers/BenchmarkController.java
 
     @PostMapping(value = "/api/completeBenchmark")
     public ResponseEntity<?> completeBenchmark(String benchmarkId, int complete, String goalId, HttpServletRequest req){
@@ -31,6 +36,10 @@ public class BenchmarkController {
         if(!goalId.equals(""))
             gr.updateCompletionStatus(goalId, complete, incomplete ? null : new Date());
         System.out.println(bmr.updateBenchmark(benchmarkId, complete, incomplete ? null : new Date()));
+<<<<<<< HEAD:advocate-server/src/main/java/com/structure/controllers/BenchmarkController.java
+=======
+
+>>>>>>> a95f801ec3a4c1b1baef8efb874e845b688000e5:src/main/java/com/structure/controllers/BenchmarkController.java
         return LC.getTeacher(req);
     }
 
