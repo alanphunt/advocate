@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.structure.models.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Type;
 import java.util.*;
 
+@Component
 public class Utils {
 
     public static boolean acceptableInput(String[] input){
@@ -48,6 +50,9 @@ public class Utils {
     }
 
     public static Optional<Cookie> extractJwtFromCookie (HttpServletRequest request) throws NoSuchElementException {
+        if(request.getCookies() == null)
+            return Optional.empty();
+
          return Arrays.stream(request.getCookies()).filter(cookie ->
                  cookie.getName().equals("jwt")).findFirst();
     }

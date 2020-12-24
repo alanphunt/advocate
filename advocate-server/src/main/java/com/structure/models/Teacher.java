@@ -18,7 +18,7 @@ public class Teacher implements UserDetails {
     @Expose
     private String id;
 
-    @Expose(serialize = false)
+    @Expose
     private int enabled;
 
     @Expose

@@ -17,10 +17,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 
 @RestController
@@ -41,7 +40,6 @@ public class LoginController {
             String teacher = Utils.gson().toJson(TDS.loadUserByUsername(JWT_UTIL.extractEmail(JWT)));
             return ResponseEntity.ok(teacher);
         }catch(Exception npe){
-            Arrays.stream(npe.getStackTrace()).forEach(System.out::print);
             return ResponseEntity.ok(Utils.gson().toJson("{'sorry':'about that!'}"));
         }
     }
@@ -69,10 +67,26 @@ public class LoginController {
 
     @GetMapping(value = "/logout")
     public void logout(HttpServletRequest req, HttpServletResponse res){
-        Cookie jwtCookie = Utils.extractJwtFromCookie(req).orElseThrow();
-        jwtCookie.setMaxAge(0);
-        res.addCookie(jwtCookie);
+        try{
+            Cookie jwtCookie = Utils.extractJwtFromCookie(req).orElseThrow();
+            jwtCookie.setMaxAge(0);
+            res.addCookie(jwtCookie);
+        }catch(NoSuchElementException e){
+            System.out.println(e.getMessage());
+        }
     }
+
+
+    @PostMapping(value = "/savecomment")
+    public ResponseEntity<?> saveComment(HttpServletRequest request, @RequestBody Map<String, String> body){
+        final String JWT = Utils.extractJwtFromCookie(request).orElseThrow().getValue();
+        Teacher teacher = (Teacher)TDS.loadUserByUsername(JWT_UTIL.extractEmail(JWT));
+        teacher.setDescription(body.get("trialComment"));
+        TDS.saveTeacher(teacher);
+  
+        return getTeacher(request);
+    }
+
 
     private Map<String, String> determineLoginErrors(AuthRequest auth){
         Map<String, String> errors = new HashMap<>();

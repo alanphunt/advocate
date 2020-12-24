@@ -15,7 +15,7 @@ public class Classroom {
     @Expose
     private String id;
 
-    @Expose(serialize = false)
+    @Expose
     private int enabled;
 
     @Expose

@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import logo from 'images/logo-sm.png'
-import Modal from 'components/collectives/Modal'
+import Modal from 'components/molecules/Modal'
 import {Redirect} from "react-router";
-import Loading from "components/singletons/Loading";
-import FormElement from "components/singletons/FormElement";
+import Loading from "components/atoms/Loading";
+import FormElement from "components/atoms/FormElement";
 import {
     FaAt as EmailIcon,
     FaChartBar as ChartIcon,
@@ -16,6 +16,7 @@ import {
     FaUsers as UsersIcon
 } from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
+import Button from 'components/atoms/Button';
 
 const Home = ({teacher, userLogin, failedToRetrieveTeacher}) => {
     const loginObj = {
@@ -193,7 +194,7 @@ const Home = ({teacher, userLogin, failedToRetrieveTeacher}) => {
                             onSubmit={handleForm}
                         >
                             {modalContent === "login" ? loginForm : modalContent === "register" ? registerForm : null}
-                            <button tabIndex={0} type={"submit"}>Submit</button>
+                            <Button text="Submit" onClick={handleForm} type="submit"/>
                         </form>
                     </div>
                 </Modal>

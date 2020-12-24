@@ -33,3 +33,9 @@ advocate-client/build
 advocate-client/npm-debug.log*
 advocate-client/yarn-debug.log*
 advocate-client/yarn-error.log*
+
+*.vscode
+*.ps1
+*.classpath
+*.prefs
+*.project

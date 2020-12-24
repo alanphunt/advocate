@@ -1,29 +1,29 @@
-import React, {useState, useRef, useEffect} from "react";
-import Accordion from "components/collectives/Accordion";
-import Table from "components/collectives/Table";
-import GoalDrilldown from "components/collectives/GoalDrilldown";
-import Modal from "components/collectives/Modal";
-import CreateTrial from "components/collectives/CreateTrial.js"
-import CompleteBenchmark from "components/collectives/CompleteBenchmark";
-import Toaster from "components/singletons/Toaster";
-import ModalBody from "components/collectives/ModalBody";
-import {crudFetch, fetchPost} from "components/functions/functions";
-import GoalForm from "components/collectives/GoalForm";
-import ScoreTrial from "components/collectives/ScoreTrial";
-import DashCard from "components/collectives/DashCard";
-import DashWidget from "components/collectives/DashWidget";
-import {studentGoalMeta} from "components/functions/functions";
-import {useToaster} from "components/hooks/hooks";
+import React, {useState, useEffect, useContext} from "react";
+import Accordion from "components/molecules/Accordion";
+import GoalDrilldown from "components/molecules/GoalDrilldown";
+import Modal from "components/molecules/Modal";
+import CreateTrial from "components/molecules/CreateTrial.js"
+import CompleteBenchmark from "components/molecules/CompleteBenchmark";
+import Toaster from "components/atoms/Toaster";
+import ModalBody from "components/molecules/ModalBody";
+import {crudFetch, fetchPost} from "utils/functions/functions";
+import GoalForm from "components/molecules/GoalForm";
+import ScoreTrial from "components/molecules/ScoreTrial";
+import DashCard from "components/molecules/DashCard";
+import DashWidget from "components/molecules/DashWidget";
+import {studentGoalMeta} from "utils/functions/functions";
+import {useToaster} from "utils/hooks/hooks";
 import {STORAGE} from "utils/constants";
+import NewTable from "components/molecules/NewTable";
+import {TeacherContext} from "utils/hooks/hooks";
 
 /*
 Props:
-    updateTeacher- function- to update the teacher object in the parent component
-    teacher- object- the teacher object
+    logout: function- if something were to go wrong with authenticating a request user should be logged out
     hasClassroomsWithStudents- boolean- whether or not the user has created a classroom w/ students yet
  */
-const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout}) =>{
-
+const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
+    const {teacher, setTeacher} = useContext(TeacherContext);
     const [studentIndex, setStudentIndex] = useState(+STORAGE.studentIndex);
     const [classroomIndex, setClassroomIndex] = useState(+STORAGE.classroomIndex);
     const [displayToaster, setDisplayToaster] = useToaster(false);
@@ -60,7 +60,7 @@ const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout})
 */
         formData.append("goal", JSON.stringify(goal));
 
-        crudFetch("deleteGoal", formData, updateTeacher, () => {}, logout);
+        crudFetch("deleteGoal", "DELETE", formData, setTeacher, () => {}, logout);
 /*        fetch("/api/deleteGoal",
             {
                     method: "POST",
@@ -92,35 +92,37 @@ const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout})
             storeStateInSession();
         switch(modalChildType){
             case "createTrial":
-                return <ModalBody
-                    header={`Create a trial for ${selectedBenchmark.label}`}
-                    hideButtons
+                return (
+                    <ModalBody
+                        header={`Create a trial for ${selectedBenchmark.label}`}
+                        hideButtons
                     >
-                    <CreateTrial
-                        benchmark={selectedBenchmark}
-                        template={template}
-                        setTemplate={setTemplate}
-                        student={student}
-                        updateTeacher={updateTeacher}
-                    />
-                </ModalBody>;
+                        <CreateTrial
+                            benchmark={selectedBenchmark}
+                            template={template}
+                            setTemplate={setTemplate}
+                            student={student}
+                            setTeacher={setTeacher}
+                        />
+                    </ModalBody>
+                )
             case "completeBenchmark":
                 return <CompleteBenchmark
-                        benchmark={selectedBenchmark}
-                        updateTeacher={updateTeacher}
-                        closeModal={closeModal}
-                        clearStorage={clearStorage}
-                        benchmarkParentGoal={selectedgoal}
-                        setModalChild={setModalChild}
-                    />;
+                            benchmark={selectedBenchmark}
+                            setTeacher={setTeacher}
+                            closeModal={closeModal}
+                            benchmarkParentGoal={selectedgoal}
+                      />;
             case "editGoal":
-                return <ModalBody
-                header={`Edit goal '${goal.goalName}'`}
-                cancelCallback={closeModal}
-                confirmCallback={editGoal}
-                >
-                    <GoalForm goal={goal} updateGoal={setGoal}/>
-                </ModalBody>;
+                return (
+                    <ModalBody
+                        header={`Edit goal '${goal.goalName}'`}
+                        cancelCallback={closeModal}
+                        confirmCallback={editGoal}
+                    >
+                        <GoalForm goal={goal} updateGoal={setGoal}/>
+                    </ModalBody>
+                    );
             case "deleteGoal":
                 return <ModalBody
                     header={`Delete goal '${goal.goalName}'?`}
@@ -137,7 +139,7 @@ const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout})
                     confirmCallback={editTrial}
                 >
                     <ScoreTrial
-                        updateTeacher={updateTeacher}
+                        setTeacher={setTeacher}
                         benchmark={selectedBenchmark}
                         student={student}
                         mutableTrial={trial}
@@ -165,7 +167,7 @@ const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout})
     }, [teacher]);
 
     const cleanupCrudOp = (data) => {
-        updateTeacher(data);
+        setTeacher(data);
     };
 
     const handleSelectedStudent = (stu, ind, classInd) => {
@@ -221,18 +223,16 @@ const GoalCenter = ({updateTeacher, teacher, hasClassroomsWithStudents, logout})
                         >
                             {
                                 teacher.classrooms.map((cr, crind) =>
-                                    <Table
-                                        selectable={true}
-                                        selectedCallback={(stu, ind) => {
-                                            handleSelectedStudent(stu, ind, crind);
-                                        }}
-                                        selectedRowIndexes={parseInt(classroomIndex) === crind ? studentIndex : 999}
-                                        headers={["Name", "Goal Focus", "Goal Count", "Goal Completion %"]}
-                                        key={"studentgoaltable"+crind}
-                                        data={studentGoalMeta(cr.students)}
-                                    />
-                                )
-                            }
+                                <NewTable
+                                    headers={["Name", "Goal Focus", "Goal Count", "Goal Completion %"]}
+                                    selectedCallback={(stu, ind) => {
+                                        handleSelectedStudent(stu, ind, crind);
+                                    }}
+                                    selectedRowIndex={parseInt(classroomIndex) === crind ? studentIndex : 999}
+                                    key={"studentgoaltable"+crind}
+                                    data={studentGoalMeta(cr.students)}
+                                />
+                                )}
                         </Accordion>
                         : <></>
                 }

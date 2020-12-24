@@ -6,6 +6,7 @@ import com.structure.models.Trial;
 import com.structure.repositories.BenchmarkRepo;
 import com.structure.repositories.TrackingRepo;
 import com.structure.repositories.TrialRepo;
+import com.structure.utilities.Constants;
 import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
+@RequestMapping(path=Constants.API_PATH, method = {RequestMethod.GET, RequestMethod.POST})
 public class TrialController {
 
     @Autowired
@@ -33,7 +34,7 @@ public class TrialController {
     @Autowired
     private LoginController LC;
 
-    @PostMapping(value = "/api/createTrial")
+    @PostMapping(value = "/createTrial")
     public ResponseEntity<?> createTrial(HttpServletRequest req, @RequestParam Map<String, String> body){
         String trialId = Utils.generateUniqueId();
         Trial trial = new Trial(trialId, Integer.parseInt(body.get("trialNumber")), new Date(), body.get("comments"), body.get("benchmarkId"));
@@ -51,7 +52,7 @@ public class TrialController {
         return LC.getTeacher(req);
     }
 
-    @PostMapping(value = "/api/editTrial")
+    @PostMapping(value = "/editTrial")
     public ResponseEntity<?> editTrial(@RequestParam Map<String, String> body, HttpServletRequest req){
         Trial trial = Utils.gson().fromJson(body.get("body"), Trial.class);
         for(Tracking t : trial.getTrackings()){

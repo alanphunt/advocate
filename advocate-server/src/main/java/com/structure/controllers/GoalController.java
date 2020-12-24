@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path=Constants.API_PATH, method = {RequestMethod.GET, RequestMethod.POST})
+@RequestMapping(path=Constants.API_PATH, method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 public class GoalController {
 
     @Autowired
@@ -73,7 +73,7 @@ public class GoalController {
         return ResponseEntity.badRequest().body(Utils.gson().toJson(errors));
     }
 
-    @PostMapping(value = "/deleteGoal")
+    @DeleteMapping(value = "/deleteGoal")
     public ResponseEntity<?> deleteGoal(HttpServletRequest req, @RequestParam Map<String, String> body){
  /*     for soft deletion
         String regex = ",";

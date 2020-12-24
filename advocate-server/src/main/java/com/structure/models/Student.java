@@ -34,7 +34,7 @@ public class Student {
     @Column(name = "classroom_id")
     private String classroomId;
 
-    @Expose(serialize = false)
+    @Expose
     private int enabled;
 
     public Student(){}
@@ -111,6 +111,14 @@ public class Student {
 
     public void setClassroom(Classroom classroom) {
         this.classroom = classroom;
+    }
+
+    public List<Goal> getGoals (){
+        return goals;
+    }
+
+    public void setGoals (List<Goal> goals){
+        this.goals = goals;
     }
 
     @Override

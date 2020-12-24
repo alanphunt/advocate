@@ -1,5 +1,7 @@
 import React from "react";
-import ProfileCard from "components/singletons/ProfileCard";
+import ProfileCard from "components/atoms/ProfileCard";
+import DashCard from "components/molecules/DashCard";
+import DashWidget from "components/molecules/DashWidget";
 import {
     FaAt as EmailIcon,
     FaUserLock as PassIcon,
@@ -11,10 +13,12 @@ import {
 const Profile = ({teacher, updateTeacher, logout}) => {
 
     return (
-        <div className={"dash-main-inner"}>
+        <DashCard noCanvas>
             <div className={"cardwrapperrow"}>
-                <ProfileCard editable={true} teacher={teacher}/>
-                <div className={"card infocard"}>
+                <DashWidget flexSize={1}>
+                    <ProfileCard editable={true} teacher={teacher}/>
+                </DashWidget>
+                <DashWidget className="infocard" flexSize={1}>
                     <h2>Edit Profile</h2>
                     <form>
                         <label htmlFor={"regfirst"}>
@@ -42,9 +46,9 @@ const Profile = ({teacher, updateTeacher, logout}) => {
                             <input id={"regdesc"} type={"text"} placeholder={"Tell us about yourself"}/>
                         </label>
                     </form>
-                </div>
+                </DashWidget>
             </div>
-        </div>
+        </DashCard>
     )
 };
 

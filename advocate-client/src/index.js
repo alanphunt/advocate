@@ -4,6 +4,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter, Route} from "react-router-dom";
 import './css/styles.scss';
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 ReactDOM.render(
     <BrowserRouter>

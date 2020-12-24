@@ -20,4 +20,8 @@ public class Constants {
 
     public static final int COOKIE_LIFE_SECONDS = 60 * 60 * 3;
     public static final int COOKIE_LIFE_MS = 1000 * COOKIE_LIFE_SECONDS;
+
+    public static final int HTTP_UNAUTHORIZED = 401;
+    public static final int HTTP_FORBIDDEN = 403;
+    public static final int HTTP_BAD_REQUEST = 400;
 }

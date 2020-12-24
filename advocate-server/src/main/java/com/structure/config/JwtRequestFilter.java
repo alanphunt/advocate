@@ -3,6 +3,7 @@ package com.structure.config;
 import com.structure.models.Teacher;
 import com.structure.services.JWTService;
 import com.structure.services.TeacherDetailsService;
+import com.structure.utilities.Constants;
 import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } catch(Exception e){
             System.out.println(e.getMessage());
-            httpServletResponse.sendError(403);
+            httpServletResponse.sendError(Constants.HTTP_UNAUTHORIZED);
         }
     }
 }

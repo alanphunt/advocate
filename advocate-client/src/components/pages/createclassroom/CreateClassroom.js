@@ -1,22 +1,24 @@
 import React, {useState, useEffect} from "react";
-import NumberPicker from "components/singletons/NumberPicker";
-import Table from "components/collectives/Table";
+import NumberPicker from "components/atoms/NumberPicker";
 import {Redirect} from "react-router-dom";
 import {FaAddressBook as BookIcon, FaCheck as CheckIcon, FaRegCopy as CopyIcon} from "react-icons/fa";
-import DashCard from "components/collectives/DashCard";
-import FormElement from "components/singletons/FormElement";
-import CompletionModal from "components/collectives/CompletionModal";
-import Button from "components/singletons/Button";
-import {checkLocalForCreated} from "components/functions/functions";
+import DashCard from "components/molecules/DashCard";
+import FormElement from "components/atoms/FormElement";
+import CompletionModal from "components/molecules/CompletionModal";
+import Button from "components/atoms/Button";
+import {checkLocalForCreated} from "utils/functions/functions";
+import Section from "components/atoms/Section";
+import NewTable from "components/molecules/NewTable";
+import { BAD_REQUEST_STATUS, BASIC_STUDENT_TABLE_HEADERS } from "utils/constants";
 
 const CreateClassroom = ({teacher, updateTeacher, logout}) => {
-    const student = {
+     const student = {
         name: '',
         goalFocus: '',
         eligibility: '',
         skills: ''
-    };
-
+    };     
+    
     const formElements = {
         className: null,
         students: null
@@ -28,7 +30,7 @@ const CreateClassroom = ({teacher, updateTeacher, logout}) => {
     const [displayModal, setDisplayModal] = useState(false);
     const [newTeacherData, setNewTeacherData] = useState(null);
 
-    let stuCount = students.length;
+    const stuCount = students.length;
 
     const classroomWasCreated = !!localStorage.getItem("classroomWasCreated") || false;
 
@@ -63,7 +65,7 @@ const CreateClassroom = ({teacher, updateTeacher, logout}) => {
                     if(ok) {
                         setNewTeacherData(body);
                         setDisplayModal(true);
-                    }else if(status !== 403){
+                    }else if(status !== BAD_REQUEST_STATUS){
                         setFormErrors(JSON.parse(body));
                     }else
                         logout();
@@ -99,7 +101,7 @@ const CreateClassroom = ({teacher, updateTeacher, logout}) => {
                     <Button text={"Go to classrooms"} className={"marg-right"} onClick={confirmClassroomCompletion} icon={<CheckIcon className={"i-right"}/>}/>
                     <Button text={"Create another"} onClick={closeModal} icon={<CopyIcon className={"i-right"}/>}/>
                 </CompletionModal>
-                <div className={"marg-bot-2"}>
+                <Section>
                     <FormElement
                         icon={<BookIcon/>}
                         label={"Class Name"}
@@ -109,18 +111,30 @@ const CreateClassroom = ({teacher, updateTeacher, logout}) => {
                         name={"className"}
                         errorMessage={formErrors.className}
                     />
-                </div>
-                <div className="marg-bot-2">
+                </Section>
+                <Section>
                     <h3 className={"i-bottom"}>Number of students</h3>
                     <NumberPicker updateState={updateStudents} object={student} objectArray={students}/>
-                </div>
-                <div className={"marg-bot-2"}>
+                </Section>
+                <Section>
                     {
                         formErrors.students !== null
                             ? <p className={"inputerror"}>{formErrors.students}</p>
                             : <></>
                     }
-                    <Table studentTable={true}>
+                    <NewTable
+                        headers={BASIC_STUDENT_TABLE_HEADERS}
+                        data={
+                            students.map((v, i) => {
+                                return({
+                                    name: <input onChange={(e)=>{updateStudent(i, e)}} key={`name${i}`} placeholder='Name' name='name'/>,
+                                    goals: <input onChange={(e)=>{updateStudent(i, e)}} key={`goals${i}`} placeholder='Goal Focus' name='goalFocus'/>,
+                                    eligibility: <input onChange={(e)=>{updateStudent(i, e)}} key={`eligibility${i}`} placeholder='Eligibility' name='eligibility'/>,
+                                    skills: <input onChange={(e)=>{updateStudent(i, e)}} key={`skills${i}`} placeholder='Skills' name='skills'/>
+                                });
+                            })
+                        }/>
+{/*                     <Table studentTable={true}>
                         <div>
                             {
                                 students.map((v, i) =>{
@@ -137,8 +151,8 @@ const CreateClassroom = ({teacher, updateTeacher, logout}) => {
                                 })
                             }
                         </div>
-                    </Table>
-                </div>
+                    </Table> */}
+                </Section>
                 <Button
                     className={stuCount === 0 ||className === "" ? "disabled" : ""}
                     onClick={createClassroom}

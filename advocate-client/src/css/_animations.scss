@@ -20,11 +20,7 @@
 }
 
 @keyframes fadeInFromBottom{
-  0%{
-    bottom: -10%;
-    opacity: 0;
-  }
-  100%{
+  to{
     bottom: 2rem;
     opacity: 1;
   }
@@ -36,12 +32,12 @@
 }
 
 .fadeinfromtop{
-  animation: fadeinFromTop .3s ease 0s 1 normal forwards;
+  animation: fadeinFromTop .2s ease 0s 1 normal forwards;
   z-index: 1;
 }
 
 .fadeInFromBottom{
-  animation: fadeInFromBottom .3s ease 0s 1 normal forwards;
+  animation: fadeInFromBottom .1s ease 0s 1 normal forwards;
   z-index: 1;
 }
 

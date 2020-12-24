@@ -1,19 +1,18 @@
 import React from "react";
-import GetStarted from "components/singletons/GetStarted";
-import ProfileCard from "components/singletons/ProfileCard";
-import Table from "components/collectives/Table";
-import Accordion from "components/collectives/Accordion";
-import DashWidget from "components/collectives/DashWidget";
-import GoalsToMonitor from "components/collectives/GoalsToMonitor";
-import DashCard from "components/collectives/DashCard";
+import GetStarted from "components/atoms/GetStarted";
+import ProfileCard from "components/atoms/ProfileCard";
+import Accordion from "components/molecules/Accordion";
+import DashWidget from "components/molecules/DashWidget";
+import GoalsToMonitor from "components/molecules/GoalsToMonitor";
+import DashCard from "components/molecules/DashCard";
+import StudentTable from "components/molecules/StudentTable";
 
-const DashMain = props => {
-    const teacher = props.teacher;
+const DashMain = ({teacher}) => {
     const classrooms = teacher.classrooms;
     const createClass = () => {
         return (
             <DashWidget flexSize={1}>
-                <GetStarted to={"/dashboard/classroom/create"}>
+                <GetStarted to={"/dashboard/classroom"}>
                     <h2>Get started by creating a classroom</h2>
                 </GetStarted>
             </DashWidget>
@@ -40,8 +39,7 @@ const DashMain = props => {
                             >
                                 {
                                     teacher.classrooms.map((cr, crInd) =>
-                                        <Table
-                                            studentTable={true}
+                                        <StudentTable
                                             key={`dashmaintable${crInd}`}
                                             data={cr.students}
                                         />

@@ -1,19 +1,23 @@
-import React, {useState, useEffect} from "react";
-import Table from "components/collectives/Table";
-import Accordion from "components/collectives/Accordion";
+import React, {useState, useEffect, useContext} from "react";
+import Accordion from "components/molecules/Accordion";
 import {FaCheck as CheckIcon, FaRegHandPointRight as RedirectIcon, FaCopy as CopyIcon, FaUndo as NewGoalIcon} from "react-icons/fa";
-import GoalForm from "components/collectives/GoalForm";
-import GetStarted from "components/singletons/GetStarted";
-import DashWidget from "components/collectives/DashWidget";
-import DashCard from "components/collectives/DashCard";
+import GoalForm from "components/molecules/GoalForm";
+import GetStarted from "components/atoms/GetStarted";
+import DashWidget from "components/molecules/DashWidget";
+import DashCard from "components/molecules/DashCard";
 import {Redirect, useLocation} from "react-router";
-import {ERROR_STATUS, STORAGE} from "utils/constants";
-import CompletionModal from "components/collectives/CompletionModal";
-import Button from "components/singletons/Button";
-import {checkLocalForCreated} from "components/functions/functions";
+import {BAD_REQUEST_STATUS} from "utils/constants";
+import CompletionModal from "components/molecules/CompletionModal";
+import Button from "components/atoms/Button";
+import {checkLocalForCreated} from "utils/functions/functions";
+import StudentTable from "components/molecules/StudentTable";
+import Section from "components/atoms/Section";
+import {TeacherContext} from "utils/hooks/hooks"
 
-const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents, logout}) => {
+const CreateGoal = ({ hasClassroomsWithStudents, logout }) => {
+    const {teacher, setTeacher} = useContext(TeacherContext);
     let createGoalFor = useLocation().state;
+    
     const goalObj = {
         goalName: "",
         startDate: "",
@@ -31,31 +35,11 @@ const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents, logout}
         process: "",
         benchmarks: ""
     };
-/*    let stuObj = {
-        classroomIndex: 999,
-        studentIndex: 999
-    };*/
-
 
     useEffect(() => {
         if(createGoalFor){
-/*            if(isNaN(createGoalFor.classroomIndex)){
-                setSelectedStudentIndex(parseInt(createGoalFor.studentIndex));
-                setSelectedClassroomIndex(parseInt(createGoalFor.classroomIndex));
-            }*/
-
-/*                stuObj = {
-                    studentIndex: parseInt(createGoalFor.studentIndex),
-                    classroomIndex: parseInt(createGoalFor.classroomIndex)
-                };*/
-            //else{
-                setSelectedStudentIndex(createGoalFor.studentIndex);
-                setSelectedClassroomIndex(createGoalFor.classroomIndex);
-            //}
-/*                stuObj = {
-                    studentIndex: createGoalFor.studentIndex,
-                    classroomIndex: createGoalFor.classroomIndex
-                }*/
+            setSelectedStudentIndex(createGoalFor.studentIndex);
+            setSelectedClassroomIndex(createGoalFor.classroomIndex);
         }
         return (() => {
             checkLocalForCreated("goalCreated");
@@ -64,8 +48,6 @@ const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents, logout}
 
     const [goal, setGoal] = useState(goalObj);
     const goalCreated = !!localStorage.getItem("goalCreated") || false;
-    // const [goalCreated, setGoalCreated] = useState(localStorage.getItem("goalCreated") || false);
-    //const [selectedStuObj, setSelectedStuObj] = useState(stuObj);
     const [selectedClassroomIndex, setSelectedClassroomIndex] = useState(999);
     const [selectedStudentIndex, setSelectedStudentIndex] = useState(999);
     const [displayModal, setDisplayModal] = useState(false);
@@ -73,28 +55,22 @@ const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents, logout}
     const [newTeacherData, setNewTeacherData] = useState(null);
 
     const handleSelected = (stu, stuIndex, crInd) => {
-        // let selected = {classroomIndex: crInd, studentIndex: stuIndex};
-
         if(goal.studentId !== stu.id) {
             setGoal({...goal, studentId: stu.id});
             setSelectedStudentIndex(stuIndex);
             setSelectedClassroomIndex(crInd);
-            // setSelectedStuObj(selected);
         }
         else {
-            // selected.classroomIndex = 999;
-            // selected.studentIndex = 999;
             setGoal({...goal, studentId: ""});
             setSelectedStudentIndex(stuIndex);
             setSelectedClassroomIndex(crInd);
-            // setSelectedStuObj(selected);
         }
 
     };
 
     const confirmGoalCreation = () => {
         localStorage.setItem("goalCreated", "true");
-        updateTeacher(newTeacherData);
+        setTeacher(newTeacherData);
     };
 
     const createGoal = () => {
@@ -110,11 +86,12 @@ const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents, logout}
                 if(ok){
                     setNewTeacherData(data);
                     setDisplayModal(true);
-                }else if(status !== ERROR_STATUS){
-                    setFormErrors(JSON.parse(data));
-                }else{
-                    logout();
                 }
+                else if(status === BAD_REQUEST_STATUS)
+                    setFormErrors(JSON.parse(data));
+                else
+                    logout();
+                
         });
     };
 
@@ -153,7 +130,7 @@ const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents, logout}
                         </>
                     </CompletionModal>
                     <GoalForm goal={goal} updateGoal={setGoal} formErrors={formErrors}/>
-                    <div className={"marg-bot-2"}>
+                    <Section>
                         <h3 className={"i-bottom"}>Apply to which student</h3>
                         <Accordion
                             array={teacher.classrooms}
@@ -162,8 +139,15 @@ const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents, logout}
                         >
                             {
                                 teacher.classrooms.map((cr, crInd) =>
-                                    <Table
-                                        selectable={true}
+                                <StudentTable
+                                    selectedCallback={(stu, ind) => {
+                                        handleSelected(stu, ind, crInd);
+                                    }}
+                                    selectedRowIndex={ selectedClassroomIndex === crInd ? selectedStudentIndex : 999 }
+                                    key={`attachgoaltostudent${crInd}`}
+                                    data={cr.students}
+                                />
+/*                                     <Table
                                         selectedCallback={(stu, ind) => {
                                             handleSelected(stu, ind, crInd);
                                         }}
@@ -171,11 +155,11 @@ const CreateGoal = ({ teacher, updateTeacher, hasClassroomsWithStudents, logout}
                                         studentTable={true}
                                         key={`attachgoaltostudent${crInd}`}
                                         data={cr.students}
-                                    />
+                                    /> */
                                 )
                             }
                         </Accordion>
-                    </div>
+                    </Section>
                     <Button
                         className={
                             Object.values(goal).some(v => v === "" || v.length === 0)

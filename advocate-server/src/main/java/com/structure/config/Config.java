@@ -51,7 +51,7 @@ public class Config extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(JWT_REQ_FILTER, UsernamePasswordAuthenticationFilter.class)
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api/authenticate", "/api/createuser", "/api/testing")
+            .antMatchers("/api/authenticate", "/api/createuser", "/api/testing", "/api/logout")
             .permitAll()
             .anyRequest().authenticated()
             .and().sessionManagement()
