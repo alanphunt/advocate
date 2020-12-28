@@ -1,5 +1,5 @@
 import React from "react";
-import {SERVER_ERROR, BAD_REQUEST_STATUS, FORBIDDEN_STATUS} from "utils/constants";
+import {SERVER_ERROR, FORBIDDEN_STATUS} from "utils/constants";
 import {FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon} from "react-icons/fa";
 
 export const fetchPost = (path, body, callback, errorCallback, catchCallback) => {
@@ -81,4 +81,25 @@ export const editDeleteIcons = (specificObject) => {
     let editKey = `edit${tag}`;
     let deleteKey = `delete${tag}`;
     return {[editKey]: <EditIcon className={"i-right hover-color selectable"}/>, [deleteKey]: <TrashIcon className={"hover-color selectable"}/>};
+};
+
+export const determineTrialAverage = (benchmark) => {
+    const bmCount = benchmark.trials?.length;
+    if(bmCount){
+        let trialTotal = 0;
+        benchmark.trials.forEach(trial => {
+            trialTotal += trial.trackings.filter(track => track.correct).length / trial.trackings.length;
+        });
+        let total =  trialTotal / bmCount * 100;
+        return total ? total : 0;
+    }
+    return 0;
+};
+
+export const studentViewObject = (student) => {
+    return {
+        name: student.name,
+        age: student.age,
+        grade: student.grade
+    };
 };

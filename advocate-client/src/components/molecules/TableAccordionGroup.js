@@ -47,7 +47,7 @@ const TableAccordionGroup = ({accordionHeaders, tableData, tableHeaders, allOpen
                                             headers={tableHeaders}
                                             subheaders={tableSubheaders}
                                             data={tableData[accordionIndex]}
-                                            selectedCallback={(object, index) => callbackWrapper(object, index, accordionIndex)}
+                                            selectedCallback={selectedRowCallback ? (object, index) => callbackWrapper(object, index, accordionIndex) : null}
                                             selectedRowIndex={indexes.accordionIndex === accordionIndex ? indexes.rowIndex : 999}
                                             icons={tableIcons || null}
                                           />

@@ -25,8 +25,6 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping(path="/api", method = {RequestMethod.GET, RequestMethod.POST})
 public class LoginController {
-    //private final TeacherDetailsService TDS = new TeacherDetailsService();
-    //private final JWTService JWT_UTIL = new JWTService();
 
     @Autowired private TeacherDetailsService TDS;
     @Autowired private JWTService JWT_UTIL;

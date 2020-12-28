@@ -1,11 +1,12 @@
 import React from "react";
 import GetStarted from "components/atoms/GetStarted";
 import ProfileCard from "components/atoms/ProfileCard";
-import Accordion from "components/molecules/Accordion";
 import DashWidget from "components/molecules/DashWidget";
 import GoalsToMonitor from "components/molecules/GoalsToMonitor";
 import DashCard from "components/molecules/DashCard";
-import StudentTable from "components/molecules/StudentTable";
+import { studentViewObject } from "utils/functions/functions";
+import TableAccordionGroup from "components/molecules/TableAccordionGroup";
+import { BASIC_STUDENT_TABLE_HEADERS } from "utils/constants";
 
 const DashMain = ({teacher}) => {
     const classrooms = teacher.classrooms;
@@ -20,7 +21,7 @@ const DashMain = ({teacher}) => {
     };
 
     return (
-        <DashCard noCanvas>
+        <DashCard>
             <div className={"cardwrapperrow"}>
                 <DashWidget flexSize={1}>
                     <ProfileCard teacher={teacher}/>
@@ -32,20 +33,12 @@ const DashMain = ({teacher}) => {
                             flexSize={2}
                             header={"Classrooms"}
                           >
-                            <Accordion
-                                openIndex={0}
-                                array={teacher.classrooms}
-                                data={teacher.classrooms.map(cr => cr.className)}
-                            >
-                                {
-                                    teacher.classrooms.map((cr, crInd) =>
-                                        <StudentTable
-                                            key={`dashmaintable${crInd}`}
-                                            data={cr.students}
-                                        />
-                                    )
-                                }
-                            </Accordion>
+                              <TableAccordionGroup
+                                    accordionHeaders={teacher.classrooms.map(cr => cr.className)}
+                                    tableHeaders={BASIC_STUDENT_TABLE_HEADERS}
+                                    tableData={teacher.classrooms.map(cr => cr.students.map(stu => studentViewObject(stu)))}
+                                    openIndex={0}
+                              />
                           </DashWidget>
                 }
             </div>

@@ -7,7 +7,7 @@ class SidebarProfile extends React.Component {
     render() {
         let teacher = this.props.teacher;
         return (
-            <div className={"sidebarfooter sidebarpad"}>
+            <div className={"sidebarfooter"}>
                 <NavLink onClick={()=>{this.props.updateActiveLink("profile")}} activeClassName={"active"} to={"/dashboard/profile"}>
                     <div className={"itemmain"}>
                         <div className={"itemmaininner"}>

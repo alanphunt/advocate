@@ -73,6 +73,7 @@ const GoalForm = (props) => {
                     onChange={(e) => {updateGoalLogic(e, "goalName")}}
                     errorMessage={formErrors?.goalName}
                     autoFocus
+                    required
                 />
             </Section>
             
@@ -84,6 +85,7 @@ const GoalForm = (props) => {
                     value={goal?.goal || ""}
                     onChange={(e) => {updateGoalLogic(e, "goal")}}
                     errorMessage={formErrors?.goal}
+                    required
                 />
             </Section>
 
@@ -91,10 +93,11 @@ const GoalForm = (props) => {
                 <FormElement
                     label={"Projected Mastery Date"}
                     icon={<CalCheckIcon/>}
-                    placeholder={"MM/DD/YYYY"}
+                    placeholder={"MM/DD/YY"}
                     value={goal?.masteryDate || ""}
                     onChange={(e) => {updateGoalLogic(e, "masteryDate")}}
                     errorMessage={formErrors?.masteryDate}
+                    required
                 />
             </Section>
 
@@ -102,10 +105,11 @@ const GoalForm = (props) => {
                 <FormElement
                     label={"Start Date"}
                     icon={<CalPlusIcon/>}
-                    placeholder={"MM/DD/YYYY"}
+                    placeholder={"MM/DD/YY"}
                     value={goal?.startDate || ""}
                     onChange={(e) => {updateGoalLogic(e, "startDate")}}
                     errorMessage={formErrors?.startDate}
+                    required
                 />
             </Section>
 
@@ -149,7 +153,7 @@ const GoalForm = (props) => {
             </Section>
 
             <Section>
-                <h3 className={"i-bottom"}>Benchmarks</h3>
+                <h3 className={"i-bottom"}><span className="incomp-color">*</span>Benchmarks</h3>
                 <Section>
                     <NumberPicker
                         updateState={adjustBenchmarkCount}
@@ -178,22 +182,18 @@ const GoalForm = (props) => {
                                             />
                                         </div>
                                         <div className="td">
-                                            <input
-                                                onChange={(e) => {
-                                                    updateBenchmark(ind, e, "description")
-                                                }}
+                                            <FormElement
+                                                onChange={(e) => updateBenchmark(ind, e, "description")}
                                                 key={`desc${ind}`}
                                                 placeholder='Benchmark'
                                                 value={goal?.benchmarks[ind]?.description}
                                             />
                                         </div>
                                         <div className="td">
-                                            <input
-                                                onChange={(e) => {
-                                                    updateBenchmark(ind, e, "masteryDate");
-                                                }}
+                                            <FormElement 
+                                                onChange={(e) => updateBenchmark(ind, e, "masteryDate")}
                                                 key={`masterydate${ind}`}
-                                                placeholder='MM/DD/YYYY'
+                                                placeholder='MM/DD/YY'
                                                 value={goal?.benchmarks[ind]?.masteryDate}
                                             />
                                         </div>
@@ -206,9 +206,12 @@ const GoalForm = (props) => {
                                                 value={goal?.benchmarks[ind]?.tracking}
                                             >
                                                 <option>Select a type..</option>
-                                                <option value={"score"}>Score/Accuracy</option>
-                                                <option value={"trial"}>Trial/Frequency</option>
+                                                <option value={"score"}>Score</option>
+                                                <option value={"accuracy"}>Accuracy</option>
+                                                <option value={"trial"}>Trial</option>
+                                                <option value={"frequency"}>Frequency</option>
                                                 <option value={"duration"}>Duration</option>
+                                                <option value={"other"}>Other</option>
                                             </select>
                                         </div>
                                     </div>

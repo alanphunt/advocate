@@ -6,12 +6,14 @@ import {Redirect} from "react-router";
 import {LOGGED_OUT, STORAGE} from "./utils/constants";
 import Toaster from "components/atoms/Toaster";
 import {TeacherContext} from "utils/hooks/hooks"
+import { useToggle } from "utils/hooks/hooks";
 
 const App = () => {
     const [teacher, setTeacher] = useState(null);
     const memoizedTeacher = useMemo(() => ({teacher, setTeacher}), [teacher, setTeacher]);
     const [failedToRetrieveTeacher, setFailedToRetrieveTeacher] = useState(false);
     const [toaster, setToaster] = useState({display: false, body: ""});
+    const [expanded, setExpanded] = useToggle(true);
 
     useEffect(() => {
         let timer = null;
@@ -58,6 +60,8 @@ const App = () => {
                     <TeacherContext.Provider value={memoizedTeacher}>
                         <Route path="/dashboard/:page" component={() => {
                             return <Dashboard
+                                        expanded={expanded}
+                                        setExpanded={setExpanded}
                                         failedToRetrieveTeacher={failedToRetrieveTeacher}
                                         logout={logout}
                                         logoutWithAlert={logoutWithAlert}

@@ -13,7 +13,7 @@ import {
 const Profile = ({teacher, updateTeacher, logout}) => {
 
     return (
-        <DashCard noCanvas>
+        <DashCard>
             <div className={"cardwrapperrow"}>
                 <DashWidget flexSize={1}>
                     <ProfileCard editable={true} teacher={teacher}/>

@@ -205,15 +205,12 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
     };
 
     return (
-        <DashCard noCanvas className={"height-100"} closeModal={modalChild !== "" ? closeModal : null}>
+        <DashCard fitOnPage closeModal={modalChild !== "" ? closeModal : null}>
             <Toaster display={displayToaster} setDisplay={setDisplayToaster}/>
             <Modal displayed={modalChild !== ""} closeModal={closeModal} large={modalSize}>
                 {determineModalChild(modalChild)}
             </Modal>
-            <DashWidget
-                className={"goalcenterrow goalcenterrowmarg"}
-                header={"Goal Center"}
-            >
+            <div className={"goalcenterrow goalcenterrowmarg"}>
                 {
                     hasClassroomsWithStudents
                         ? <Accordion
@@ -236,13 +233,9 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
                         </Accordion>
                         : <></>
                 }
-            </DashWidget>
-            <DashWidget
-                className={"goalcenterrow"}
-                cardMainHeight
-            >
+            </div>
+            <div className={"goalcenterrow goalcenterrowmarg"}>
                 <GoalDrilldown
-                    key={"drilldownfor"+student?.name}
                     handleModal={setModalChild}
                     storeStateInSession={storeStateInSession}
                     student={student}
@@ -259,7 +252,7 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
                     setBenchmarkIndex={setBenchmarkIndex}
                     classroomIndex={classroomIndex}
                 />
-            </DashWidget>
+            </div>
         </DashCard>
     )
 };

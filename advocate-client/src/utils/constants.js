@@ -10,6 +10,6 @@ export const BAD_REQUEST_STATUS = 400;
 
 export const JWT_ERROR = "Authentication failed, please log back in to continue.";
 
-export const BASIC_STUDENT_TABLE_HEADERS = ["Name", "Goal Focus", "Eligibility", "Skills"];
+export const BASIC_STUDENT_TABLE_HEADERS = ["Name", "Age", "Grade"];
 
 export const JSON_HEADER = {"Content-Type": "application/json"};

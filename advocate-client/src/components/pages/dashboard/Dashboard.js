@@ -3,7 +3,8 @@ import Sidebar from "components/molecules/Sidebar";
 import {Redirect, Route, Switch} from "react-router-dom";
 import DashMain from "components/pages/dashmain/DashMain";
 import Classroom from "components/pages/classroom/Classroom";
-import ProgressReport from "components/pages/charts/ProgressReport";
+import ProgressReport from "components/pages/progressreports/ProgressReport";
+import Help from "components/pages/help/Help";
 import GoalCenter from "components/pages/goalcenter/GoalCenter";
 import Profile from "components/pages/profile/Profile";
 import CreateGoal from "components/pages/creategoal/CreateGoal";
@@ -11,9 +12,9 @@ import Loading from "components/atoms/Loading";
 import Test from "components/pages/Test/Test"
 import {SERVER_ERROR} from "utils/constants";
 import {TeacherContext} from "utils/hooks/hooks"
+import DashNav from 'components/molecules/DashNav';
 
-
-const Dashboard = ({failedToRetrieveTeacher, logout, logoutWithAlert, handleToaster}) => {
+const Dashboard = ({expanded, setExpanded, failedToRetrieveTeacher, logout, logoutWithAlert, handleToaster}) => {
     const {teacher, setTeacher} = useContext(TeacherContext);
     const [activeCategory, setActiveCategory] = useState(window.location.pathname.split("/")[2]);
     const hasClassroomsWithStudents = teacher?.classrooms?.length > 0 && teacher?.classrooms[0].students.length > 0;
@@ -37,7 +38,6 @@ const Dashboard = ({failedToRetrieveTeacher, logout, logoutWithAlert, handleToas
         }
     }, []);
 
-
     const handleChange = (e) => {
         setActiveCategory(e.replace(" ", ""));
     };
@@ -52,12 +52,12 @@ const Dashboard = ({failedToRetrieveTeacher, logout, logoutWithAlert, handleToas
                             logout={logout}
                             navHandler={{'updateActiveCategory': handleChange, 'activeCategory': activeCategory}}
                             updateTeacher={setTeacher}
+                            expanded={expanded}
+                            setExpanded={setExpanded}
                         />
                         <div className={"dash-main-wrapper"}>
+                            <DashNav activeCategory={activeCategory}/>
                             <Switch>
-                                <Route path="/dashboard/main" exact>
-                                    <DashMain teacher={teacher} />
-                                </Route>
                                 <Route path="/dashboard/classroom" exact>
                                     <Classroom 
                                         logout={logout}
@@ -66,6 +66,9 @@ const Dashboard = ({failedToRetrieveTeacher, logout, logoutWithAlert, handleToas
                                 </Route>
                                 <Route path="/dashboard/progressreport" exact>
                                     <ProgressReport teacher={teacher}/>
+                                </Route>
+                                <Route path="/dashboard/help" exact>
+                                    <Help/>
                                 </Route>
                                 <Route path="/dashboard/goalcenter" exact>
                                     <GoalCenter
@@ -90,6 +93,9 @@ const Dashboard = ({failedToRetrieveTeacher, logout, logoutWithAlert, handleToas
                                 </Route>
                                 <Route path="/dashboard/test" exact>
                                     <Test teacher={teacher} updateTeacher={setTeacher} logout={logout}/>
+                                </Route>
+                                <Route>
+                                    <DashMain teacher={teacher} />
                                 </Route>
                             </Switch>
                         </div>

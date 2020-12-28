@@ -45,7 +45,7 @@ public class Utils {
     public static Gson gson(){
         GsonBuilder builder = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
-                .setDateFormat("MM/dd/yyyy");
+                .setDateFormat("MM/dd/yy");
         return builder.create();
     }
 

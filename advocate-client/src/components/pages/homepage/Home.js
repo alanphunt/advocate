@@ -3,20 +3,18 @@ import logo from 'images/logo-sm.png'
 import Modal from 'components/molecules/Modal'
 import {Redirect} from "react-router";
 import Loading from "components/atoms/Loading";
-import FormElement from "components/atoms/FormElement";
 import {
-    FaAt as EmailIcon,
     FaChartBar as ChartIcon,
-    FaIdCard as NameIcon,
     FaNetworkWired as NetIcon,
     FaSync as SyncIcon,
     FaUser as UserIcon,
-    FaUserLock as PassIcon,
     FaUserPlus as UserPlusIcon,
     FaUsers as UsersIcon
 } from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import Button from 'components/atoms/Button';
+import LoginForm from 'components/molecules/LoginForm';
+import RegisterForm from 'components/molecules/RegisterForm';
 
 const Home = ({teacher, userLogin, failedToRetrieveTeacher}) => {
     const loginObj = {
@@ -110,69 +108,6 @@ const Home = ({teacher, userLogin, failedToRetrieveTeacher}) => {
             setRegister({...register, [key]: e.currentTarget.value})
     };
 
-    const registerForm =
-        <>
-            <FormElement
-                value={register.firstName}
-                icon={<NameIcon/>}
-                placeholder={"First Name"}
-                name={"firstName"}
-                errorMessage={errors.registerFirstName}
-                onChange={(e) => {updateFormValues(e, "firstName")}}
-                autoFocus
-            />
-            <FormElement
-                value={register.lastName}
-                icon={<NameIcon/>}
-                placeholder={"Last Name"}
-                name={"lastName"}
-                errorMessage={errors.registerLastName}
-                onChange={(e) => {updateFormValues(e, "lastName")}}
-            />
-            <FormElement
-                value={register.username}
-                icon={<EmailIcon/>}
-                placeholder={"Email"}
-                name={"username"}
-                errorMessage={errors.registerUsername}
-                onChange={(e) => {updateFormValues(e, "username")}}
-            />
-            <FormElement
-                onChange={(e) => {updateFormValues(e, "password")}}
-                value={register.password}
-                icon={<PassIcon/>}
-                type={"password"}
-                placeholder={"Password"}
-                name={"password"}
-                errorMessage={errors.registerPassword}
-            />
-        </>;
-
-    const loginForm =
-        <>
-            <FormElement
-                onChange={(e) => {updateFormValues(e, "username")}}
-                value={login.username}
-                icon={<EmailIcon/>}
-                placeholder={"Email"}
-                name={"username"}
-                autoFocus
-            />
-            <FormElement
-                value={login.password}
-                icon={<PassIcon/>}
-                /*type={"password"}*/
-                placeholder={"Password"}
-                name={"password"}
-                onChange={(e) => {updateFormValues(e, "password")}}
-            />
-            {
-                errors.login !== ""
-                    ? <p className={"inputerror marg-bot"}>{ errors.login }</p>
-                    : <></>
-            }
-        </>;
-
     return (
         teacher && !failedToRetrieveTeacher
             ? <Redirect push to={{pathname: "/dashboard/main"}}/>
@@ -193,7 +128,13 @@ const Home = ({teacher, userLogin, failedToRetrieveTeacher}) => {
                             className={"centeredform"}
                             onSubmit={handleForm}
                         >
-                            {modalContent === "login" ? loginForm : modalContent === "register" ? registerForm : null}
+                            {
+                                modalContent === "login"
+                                ? <LoginForm errors={errors} login={login} updateFormValues={updateFormValues}/>
+                                : modalContent === "register"
+                                    ? <RegisterForm errors={errors} register={register} updateFormValues={updateFormValues}/>
+                                    : null
+                            }
                             <Button text="Submit" onClick={handleForm} type="submit"/>
                         </form>
                     </div>

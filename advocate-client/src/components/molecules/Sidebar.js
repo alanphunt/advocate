@@ -1,16 +1,17 @@
 import React from "react";
 import puzzle from "images/puzzle-sm.png";
 import SidebarLinks from "components/molecules/SidebarLinks";
-import SidebarProfile from "components/atoms/SidebarProfile";
+import { FaArrowLeft as LeftArrowIcon, FaArrowRight as RightArrowIcon } from "react-icons/fa";
+import NavItem from "components/atoms/NavItem";
 
-const Sidebar = ({teacher, navHandler, logout}) => {
+const Sidebar = ({expanded, setExpanded, teacher, navHandler, logout}) => {
     const active = navHandler.activeCategory;
     const changeActive = navHandler.updateActiveCategory;
 
     return(
-        <div className={"sidebarwrapper"}>
+        <div className={`sidebarwrapper${expanded ? " sidebarexpanded" : ""}`}>
             <div className={"sidebar"}>
-                <div className={"sidebarheader sidebarpad"}>
+                <div className={"sidebarheader"}>
                     <img
                         src={puzzle}
                         className={"selectable"}
@@ -24,10 +25,12 @@ const Sidebar = ({teacher, navHandler, logout}) => {
                         }}
                     />
                 </div>
-                <div className={"sidebarmain sidebarpad sideflex"}>
-                    <SidebarLinks updateActiveLink={changeActive} activeLink={active}/>
+                <div className={"sidebarmain"}>
+                    <SidebarLinks expanded={expanded} updateActiveLink={changeActive} activeLink={active}/>
                 </div>
-                <SidebarProfile teacher={teacher} updateActiveLink={changeActive} isActive={active === "profile"}/>
+                <div className="sidebarfooter" onClick={() => setExpanded(prev => !prev)}>
+                    <NavItem className="selectable" icon={expanded ? <LeftArrowIcon/> : <RightArrowIcon/>} text={"Shrink Sidebar"} expanded={expanded}/>
+                </div>
             </div>
         </div>
     )

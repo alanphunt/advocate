@@ -8,28 +8,28 @@
 
 .sidebarwrapper{
   @include wid-hei(100%, 100%);
-  max-width: 250px;
-  min-width: 225px;
-  padding: 1rem;
-  background: linear-gradient(#66615b,#000 80%);
+  max-width: 50px;
+  background:#334A52;
   color: $lig-gra;
   font-size: 12px;
-  box-shadow: -7px 0 20px 0 black;
   z-index: 2;
+}
+
+.sidebarexpanded{
+  max-width: 150px;
+  box-shadow: -11px 0 20px 5px black;
 }
 
 .sidebar{
   @include flex(column, $jus-con: space-between);
   height: 100%;
-}
-
-.sidebarpad{
-  @include padding;
+  font-weight: 600;
+  padding-top: 1rem;
 }
 
 .sidebarheader{
-  @include med-bor;
-  padding-top: 0;
+  padding: 0 8px;
+  margin-bottom: 1rem;
 }
 
 .sidebarheader img{
@@ -40,43 +40,17 @@
 
 .sidebarmain{
   height: 100%;
-  @include med-bor;
-  font-weight: 600;
-  overflow-y: auto;
 }
 
-.sidebarfooter{
-  @include med-bor;
-  @include flex($ali-ite: center);
-  position: relative;
+.sideitem {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 
-.sidebar label{
-  width: 50px;
-  cursor: pointer;
-}
-
-.sidebarfooter label img{
-  width: 100%;
-  @include bor-rad;
-}
-
-.sidecaret{
-  font-size: 16px;
-}
-
-.sideitemwrapper{
-  height: 100%;
-  position: relative;
-}
-
-.sideitem{
-  padding: 1rem 0;
-  @include flex($ali-ite: center);
-}
-
-.itemmain:hover{
+.sideitem:hover{
   color: $white;
+  border-top: 1px solid #cccccc50;
+  border-bottom: 1px solid #cccccc50;
 }
 
 a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
@@ -84,34 +58,51 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 }
 
 .itemmain{
-  width: 100%;
-  @include flex($ali-ite: center, $jus-con: space-between);
-  @include cur-poi;
   text-transform: uppercase;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 
 .itemmaininner svg{
   font-size: 24px;
-  margin-right: 10px;
-  width: 30px;
 }
 
 .dash-main-wrapper{
   background-color: $med-whi;
   width: 100%;
-  padding: 1rem;
   overflow-y: auto;
 }
 
+.dash-nav{
+  border-bottom: 1px solid $lig-gra;
+  padding: 8px 1rem;
+  height: 4%;
+  font-weight: 500;
+  @include flex($ali-ite: center, $jus-con: space-between);
+}
+
+.dash-nav__breadcrumb{
+  text-transform: uppercase;
+}
+
+.dash-nav__profile{
+  font-size: 24px;
+}
+
 .itemmaininner{
-  @include flex($ali-ite: center);
-  @include transition;
+  @include flex($fle-flo: column, $ali-ite: center);
+  text-align: center;
+  padding: 1rem;
+}
+
+.bg-white{
+  background: $white;
 }
 
 .transition{
   @include transition;
 }
-
+//unneeded styles
 .caretflip{
   transform: rotate(180deg);
 }
@@ -160,9 +151,19 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 .dropdown ul{
   padding: 1rem 0 0 4px;
 }
+//end unneeded styles
+
+.pad-1{
+  padding: 1rem;
+}
 
 .active{
   color: $primary;
+}
+
+.active-border{
+  border-top: 1px solid #cccccc50;
+  border-bottom: 1px solid #cccccc50;
 }
 
 .sidebar-default-pic{
@@ -171,10 +172,11 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 }
 
 .dash-main-inner{
-  padding: 1rem;
   position: relative;
   overflow: hidden;
-  height: 100%;
+  height: 96%;
+  background-color: $white;
+  padding: 1rem;
 }
 
 .cardwrapperrow{
@@ -191,6 +193,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   background-color: $white;
   overflow: auto;
   position: relative;
+  @include lig-bor;
 }
 
 .cardwrapperrow .card{
@@ -279,6 +282,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 .table{
   @include lig-bor;
   border-left: none;
+  border-bottom: none;
   position: relative;
 }
 
@@ -288,10 +292,10 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   border-bottom: 1px solid $dar-whi;
 }
 
-.tbody .tr:last-of-type{
+/* .tbody .tr:last-of-type{
   border-bottom: none;
 }
-
+ */
 .tbody .tr:nth-of-type(odd){
   background-color: $med-whi;
 }
@@ -362,7 +366,11 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   height: 49%;
 }
 
-.goalcenterrowmarg{
+.row-wrapper{
+  @include flex($fle-flo: column, $jus-con: space-between);
+}
+
+.goalcenterrowmarg:not(:last-child){
   margin-bottom: 2%;
 }
 

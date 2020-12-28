@@ -16,7 +16,6 @@ import TableRow from 'components/atoms/TableRow';
 */
 
 const NewTable = ({iconColumn, headers, subheaders, data, selectedCallback, selectedRowIndex, icons, children}) => {
-    
     const createHeader = (head, i) => {
         return (
             <div key={'classroomth-'+head} className={`th ${iconColumn && !i ? 'td-icon-cell' : ''}`}>
@@ -51,13 +50,18 @@ const NewTable = ({iconColumn, headers, subheaders, data, selectedCallback, sele
                     }
                 </div>
             </div>
-            <div className={"tbody"}>
-                {
-                    children
-                        ? children
-                        : createRows()
-                } 
-            </div>
+            {
+                children?.length || data 
+                ?
+                    <div className={"tbody"}>
+                        {
+                            children
+                                ? children
+                                : createRows()
+                        } 
+                    </div>
+                : <></>
+            }
         </div>
     );
 };

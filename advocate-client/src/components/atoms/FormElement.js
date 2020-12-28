@@ -22,10 +22,10 @@ const FormElement = props => {
     }, []);
 
     return (
-        <div className={"marg-bot"}>
+        <div>
             {
                 label
-                    ? <h3 className={"i-bottom"}>{label}</h3>
+                    ? <h3 className={"i-bottom"}>{required ? <span className="incomp-color">*</span> : ""}{label}</h3>
                     : <></>
             }
             <label>
@@ -41,7 +41,6 @@ const FormElement = props => {
                             placeholder={placeholder}
                             value={value || ''}
                             onChange={onChange}
-                            required={required || false}
                             name={name}
                             ref={ele}
                             autoFocus

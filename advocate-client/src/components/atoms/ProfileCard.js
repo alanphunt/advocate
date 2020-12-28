@@ -22,7 +22,7 @@ const ProfileCard = ({teacher, editable}) => {
             </div>
             <div className={"piccardinfo"}>
                 <p className={"quote"}>{teacher.description === "" ? "Tell us about yourself!" : teacher.description}</p>
-                <p>Member since {new Date(teacher.dateCreated).toDateString()}</p>
+                <p>Member since {teacher.dateCreated}</p>
             </div>
         </div>
     )

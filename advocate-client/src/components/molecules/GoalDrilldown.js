@@ -8,6 +8,7 @@ import Box from "components/atoms/Box";
 import Section from "components/atoms/Section";
 import Button from "components/atoms/Button";
 import ImmutableTextArea from "./ImmutableTextArea";
+import {determineTrialAverage} from "utils/functions/functions";
 
 const GoalDrilldown = (
     {
@@ -48,14 +49,14 @@ const GoalDrilldown = (
     };
 
     const determineTrialAccuracy = () => {
-        const correct = trackings.filter(t => t.correct === 1);
-        const a = Math.floor((correct.length / trackings.length * 100));
+        const correct = trackings?.filter(t => t.correct === 1);
+        const a = Math.floor((correct?.length / trackings?.length * 100));
         let obj = {};
-        obj.accuracy = a;
+        obj.accuracy = a || 0;
         obj.inaccuracy = 100-a;
-        obj.correct = correct.length;
-        obj.incorrect = trackings.length - correct.length;
-        obj.total = trackings.length;
+        obj.correct = correct?.length || 0;
+        obj.incorrect = trackings?.length - correct?.length || 0;
+        obj.total = trackings?.length || 0;
         obj.correctLabels = correct.map(trial => trial.label).join(", ");
         obj.incorrectLabels = trackings.filter(track => track.correct !== 1).map(trial => trial.label).join(", ");
         return obj;
@@ -163,7 +164,7 @@ const GoalDrilldown = (
                 </div>
                 <div className={"drilldown-trials"}>
                     <div className={"marg-bot-2 flex-center-between"}>
-                        <h2>{benchmark ? benchmark.label : "Benchmark"}</h2>
+                        <h2>{benchmark ? benchmark.label : "Benchmark ..."}</h2>
                             <Button
                                 icon={<PlusIcon className={"i-right"}/>}
                                 text={"Create Trial"}
@@ -179,6 +180,7 @@ const GoalDrilldown = (
                                     <p><strong>Mastery date: </strong>{benchmark?.complete === 1 ? benchmark?.metDate : "N/A"}</p>
                                     <p><strong>Tracking type: </strong>{benchmark?.tracking}</p>
                                     <p><strong>Description: </strong>{benchmark?.description}</p>
+                                    <p><strong>Trial Average: </strong>{benchmark ? `${determineTrialAverage(benchmark)}%` : "..."}</p>
                                 </Section>
                                 <Section>
                                     {                                    
@@ -217,30 +219,36 @@ const GoalDrilldown = (
                     }
                 </div>
                 <div className={"drilldown-trialmeta"}>
-                    <h2 className={"marg-bot-2"}>Tracking for trial {trialIndex !== null ? trial?.trialNumber : ".."}</h2>
+                    <h2 className={"marg-bot-2"}>Tracking for trial {trial ? trial.trialNumber : "..."}</h2>
                     {
-                        trackings !== null
+                        trackings
                             ? <div>
-                                <p className={"marg-bot"}><strong>Trial Accuracy: </strong>{trialAccuracyResults.accuracy}%</p>
-                                {
-                                    trackings.map(track => {
-                                        return (
-                                            <p key={`tracklabel${track.label.toUpperCase()}`}>
-                                                <strong>Label: </strong>
-                                                {track.label}
-                                                <span className={"marg-left"}>{track.correct === 1 ? <PlusIcon className={"comp-color"}/> : <MinusIcon className={"incomp-color"}/>}</span>
-                                            </p>
+                                    {
+                                        trackings.length
+                                        ? (
+                                            <>
+                                                <p className={"marg-bot"}><strong>Trial Accuracy: </strong>{trialAccuracyResults.accuracy}%</p>
+                                                    {trackings.map(track => {
+                                                        return (
+                                                            <p key={`tracklabel${track.label.toUpperCase()}`}>
+                                                                <strong>Label: </strong>
+                                                                {track.label}
+                                                                <span className={"marg-left"}>{track.correct === 1 ? <PlusIcon className={"comp-color"}/> : <MinusIcon className={"incomp-color"}/>}</span>
+                                                            </p>
+                                                        )
+                                                    })}
+                                                <TrialChart trialResults={trialAccuracyResults}/>
+                                            </>
+                                        ) : (
+                                            <></>
                                         )
-                                    })
-                                }
-                                <TrialChart trialResults={trialAccuracyResults}/>
+                                    }
                                 <p className={"marg-top"}><strong>Comments: </strong></p>
-
-                                <ImmutableTextArea rawData={trial.comments} />
-                                {/* <p>{trial.comments}</p> */}
+                                <ImmutableTextArea rawData={trial?.comments} />
                               </div>
                             : <></>
                     }
+
                 </div>
             </div>
         </div>

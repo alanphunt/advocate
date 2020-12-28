@@ -69,9 +69,9 @@ public class ClassroomService{
 
         for (Student student : students) {
             if ( student.getName().isBlank()
-                    || student.getGoalFocus().isBlank()
-                    || student.getEligibility().isBlank()
-                    || student.getSkills().isBlank()){
+                    || student.getAge().isBlank()
+                    || student.getGrade().isBlank()
+                ){
                 errs.put("students", Constants.STUDENTS_EMPTY_RESPONSE);
                 break;
             }

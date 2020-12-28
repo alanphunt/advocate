@@ -157,6 +157,7 @@ const Classroom = ({/* teacher, updateTeacher, */ logout, handleToaster}) => {
         return (
             classrooms.length > 0
                 ? <TableAccordionGroup
+                    allOpen
                     accordionHeaders={classrooms.map(cr => cr.className)}
                     accordionIcons={editDeleteIcons()}
                     accordionIconCallback={handleIconClick}
@@ -167,11 +168,12 @@ const Classroom = ({/* teacher, updateTeacher, */ logout, handleToaster}) => {
                                     cr.students.length
                                     ? <FilterableTable
                                         key={`classroomtable${ind}`}
-                                        headers={["Name", "Goal Focus"]}
+                                        headers={["Name", "Grade", "Age"]}
                                         data={cr.students.map(stu => 
                                             ({
                                                name: stu.name,
-                                               goalFocus: stu.goalFocus
+                                               age: stu.age,
+                                               grade: stu.grade
                                            })
                                        )}
                                     />
@@ -186,7 +188,7 @@ const Classroom = ({/* teacher, updateTeacher, */ logout, handleToaster}) => {
     };
 
     return (
-        <DashCard header={"Classrooms"}>
+        <DashCard>
             <Section>
                 <Button
                     text="Create new class"

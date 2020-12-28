@@ -26,9 +26,8 @@ const ClassroomForm = ({
 }) => {
     const student = {
         name: '',
-        goalFocus: '',
-        eligibility: '',
-        skills: ''
+        age: '',
+        grade: ''
     };     
     
     const formElements = {
@@ -102,9 +101,8 @@ const ClassroomForm = ({
         const editColumn = isEditing ? {'': <TrashIcon onClick={() => deleteSpecificStudent(index)} className="selectable hover-color"/>} : {};
         const row = {
             name: <input onChange={(event)=>updateStudent(index, event, "name")} key={`name${index}`} placeholder='Name' value={determinedStudents[index].name}/>,
-            goals: <input onChange={(event)=>updateStudent(index, event, "goalFocus")} key={`goals${index}`} placeholder='Goal Focus' value={determinedStudents[index].goalFocus}/>,
-            eligibility: <input onChange={(event)=>updateStudent(index, event, "eligibility")} key={`eligibility${index}`} placeholder='Eligibility' value={determinedStudents[index].eligibility}/>,
-            skills: <input onChange={(event)=>updateStudent(index, event, "skills")} key={`skills${index}`} placeholder='Skills' value={determinedStudents[index].skills}/>
+            age: <input onChange={(event)=>updateStudent(index, event, "age")} key={`age${index}`} placeholder='Age' value={determinedStudents[index].age}/>,
+            grade: <input onChange={(event)=>updateStudent(index, event, "grade")} key={`grade${index}`} placeholder='Grade' value={determinedStudents[index].grade}/>
         };
             Object.assign(editColumn, row)
         return editColumn;
@@ -120,10 +118,11 @@ const ClassroomForm = ({
                     value={determinedClassName}
                     placeholder={"Class Name"}
                     errorMessage={determinedErrors.className}
+                    required
                 />
             </Section>
             <Section>
-                <h3 className={"i-bottom"}>Number of students</h3>
+                <h3 className={"i-bottom"}><span className="incomp-color">*</span>Number of students</h3>
                 <NumberPicker updateState={adjustStudentCount} object={student} objectArray={determinedStudents}/>
             </Section>
             <Section>

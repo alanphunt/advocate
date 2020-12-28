@@ -118,7 +118,7 @@ const CreateGoal = ({ hasClassroomsWithStudents, logout }) => {
             </DashWidget>
             : goalCreated
                 ? <Redirect to={"/dashboard/goalcenter"}/>
-                : <DashCard header={"Create a Goal"}>
+                : <DashCard>
                     <CompletionModal
                         displayed={displayModal}
                         closeModal={closeModal}

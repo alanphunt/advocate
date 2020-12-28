@@ -24,11 +24,7 @@ public class Student {
     private List<Goal> goals;
 
     @Expose
-    private String name, eligibility, skills;
-
-    @Expose
-    @Column(name="goal_focus")
-    private String goalFocus;
+    private String name, grade, age;
 
     @Expose
     @Column(name = "classroom_id")
@@ -39,12 +35,11 @@ public class Student {
 
     public Student(){}
 
-    public Student(String id, String name, String eligibility, String skills, String goalFocus, String classroomId) {
+    public Student(String id, String name, String age, String grade, String classroomId) {
         this.id = id;
         this.name = name;
-        this.eligibility = eligibility;
-        this.skills = skills;
-        this.goalFocus = goalFocus;
+        this.age = age;
+        this.grade = grade;
         this.classroomId = classroomId;
         this.enabled = 1;
     }
@@ -65,28 +60,20 @@ public class Student {
         this.name = name;
     }
 
-    public String getEligibility() {
-        return eligibility;
+    public String getAge() {
+        return age;
     }
 
-    public void setEligibility(String eligibility) {
-        this.eligibility = eligibility;
+    public void setAge(String age) {
+        this.age = age;
     }
 
-    public String getSkills() {
-        return skills;
+    public String getGrade() {
+        return grade;
     }
 
-    public void setSkills(String skills) {
-        this.skills = skills;
-    }
-
-    public String getGoalFocus() {
-        return goalFocus;
-    }
-
-    public void setGoalFocus(String goalFocus) {
-        this.goalFocus = goalFocus;
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 
     public String getClassroomId() {
@@ -126,9 +113,8 @@ public class Student {
         return "Student{" +
                 "id=" + id +
                 ", name=" + name +
-                ", eligibility=" + eligibility +
-                ", skills=" + skills +
-                ", goalFocus=" + goalFocus +
+                ", age=" + age +
+                ", grade=" + grade +
                 ", classroomId=" + classroomId +
                 ", enabled=" + enabled +
                 '}';

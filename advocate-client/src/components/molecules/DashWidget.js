@@ -1,14 +1,14 @@
 import React from "react";
 
-const DashWidget = ({className, flexSize, header, cardMainHeight, children}) => {
+const DashWidget = ({className, flexSize, cardMainHeight, children, header}) => {
     return (
         <div className={`card ${className || ""}`} style={{'flex': flexSize}}>
-            {
-                header
-                    ? <div className={"cardheader"}><h2>{header}</h2></div>
+            <div className={`${cardMainHeight ? "height-100" : ""}`}>
+                {
+                    header
+                    ? <div className="cardheader"><h2>{header}</h2></div>
                     : <></>
-            }
-            <div className={`cardmain ${cardMainHeight ? "height-100" : ""}`}>
+                }
                 {children}
             </div>
         </div>

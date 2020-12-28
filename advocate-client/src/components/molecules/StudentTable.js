@@ -17,7 +17,7 @@ import { BASIC_STUDENT_TABLE_HEADERS } from 'utils/constants';
 
 const StudentTable = ({subheaders, data, selectedCallback, selectedRowIndex, icons, children}) => {
     const columnHeaders = BASIC_STUDENT_TABLE_HEADERS;
-    const keys = ["name", "goalFocus", "eligibility", "skills"];
+    const keys = ["name", "age", "grade"];
     const students = data?.map(student => {
         const stu = {};
         keys.forEach(key => {

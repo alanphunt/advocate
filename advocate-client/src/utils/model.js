@@ -17,10 +17,9 @@ const TEACHER_MODEL = {
         {
           id: "",
           classroomId: "",
-          eligibility: "",
-          goalFocus: "",
           name: "",
-          skills: "",
+          age: "",
+          grade: "",
           enabled: 0,
           goals: [
             {
