@@ -14,15 +14,17 @@ const TextArea = ({editorState, setEditorState, immutable}) => {
     };
 
     return (
-        <Editor
-            editorState={editorState}
-            onEditorStateChange={setEditorState || null}
-            toolbarClassName="toolbar"
-            wrapperClassName=""
-            editorClassName={`text-area${immutable ? ' immutable-text-area' : ""}`}
-            toolbar={toolbarOptions}
-            toolbarHidden={immutable || false}
-        />
+        <div className={"textarea-wrapper"}>
+            <Editor
+                editorState={editorState}
+                onEditorStateChange={setEditorState || null}
+                toolbarClassName="toolbar"
+                wrapperClassName=""
+                editorClassName={`text-area${immutable ? ' immutable-text-area' : ""}`}
+                toolbar={toolbarOptions}
+                toolbarHidden={immutable || false}
+            />
+        </div>
     );
 };
 

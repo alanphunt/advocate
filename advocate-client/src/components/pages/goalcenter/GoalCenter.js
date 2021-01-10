@@ -1,80 +1,102 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState} from "react";
 import Accordion from "components/molecules/Accordion";
 import GoalDrilldown from "components/molecules/GoalDrilldown";
 import Modal from "components/molecules/Modal";
 import CreateTrial from "components/molecules/CreateTrial.js"
 import CompleteBenchmark from "components/molecules/CompleteBenchmark";
-import Toaster from "components/atoms/Toaster";
 import ModalBody from "components/molecules/ModalBody";
 import {crudFetch, fetchPost} from "utils/functions/functions";
-import GoalForm from "components/molecules/GoalForm";
 import ScoreTrial from "components/molecules/ScoreTrial";
 import DashCard from "components/molecules/DashCard";
-import DashWidget from "components/molecules/DashWidget";
 import {studentGoalMeta} from "utils/functions/functions";
-import {useToaster} from "utils/hooks/hooks";
 import {STORAGE} from "utils/constants";
-import NewTable from "components/molecules/NewTable";
-import {TeacherContext} from "utils/hooks/hooks";
+import Table from "components/molecules/Table";
+import { useAuth } from "utils/auth/AuthHooks";
+import {FaCheck as CheckIcon} from "react-icons/fa";
+import CreateGoal from "../creategoal/CreateGoal";
+import EditGoal from "components/molecules/EditGoal";
+import { convertToRaw } from 'draft-js';
+
 
 /*
 Props:
     logout: function- if something were to go wrong with authenticating a request user should be logged out
     hasClassroomsWithStudents- boolean- whether or not the user has created a classroom w/ students yet
  */
-const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
-    const {teacher, setTeacher} = useContext(TeacherContext);
+const GoalCenter = ({handleToaster}) =>{
+    const {teacher, setTeacher} = useAuth();
+    const hasClassroomsWithStudents = teacher.classrooms?.length > 0 && teacher.classrooms[0].students.length > 0;
     const [studentIndex, setStudentIndex] = useState(+STORAGE.studentIndex);
     const [classroomIndex, setClassroomIndex] = useState(+STORAGE.classroomIndex);
-    const [displayToaster, setDisplayToaster] = useToaster(false);
     const student = teacher?.classrooms[classroomIndex]?.students[studentIndex];
 
     //since the trial modal child will be reused it has to be reset
     const [template, setTemplate] = useState("");
     //the content of the modal depending on what event triggered it
     const [modalChild, setModalChild] = useState("");
-    const modalSize = modalChild === "createTrial" || modalChild === "editGoal" || modalChild === "editBenchmark" || modalChild === "editTrial";
+    const modalSize = modalChild === "createTrial"
+        || modalChild === "editGoal"
+        || modalChild === "editBenchmark"
+        || modalChild === "editTrial"
+        || modalChild === "createGoal";
 
     const [goalIndex, setGoalIndex] = useState(+STORAGE.goalIndex);
-    const selectedgoal = student?.goals[goalIndex];
+    const selectedGoal = student?.goals[goalIndex];
     const [goal, setGoal] = useState();
 
     const [benchmarkIndex, setBenchmarkIndex] = useState(+STORAGE.benchmarkIndex);
-    const selectedBenchmark = selectedgoal?.benchmarks[benchmarkIndex];
+    const selectedBenchmark = selectedGoal?.benchmarks[benchmarkIndex];
     //const [benchmark, setBenchmark] = useState();
 
     const [trialIndex, setTrialIndex] = useState(STORAGE.trialIndex);
     //const selectedTrial = selectedBenchmark?.trials[parseInt(trialIndex)];
     const [trial, setTrial] = useState();
+    const [trialFiles, setTrialFiles] = useState([]);
 
-    const editGoal = () => {
-        fetchPost("editGoal", goal, cleanupCrudOp);
+    const editGoal = (setEditingErrors) => {
+        fetchPost(
+            "editGoal", 
+            {...goal, goal: JSON.stringify(convertToRaw(goal.goal))}, 
+            (data) => cleanupCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated goal {goal.goalName}</>),
+            (data, headers, status) => setEditingErrors(data)
+            );
     };
 
-    const deleteGoal = () => {
-        const formData = new FormData();
-/*      for soft deletion
-        formData.append("goalId", goal.id);
-        formData.append("benchmarkIds", goal.benchmarks.map(bm => bm.id).toString());
-        formData.append("trialIds", goal.benchmarks.map(bm => bm.trials.map(trial => trial.id)).toString());
-*/
-        formData.append("goal", JSON.stringify(goal));
+    const deleteGoal = () => crudFetch({
+                path: `deletegoal?goalId=${goal.id}`, 
+                method: "DELETE", 
+                success: (data) => cleanupCrudOp(data, <><CheckIcon className="i-right"/>Successfully deleted goal {goal.goalName}</>), 
+                error: () => {}
+    });
 
-        crudFetch("deleteGoal", "DELETE", formData, setTeacher, () => {}, logout);
-/*        fetch("/api/deleteGoal",
-            {
-                    method: "POST",
-                    body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                cleanupCrudOp(data);
-            });*/
+    const prepareEditorStateForRequest = (text) => {
+        try{ 
+            return JSON.stringify(convertToRaw(text))
+        }catch(e){
+            return text
+        }
     };
 
     const editTrial = () => {
-        fetchPost("editTrial", trial, (data) => {
-            cleanupCrudOp(data);
+        let fd = new FormData();
+        fd.append("body", 
+            JSON.stringify(
+                {
+                    ...trial, 
+                    comments: prepareEditorStateForRequest(trial.comments)
+                }
+            )
+        );
+        for(let i = 0; i < trialFiles.length; i++){
+            fd.append("documents", trialFiles[i]);
+        }
+        crudFetch({
+            path: "edittrial",
+            method: "POST",
+            body: fd,
+            success: (data) => 
+                cleanupCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated Trial #{trial.trialNumber} - {trial.dateStarted}</>),
+            error: (data) => {}
         });
     };
 
@@ -82,9 +104,11 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
         let updatedTrials = selectedBenchmark.trials.filter(t => t.id !== trial.id);
         updatedTrials = updatedTrials.map((t, i) => {return {...t, trialNumber: i+1}});
         const bm = {...selectedBenchmark, trials: [...updatedTrials]};
-        fetchPost("editBenchmark", bm, (data) => {
-            cleanupCrudOp(data);
-        });
+        fetchPost(
+            "editBenchmark", 
+            bm, 
+            (data) => cleanupCrudOp(data, <><CheckIcon className="i-right"/>Successfully deleted Trial #{trial.trialNumber} - {trial.dateStarted}!</>)
+        );
     };
 
     const determineModalChild = (modalChildType) => {
@@ -92,37 +116,27 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
             storeStateInSession();
         switch(modalChildType){
             case "createTrial":
-                return (
-                    <ModalBody
+                return <ModalBody
                         header={`Create a trial for ${selectedBenchmark.label}`}
                         hideButtons
-                    >
+                        >
                         <CreateTrial
                             benchmark={selectedBenchmark}
                             template={template}
                             setTemplate={setTemplate}
                             student={student}
-                            setTeacher={setTeacher}
+                            cleanupCrudOp={cleanupCrudOp}
                         />
-                    </ModalBody>
-                )
+                    </ModalBody>;
             case "completeBenchmark":
                 return <CompleteBenchmark
                             benchmark={selectedBenchmark}
-                            setTeacher={setTeacher}
+                            cleanupCrudOp={cleanupCrudOp}
                             closeModal={closeModal}
-                            benchmarkParentGoal={selectedgoal}
-                      />;
+                            benchmarkParentGoal={selectedGoal}
+                        />
             case "editGoal":
-                return (
-                    <ModalBody
-                        header={`Edit goal '${goal.goalName}'`}
-                        cancelCallback={closeModal}
-                        confirmCallback={editGoal}
-                    >
-                        <GoalForm goal={goal} updateGoal={setGoal}/>
-                    </ModalBody>
-                    );
+                return <EditGoal goal={goal} updateGoal={setGoal} editGoal={editGoal} closeModal={closeModal}/>
             case "deleteGoal":
                 return <ModalBody
                     header={`Delete goal '${goal.goalName}'?`}
@@ -141,9 +155,12 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
                     <ScoreTrial
                         setTeacher={setTeacher}
                         benchmark={selectedBenchmark}
-                        student={student}
+                        studentName={student.name}
+                        goalName={selectedGoal.goalName}
                         mutableTrial={trial}
                         updateMutableTrial={setTrial}
+                        trialFiles={trialFiles}
+                        setTrialFiles={setTrialFiles}
                     />
                 </ModalBody>
             case "deleteTrial":
@@ -155,19 +172,24 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
                     <p>Note that this action cannot be undone. This will also delete all associated
                         tracking data. Proceed?</p>
                 </ModalBody>
+            case "createGoal":
+                return <CreateGoal
+                            studentName={student.name}
+                            studentId={student.id}
+                            cleanupCrudOp={cleanupCrudOp}
+                        />
+            case "copyGoal":
+                return <ModalBody header={`Copy goal ${goal.goalName} to which students?`}>
+                        <p>Copy goal to selected students, option to copy benchmarks as well.</p>
+                </ModalBody>
             default: return <></>;
         }
     };
 
-    useEffect(() => {
-        if(STORAGE.length) {
-            clearStorage();
-            setDisplayToaster(true);
-        }
-    }, [teacher]);
-
-    const cleanupCrudOp = (data) => {
-        setTeacher(data);
+    const cleanupCrudOp = (data, message) => {
+        handleToaster(<p>{message}</p>);
+        setTeacher({...data});
+        closeModal();
     };
 
     const handleSelectedStudent = (stu, ind, classInd) => {
@@ -197,16 +219,15 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
     };
 
     const storeStateInSession = () => {
-        STORAGE.setItem("studentIndex", studentIndex);
+/*         STORAGE.setItem("studentIndex", studentIndex);
         STORAGE.setItem("classroomIndex", classroomIndex);
         STORAGE.setItem("goalIndex", goalIndex);
         STORAGE.setItem("benchmarkIndex", benchmarkIndex);
-        STORAGE.setItem("trialIndex", trialIndex);
+        STORAGE.setItem("trialIndex", trialIndex); */
     };
 
     return (
-        <DashCard fitOnPage closeModal={modalChild !== "" ? closeModal : null}>
-            <Toaster display={displayToaster} setDisplay={setDisplayToaster}/>
+        <DashCard fitOnPage /* closeModal={modalChild !== "" ? closeModal : null} */>
             <Modal displayed={modalChild !== ""} closeModal={closeModal} large={modalSize}>
                 {determineModalChild(modalChild)}
             </Modal>
@@ -220,7 +241,7 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
                         >
                             {
                                 teacher.classrooms.map((cr, crind) =>
-                                <NewTable
+                                <Table
                                     headers={["Name", "Goal Focus", "Goal Count", "Goal Completion %"]}
                                     selectedCallback={(stu, ind) => {
                                         handleSelectedStudent(stu, ind, crind);
@@ -251,6 +272,7 @@ const GoalCenter = ({hasClassroomsWithStudents, logout}) =>{
                     benchmarkIndex={benchmarkIndex}
                     setBenchmarkIndex={setBenchmarkIndex}
                     classroomIndex={classroomIndex}
+                    handleToaster={handleToaster}
                 />
             </div>
         </DashCard>

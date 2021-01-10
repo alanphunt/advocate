@@ -7,9 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -49,14 +47,6 @@ public class Utils {
         return builder.create();
     }
 
-    public static Optional<Cookie> extractJwtFromCookie (HttpServletRequest request) throws NoSuchElementException {
-        if(request.getCookies() == null)
-            return Optional.empty();
-
-         return Arrays.stream(request.getCookies()).filter(cookie ->
-                 cookie.getName().equals("jwt")).findFirst();
-    }
-
     public static String generateUniqueId() {
         return RandomStringUtils.randomAlphanumeric(11);
     }
@@ -72,20 +62,20 @@ public class Utils {
             return new TypeToken<ArrayList<Benchmark>>() {}.getType();
         else if(clazz == Trial.class)
             return new TypeToken<ArrayList<Trial>>() {}.getType();
-        else
+        else if(clazz == Tracking.class)
             return new TypeToken<ArrayList<Tracking>>() {}.getType();
+        else if(clazz == Document.class)
+            return new TypeToken<ArrayList<Document>>() {}.getType();
+        else if(clazz == String.class)
+            return new TypeToken<ArrayList<String>>() {}.getType();
+        else 
+            return new TypeToken<ArrayList<Integer>>() {}.getType();
     }
 
     public static String escape(String text){
         return StringEscapeUtils.escapeJava(text);
     }
 
-    public static void createAndAddJwtToCookie(String JWT, HttpServletResponse res){
-        Cookie cookie = new Cookie("jwt", JWT);
-        cookie.setMaxAge(Constants.COOKIE_LIFE_SECONDS);
-        cookie.setHttpOnly(true);
-        //cookie.setSecure(true);
-        res.addCookie(cookie);
-    }
+
 
 }

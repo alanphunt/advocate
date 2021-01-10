@@ -27,15 +27,15 @@ import java.util.NoSuchElementException;
 public class LoginController {
 
     @Autowired private TeacherDetailsService TDS;
-    @Autowired private JWTService JWT_UTIL;
+    @Autowired private JWTService jwtUtil;
     @Autowired AuthenticationManager authMan;
 
     @GetMapping(value = "/teacher")
     public ResponseEntity<?> getTeacher(HttpServletRequest request){
         System.out.println("retrieving teacher..");
         try{
-            final String JWT = Utils.extractJwtFromCookie(request).orElseThrow().getValue();
-            String teacher = Utils.gson().toJson(TDS.loadUserByUsername(JWT_UTIL.extractEmail(JWT)));
+            final String JWT = jwtUtil.extractJwtFromCookie(request).orElseThrow().getValue();
+            String teacher = Utils.gson().toJson(TDS.loadUserByUsername(jwtUtil.extractEmail(JWT)));
             return ResponseEntity.ok(teacher);
         }catch(Exception npe){
             return ResponseEntity.ok(Utils.gson().toJson("{'sorry':'about that!'}"));
@@ -50,10 +50,10 @@ public class LoginController {
             return ResponseEntity.badRequest().body(Utils.gson().toJson(determineLoginErrors(authRequest)));
         }
         Teacher teacher = (Teacher) TDS.loadUserByUsername(authRequest.getUsername());
-        final String JWT = JWT_UTIL.generateToken(teacher);
+        final String JWT = jwtUtil.generateToken(teacher);
         System.out.println(JWT);
         System.out.println(teacher.toString());
-        Utils.createAndAddJwtToCookie(JWT, resp);
+        jwtUtil.createAndAddJwtToCookie(JWT, resp);
         return ResponseEntity.ok(Utils.gson().toJson(teacher));
     }
 
@@ -66,7 +66,7 @@ public class LoginController {
     @GetMapping(value = "/logout")
     public void logout(HttpServletRequest req, HttpServletResponse res){
         try{
-            Cookie jwtCookie = Utils.extractJwtFromCookie(req).orElseThrow();
+            Cookie jwtCookie = jwtUtil.extractJwtFromCookie(req).orElseThrow();
             jwtCookie.setMaxAge(0);
             res.addCookie(jwtCookie);
         }catch(NoSuchElementException e){
@@ -77,8 +77,8 @@ public class LoginController {
 
     @PostMapping(value = "/savecomment")
     public ResponseEntity<?> saveComment(HttpServletRequest request, @RequestBody Map<String, String> body){
-        final String JWT = Utils.extractJwtFromCookie(request).orElseThrow().getValue();
-        Teacher teacher = (Teacher)TDS.loadUserByUsername(JWT_UTIL.extractEmail(JWT));
+        final String JWT = jwtUtil.extractJwtFromCookie(request).orElseThrow().getValue();
+        Teacher teacher = (Teacher)TDS.loadUserByUsername(jwtUtil.extractEmail(JWT));
         teacher.setDescription(body.get("trialComment"));
         TDS.saveTeacher(teacher);
   
@@ -88,7 +88,7 @@ public class LoginController {
 
     private Map<String, String> determineLoginErrors(AuthRequest auth){
         Map<String, String> errors = new HashMap<>();
-        errors.put("error", "Username or password is incorrect.");
+        errors.put("login", "Username or password is incorrect.");
 
         /*for(String key : body.keySet()){
             if(key.equals("password") && !body.get(key).matches(Constants.PASSWORD_REGEX))

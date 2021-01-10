@@ -9,8 +9,10 @@ import {
     FaUserCheck as CheckIcon,
     FaCommentDots as DotsIcon
 } from "react-icons/fa";
+import { useAuth } from "utils/auth/AuthHooks";
 
-const Profile = ({teacher, updateTeacher, logout}) => {
+const Profile = () => {
+    const {teacher} = useAuth();
 
     return (
         <DashCard>

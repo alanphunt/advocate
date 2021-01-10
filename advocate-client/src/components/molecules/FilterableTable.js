@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import NewTable from "components/molecules/NewTable";
+import Table from "components/molecules/Table";
 
 const FilterableTable = ({headers, selectedCallback, data, icons, selectedRowIndex}) => {
     const keys = Object.keys(data[0] || {});
@@ -38,7 +38,7 @@ const FilterableTable = ({headers, selectedCallback, data, icons, selectedRowInd
     };
     
     return(
-        <NewTable
+        <Table
             headers={headers}
             subheaders={createSearchFields()}
             data={isFiltering ? filteredData : data}

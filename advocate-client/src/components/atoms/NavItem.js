@@ -7,10 +7,10 @@ import React from "react";
 
 */
 
-const NavItem = ({text, icon, expanded, active, className}) => {
+const NavItem = ({text, icon, expanded, className}) => {
     
     return(
-        <div className={`sideitem${active ? ' active active-border' : ''}${className ? ` ${className}` : ""}`}>
+        <div className={`sideitem${className ? ` ${className}` : ""}`}>
             <div className={"itemmain"}>
                 <div className={`itemmaininner`}>
                     <span className={`${expanded ? 'i-bottom' : ''}`}>{icon}</span>

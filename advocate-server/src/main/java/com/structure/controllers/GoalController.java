@@ -46,7 +46,7 @@ public class GoalController {
 
         if(errors.size() == 0) {
             String goalId = Utils.generateUniqueId();
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
             Goal goal = new Goal(
                     goalId,
                     body.get("goal"),
@@ -63,6 +63,7 @@ public class GoalController {
             for (Benchmark bm : bms) {
                 bm.setId(Utils.generateUniqueId());
                 bm.setGoalId(goalId);
+                bm.setTrials(new ArrayList<Trial>());
                 bm.setEnabled(1);
             }
             goal.setBenchmarks(bms);
@@ -73,8 +74,8 @@ public class GoalController {
         return ResponseEntity.badRequest().body(Utils.gson().toJson(errors));
     }
 
-    @DeleteMapping(value = "/deleteGoal")
-    public ResponseEntity<?> deleteGoal(HttpServletRequest req, @RequestParam Map<String, String> body){
+    @DeleteMapping(value = "/deletegoal")
+    public ResponseEntity<?> deleteGoal(HttpServletRequest req, /* @RequestParam Map<String, String> body */String goalId){
  /*     for soft deletion
         String regex = ",";
         String goalId = body.get("goalId");
@@ -91,8 +92,7 @@ public class GoalController {
         }*/
 
         //hard deletion, removes all orphans
-        Goal goal = Utils.gson().fromJson(body.get("goal"), Goal.class);
-        gr.delete(goal);
+        gr.deleteById(goalId);
         return LC.getTeacher(req);
     }
 
@@ -135,7 +135,7 @@ public class GoalController {
         for (String key : body.keySet()){
             if(key.toLowerCase().contains("date") && !body.get(key).matches(Constants.DATE_REGEX))
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
-            else if(body.get(key).isBlank())
+            else if(body.get(key).isBlank() && !key.equals("process"))
                 errors.put(key, Constants.EMPTY_FIELD_RESPONSE);
         }
 

@@ -89,15 +89,7 @@ input, select, textarea{
   @include lig-bor;
 }
 
-form input{
-  width: 100%
-}
-
-textarea{
-  min-height: 100px;
-  min-width: 450px;
-  max-height: 400px;
-  max-width: 600px;
-  @include bor-rad;
-  font-family: inherit;
+input{
+  width: 100%;
+  max-width: 225px;
 }

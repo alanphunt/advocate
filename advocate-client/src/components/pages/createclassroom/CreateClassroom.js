@@ -8,7 +8,7 @@ import CompletionModal from "components/molecules/CompletionModal";
 import Button from "components/atoms/Button";
 import {checkLocalForCreated} from "utils/functions/functions";
 import Section from "components/atoms/Section";
-import NewTable from "components/molecules/NewTable";
+import Table from "components/molecules/Table";
 import { BAD_REQUEST_STATUS, BASIC_STUDENT_TABLE_HEADERS } from "utils/constants";
 
 const CreateClassroom = ({teacher, updateTeacher, logout}) => {
@@ -122,7 +122,7 @@ const CreateClassroom = ({teacher, updateTeacher, logout}) => {
                             ? <p className={"inputerror"}>{formErrors.students}</p>
                             : <></>
                     }
-                    <NewTable
+                    <Table
                         headers={BASIC_STUDENT_TABLE_HEADERS}
                         data={
                             students.map((v, i) => {

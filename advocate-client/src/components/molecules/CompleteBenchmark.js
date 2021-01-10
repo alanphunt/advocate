@@ -1,8 +1,10 @@
 import React from "react";
 import ConfirmOrCancelButtons from "components/molecules/ConfirmOrCancelButtons";
 import Section from "components/atoms/Section";
+import {FaCheck as CheckIcon} from "react-icons/fa";
+import ModalBody from "components/molecules/ModalBody";
 
-const CompleteBenchmark = ({benchmark, setTeacher, closeModal, benchmarkParentGoal: goal}) => {
+const CompleteBenchmark = ({benchmark, cleanupCrudOp, closeModal, benchmarkParentGoal: goal}) => {
     //if the BM isn't complete then we're updating it as complete and vice versa
     const currentStatus = benchmark.complete;
     const updatedStatus = currentStatus ? 0 : 1;
@@ -23,14 +25,13 @@ const CompleteBenchmark = ({benchmark, setTeacher, closeModal, benchmarkParentGo
             .then(response => Promise.all([response.ok, (response.ok ? response.json() : response.text()), response.status]))
             .then(([ok, data, status]) => {
                 if (ok)
-                    setTeacher(data);
+                    cleanupCrudOp(data, <><CheckIcon className="i-right"/>Successfully {updatedStatus ? "" : "un"}mastered {benchmark.label}!</>);
             });
     };
 
     return (
-        <div className={"completebenchmarkwrapper"}>
+        <ModalBody header={`Mark ${benchmark.label} as ${currentStatus ? "not mastered" : "mastered"}?`} hideButtons>
             <Section>
-                <h2 className={"marg-bot"}>Mark {benchmark.label} as {currentStatus ? "not mastered" : "mastered"}?</h2>
                 {
                     currentStatus
                         ? <span>This will clear the benchmark's mastery date{allBenchmarksComplete ? " and mark the goal as not mastered" : ""}.</span>
@@ -38,7 +39,7 @@ const CompleteBenchmark = ({benchmark, setTeacher, closeModal, benchmarkParentGo
                             <p><strong>Projected mastery date:</strong> {benchmark.masteryDate}</p>
                             <p className={"marg-bot"}><strong>Today's date:</strong> {new Date().toLocaleDateString()}</p>
                             {isLastIncompleteBenchmark ? <p>Mastering this benchmark will master the goal.</p> : <></>}
-                          </>
+                        </>
                 }
             </Section>
             <ConfirmOrCancelButtons
@@ -50,7 +51,7 @@ const CompleteBenchmark = ({benchmark, setTeacher, closeModal, benchmarkParentGo
                     );
                 }}
                 cancelCallback={closeModal}/>
-        </div>
+        </ModalBody>
     );
 };
 

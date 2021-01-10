@@ -1,6 +1,6 @@
 import React from "react";
 import {
-    Link,
+    NavLink,
     useLocation
   } from "react-router-dom";
 import {FaUserEdit as UserIcon, FaQuestion as QuestionIcon} from "react-icons/fa";
@@ -11,7 +11,7 @@ import {FaUserEdit as UserIcon, FaQuestion as QuestionIcon} from "react-icons/fa
 
 */
 
-const DashNav = ({activeCategory}) => {
+const DashNav = () => {
     let location = useLocation();
 
     const determineCurrentPage = () => {
@@ -30,8 +30,8 @@ const DashNav = ({activeCategory}) => {
         <nav className="dash-nav">
             <div className="dash-nav__breadcrumb">Dashboard / {determineCurrentPage()}</div>
             <div className="dash-nav__profile">
-                <Link to="/dashboard/profile"><UserIcon className={`i-right i-hover${activeCategory === "profile" ? ' active' : ''}`}/></Link>
-                <Link to="/dashboard/help"><QuestionIcon className={`i-hover${activeCategory === "help" ? ' active' : ''}`}/></Link>
+                <NavLink activeClassName="active" to="/dashboard/profile"><UserIcon className={`i-right i-hover`}/></NavLink>
+                <NavLink activeClassName="active" to="/dashboard/help"><QuestionIcon className={`i-hover`}/></NavLink>
             </div>
         </nav>
     );

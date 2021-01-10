@@ -1,37 +1,45 @@
 import React, {useEffect, useRef} from "react";
+import RequiredField from "./RequiredField";
 
-const FormElement = props => {
-    const {
-        label,
-        icon,
-        name,
-        type,
-        placeholder,
-        required,
-        onChange,
-        value,
-        autoFocus,
-        children,
-        id
-    } = {...props};
-
+const FormElement = ({
+    label, 
+    icon, 
+    name, 
+    type, 
+    placeholder, 
+    required, 
+    onChange, 
+    value, 
+    autoFocus, 
+    children, 
+    id, 
+    onKeyPress, 
+    multiple,
+    accept,
+    errorMessage
+}) => {
     const ele = useRef(null);
     useEffect(() => {
-        if (autoFocus)
+        if (!!autoFocus)
             ele.current.focus();
-    }, []);
+    }, [autoFocus]);
 
     return (
-        <div>
+        <div className="form-element-wrapper">
             {
                 label
-                    ? <h3 className={"i-bottom"}>{required ? <span className="incomp-color">*</span> : ""}{label}</h3>
+                    ? <h3 className={"i-bottom"}>{required ? <RequiredField/> : ""}{label}</h3>
                     : <></>
             }
             <label>
-                <span className={"label-i"}>
-                    {icon}
-                </span>
+                {
+                    icon ? (
+                        <span className={"label-i"}>
+                            {icon}
+                        </span>
+                    )
+                    : (<></>)
+                }
                 {
                     children
                         ? children
@@ -44,12 +52,15 @@ const FormElement = props => {
                             name={name}
                             ref={ele}
                             autoFocus
+                            onKeyPress={onKeyPress || null}
+                            multiple={multiple || false}
+                            accept={accept}
                         />
                 }
             </label>
             {
-                props.errorMessage !== null || props.errorMessage !== ""
-                    ? <p className={"inputerror"}>{props.errorMessage}</p>
+                errorMessage
+                    ? <p className={"inputerror"}>{errorMessage}</p>
                     : <></>
             }
         </div>

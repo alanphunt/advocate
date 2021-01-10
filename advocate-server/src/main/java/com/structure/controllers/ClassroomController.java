@@ -42,8 +42,8 @@ public class ClassroomController {
     }
 
     @DeleteMapping(value = "/deleteclassroom")
-    public ResponseEntity<?> deleteClassroom(HttpServletRequest request, @RequestBody Map<String, String>body){
-        crs.deleteClassroom(body.get("classroomId"));
+    public ResponseEntity<?> deleteClassroom(HttpServletRequest request, String classroomId){
+        crs.deleteClassroom(classroomId);
         return loginController.getTeacher(request);
     }
 

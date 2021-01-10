@@ -24,7 +24,7 @@ const RegisterForm = ({errors, register, updateFormValues}) => {
                     icon={<NameIcon/>}
                     placeholder={"First Name"}
                     name={"firstName"}
-                    errorMessage={errors.registerFirstName}
+                    errorMessage={errors.firstName}
                     onChange={(e) => {updateFormValues(e, "firstName")}}
                     autoFocus
                     required
@@ -37,7 +37,7 @@ const RegisterForm = ({errors, register, updateFormValues}) => {
                     icon={<NameIcon/>}
                     placeholder={"Last Name"}
                     name={"lastName"}
-                    errorMessage={errors.registerLastName}
+                    errorMessage={errors.lastName}
                     onChange={(e) => {updateFormValues(e, "lastName")}}
                     required
                 />
@@ -49,7 +49,7 @@ const RegisterForm = ({errors, register, updateFormValues}) => {
                     icon={<EmailIcon/>}
                     placeholder={"Email"}
                     name={"username"}
-                    errorMessage={errors.registerUsername}
+                    errorMessage={errors.username}
                     onChange={(e) => {updateFormValues(e, "username")}}
                     required
                 />
@@ -63,7 +63,7 @@ const RegisterForm = ({errors, register, updateFormValues}) => {
                     type={"password"}
                     placeholder={"Password"}
                     name={"password"}
-                    errorMessage={errors.registerPassword}
+                    errorMessage={errors.password}
                     required
                 />
             </div>

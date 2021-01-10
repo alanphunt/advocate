@@ -1,8 +1,7 @@
 import React from "react";
 import Accordion from "components/molecules/Accordion";
-import NewTable from "components/molecules/NewTable";
-import {Link} from "react-router-dom";
-import {FaPlus as PlusIcon, FaMinus as MinusIcon, FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon, FaCheck as CheckIcon} from "react-icons/fa";
+import Table from "components/molecules/Table";
+import {FaRegCopy as CopyIcon, FaPlus as PlusIcon, FaMinus as MinusIcon, FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon, FaCheck as CheckIcon} from "react-icons/fa";
 import TrialChart from "components/atoms/TrialChart";
 import Box from "components/atoms/Box";
 import Section from "components/atoms/Section";
@@ -25,7 +24,7 @@ const GoalDrilldown = (
         setTrial,
         trialIndex,
         setTrialIndex,
-        classroomIndex
+        classroomIndex,
     }) =>
 {
 
@@ -72,20 +71,25 @@ const GoalDrilldown = (
     const benchmarkIconSet = <CheckIcon className={"success"}/>;
     const iconSet = {
         'editGoal': <EditIcon className={"i-right hover-color selectable"}/>,
+        'copyGoal': <CopyIcon className={"i-right hover-color selectable"}/>,
         'deleteGoal': <TrashIcon className={"hover-color selectable"}/>
     };
 
     const trialIcons = (trial) => {
         return <span>
             {
-                Object.keys(iconSet).map((icon, ind) =>
-                        <span key={`Trial${trial.id}IconNo${ind}`} onClick={(e) => {
-                            e.stopPropagation();
-                            setTrial(trial);
-                            handleModal(icon === "editGoal" ? "editTrial" : "deleteTrial");
-                        }}
-                >{iconSet[icon]}</span>
-                )
+                Object.keys(iconSet).map((icon, ind) => {
+                    if(icon !== "copyGoal")
+                        return <span key={`Trial${trial.id}IconNo${ind}`} onClick={(e) => {
+                                    e.stopPropagation();
+                                    setTrial(trial);
+                                    handleModal(icon === "editGoal" ? "editTrial" : "deleteTrial");
+                                }}>
+                            {iconSet[icon]}
+                        </span>
+                    else
+                        return null;
+                })
             }
         </span>
     };
@@ -96,18 +100,17 @@ const GoalDrilldown = (
                 <div className={"drilldown-goals"}>
                     <div className={"marg-bot-2 flex-center-between"}>
                         <h2>Goals for {student ? student.name.charAt(0).toUpperCase() + student.name.substring(1) : "..."}</h2>
-                        <Link push="true" className={`button-a ${!student && 'disabled'}`} to={{pathname: "/dashboard/goalcenter/create", state: createGoalFor}}>
                             <Button
                                 text="Create Goal"
                                 icon={<PlusIcon className={"i-right"}/>}
                                 className={student ? "enabled" : "disabled"}
+                                onClick={() => handleModal("createGoal")}
                             />
-                        
-                        </Link>
                     </div>
                     {
                         stuWithGoals
                             ? <Accordion
+                                openIndex={0}
                                 data={student.goals.map(goal => goal.goalName)}
                                 icons={iconSet}
                                 sendIndexUp={handleGoalAction}
@@ -115,24 +118,25 @@ const GoalDrilldown = (
                                 {
                                     student.goals.map((goal, goalind) => {
                                         return (
-                                            <div key={`goaldrilldowntable${goalind}`}>
-                                                <p><strong>Goal: </strong>{goal.goal}</p>
-                                                <p><strong>Description: </strong>{goal.process}</p>
+                                            <div key={`goaldrilldowntable-${goalind}`}>
+                                                <p><strong>Goal: </strong></p>
+                                                <ImmutableTextArea rawData={goal.goal} />
+                                                <p><strong>Description: </strong>{goal.process || 'N/A'}</p>
                                                 <p><strong>Start date: </strong>{goal.startDate}</p>
                                                 <p><strong>Projected mastery date: </strong>{goal.masteryDate}</p>
-                                                <p><strong>Mastery date: </strong>{goal.complete ? goal.completionDate : "N/A"}</p>
+                                                <p><strong>Actual mastery date: </strong>{goal.complete ? goal.completionDate : "N/A"}</p>
                                                 <p className={"marg-bot"}><strong>Monitor after mastery: </strong>{goal.monitor === 0 ? "No" : "Yes"}</p>
-                                                    <NewTable
+                                                    <Table
                                                         headers={[`Benchmarks (${goal.benchmarks.length})`]}
                                                         data={goal.benchmarks.length === 0 ? [{text: "Edit goal to add benchmarks"}] : null}
                                                     >
                                                         {
-                                                            goal.benchmarks.map((bm, ind) => {
+                                                            goal.benchmarks.map((bm, bmInd) => {
                                                                 return (
                                                                     <div 
-                                                                        key={`benchmarkRow${ind}`}
-                                                                        className={`tr selectable ${goalIndex === goalind && goal.benchmarks.length && benchmarkIndex === ind ? "selected-bg" : ""}`}
-                                                                        onClick={() => {selectedBenchmarkCallback(null, ind, goalind);}}
+                                                                        key={`benchmarkRow${bmInd}`}
+                                                                        className={`tr selectable ${goalIndex === goalind && goal.benchmarks.length && benchmarkIndex === bmInd ? "selected-bg" : ""}`}
+                                                                        onClick={() => selectedBenchmarkCallback(null, bmInd, goalind)}
                                                                         >
                                                                         <div className="td">
                                                                             { bm.label }
@@ -142,18 +146,7 @@ const GoalDrilldown = (
                                                                 )
                                                             })
                                                         }
-                                                    </NewTable>
-{/*                                                  <Table
-                                                        headers={[`Benchmarks (${goal.benchmarks.length})`]}
-                                                        selectedCallback={(obj, ind) => {selectedBenchmarkCallback(obj, ind, goalind);}}
-                                                        selectedRowIndexes={goalIndex === goalind && goal.benchmarks.length !== 0 ? benchmarkIndex : null}
-                                                        data={
-                                                            goal.benchmarks.length === 0
-                                                                ? [{text: "Edit goal to add benchmarks"}]
-                                                                : goal.benchmarks.map(bm => {
-                                                                    return {label: bm.label, icon: bm.complete ? benchmarkIconSet: ""};
-                                                                })
-                                                        }/> */}
+                                                    </Table>
                                             </div>
                                         )
                                     })
@@ -185,7 +178,7 @@ const GoalDrilldown = (
                                 <Section>
                                     {                                    
                                         trials.length !== 0
-                                            ? <NewTable
+                                            ? <Table
                                                 headers={[`Trials (${benchmark.trials.length})`]}>
                                                     {
                                                         trials.map((trial, index) => {
@@ -203,13 +196,12 @@ const GoalDrilldown = (
                                                             );
                                                         })
                                                     }
-                                              </NewTable>
+                                              </Table>
                                             : <Box text="No trials"/>
                                     }
                                 </Section>
                                 <div className={"flex-column"}>
                                     <Button
-                                         className={"marg-bot"}
                                          onClick={() => handleModal("completeBenchmark")}
                                          icon={<CheckIcon className={"i-right"}/>}
                                          text={`${benchmark.complete === 0 ? "Master" : "Unmaster"} benchmark`}

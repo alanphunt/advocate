@@ -1,6 +1,6 @@
 import AccordionItem from "components/atoms/AccordionItem";
 import React, {useState} from "react";
-import NewTable from "./NewTable";
+import Table from "./Table";
 
 /*
      props:
@@ -43,7 +43,7 @@ const TableAccordionGroup = ({accordionHeaders, tableData, tableHeaders, allOpen
                                 {
                                     children 
                                         ? children[accordionIndex]
-                                        : <NewTable
+                                        : <Table
                                             headers={tableHeaders}
                                             subheaders={tableSubheaders}
                                             data={tableData[accordionIndex]}

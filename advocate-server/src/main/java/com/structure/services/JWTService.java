@@ -9,10 +9,17 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Function;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class JWTService {
@@ -72,5 +79,25 @@ public class JWTService {
         return (EMAIL.equals(teacher.getUsername()) && !isTokenExpired(token));
     }
 
+    public void createAndAddJwtToCookie(String JWT, HttpServletResponse res){
+        Cookie cookie = new Cookie("jwt", JWT);
+        cookie.setMaxAge(Constants.COOKIE_LIFE_SECONDS);
+        cookie.setHttpOnly(true);
+        //cookie.setSecure(true);
+        res.addCookie(cookie);
+    }
 
+    public Optional<Cookie> extractJwtFromCookie (HttpServletRequest request) throws NoSuchElementException {
+        if(request.getCookies() == null)
+            return Optional.empty();
+
+         return Arrays.stream(request.getCookies()).filter(cookie ->
+                 cookie.getName().equals("jwt")).findFirst();
+    }
+    
+    public String extractJwtAndEmailFromCookie(HttpServletRequest request){
+        String jwt = extractJwtFromCookie(request).orElseThrow().getValue();
+        String email = extractEmail(jwt);
+        return email;
+    }
 }

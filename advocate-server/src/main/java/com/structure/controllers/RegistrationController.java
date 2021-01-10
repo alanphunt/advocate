@@ -26,7 +26,7 @@ public class RegistrationController {
     @Autowired
     private TeacherDetailsService TDS;
     @Autowired
-    private JWTService JWT_UTIL;
+    private JWTService jwtService;
 
     @PostMapping(value = "/createuser")
     public ResponseEntity<?> createUser(@RequestBody Map<String, String> body, HttpServletResponse response, HttpServletRequest req){
@@ -37,8 +37,8 @@ public class RegistrationController {
             teacher.setClassrooms(new ArrayList<>());
             TDS.saveTeacher(teacher);
             String jsonTeacher = Utils.gson().toJson(teacher);
-            final String JWT = JWT_UTIL.generateToken(teacher);
-            Utils.createAndAddJwtToCookie(JWT, response);
+            final String JWT = jwtService.generateToken(teacher);
+            jwtService.createAndAddJwtToCookie(JWT, response);
             return new ResponseEntity<>(jsonTeacher, HttpStatus.ACCEPTED);
         }
 

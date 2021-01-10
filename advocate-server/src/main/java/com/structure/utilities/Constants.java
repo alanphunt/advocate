@@ -21,7 +21,15 @@ public class Constants {
     public static final int COOKIE_LIFE_SECONDS = 60 * 60 * 3;
     public static final int COOKIE_LIFE_MS = 1000 * COOKIE_LIFE_SECONDS;
 
+    public static final int HTTP_OK = 200;
+    public static final int HTTP_BAD_REQUEST = 400;
     public static final int HTTP_UNAUTHORIZED = 401;
     public static final int HTTP_FORBIDDEN = 403;
-    public static final int HTTP_BAD_REQUEST = 400;
+
+    //FILE 
+    public static final String DOCUMENT_UPLOAD_PATH = "c:/advocatedocuments/";
+    public static final String DOCUMENT_UPLOAD_FAIL_RESPONSE = "File upload failed. Please ensure the total file sizes are < 23MB, there are no unusual characters in the filename, and that the filename is < 50 characters.";
+    public static final String FAILED_FILE_READ = "Unable to read file from the server. Please try again.";
+    public static final int FILE_UPLOAD_LIMIT = 15;
+
 }

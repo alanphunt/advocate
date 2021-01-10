@@ -1,6 +1,5 @@
 import React from "react";
 import ConfirmOrCancelButtons from "components/molecules/ConfirmOrCancelButtons";
-import Section from "components/atoms/Section";
 
 /*
     Props:
@@ -15,13 +14,13 @@ import Section from "components/atoms/Section";
 
 const ModalBody = ({header, children, confirmCallback, cancelCallback, hideButtons}) => {
     return (
-        <div className={""}>
+        <div className="modalbody">
             <div className={"itemcardhead"}>
                 <h2>{header}</h2>
             </div>
-            <Section>
+            <>
                 {children}
-            </Section>
+            </>
             {
                 hideButtons
                     ? <></>

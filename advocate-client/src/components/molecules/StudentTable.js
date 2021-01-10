@@ -1,5 +1,5 @@
 import React from 'react';
-import NewTable from "components/molecules/NewTable";
+import Table from "components/molecules/Table";
 import { BASIC_STUDENT_TABLE_HEADERS } from 'utils/constants';
 
 /*
@@ -27,7 +27,7 @@ const StudentTable = ({subheaders, data, selectedCallback, selectedRowIndex, ico
     });
 
     return(
-        <NewTable
+        <Table
             headers={columnHeaders}
             data={students}
             selectedCallback={selectedCallback}

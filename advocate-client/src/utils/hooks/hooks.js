@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {STORAGE} from "utils/constants";
-import {createContext} from "react";
 
 export const useToaster = (initialValue) => {
     const [displayed, setDisplayed] = useState(initialValue);
@@ -21,10 +20,13 @@ export  const useToggle = (initial) => {
     }];
 };
 
-export const useLocalStorage = (init, key) => {
-    const val = STORAGE.getItem(key);
-    const [state, setState] = useState(val || init);
-    return [state, setState];
+export const useLocalStorage = (key, init = null) => {
+    let val = STORAGE.getItem(key);
+    val = typeof +val === "number" ? +val : val;
+    const [ls, setLs] =  useState(val || init);
+    return [ls, (val) => {
+        STORAGE.setItem(key, val);
+        setLs(val);
+    }];
 };
 
-export const TeacherContext = createContext(null);

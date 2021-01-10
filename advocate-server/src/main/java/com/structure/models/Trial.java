@@ -44,6 +44,12 @@ public class Trial {
     @OrderBy("label ASC")
     private List<Tracking> trackings;
 
+    
+    @OneToMany(mappedBy = "trial", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Expose
+    @OrderBy("uploadDate ASC")
+    private List<Document> documents;
+
     @Expose
     private int enabled;
 
@@ -58,8 +64,9 @@ public class Trial {
         this.enabled = 1;
     }
 
+
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
@@ -67,7 +74,7 @@ public class Trial {
     }
 
     public int getTrialNumber() {
-        return trialNumber;
+        return this.trialNumber;
     }
 
     public void setTrialNumber(int trialNumber) {
@@ -75,7 +82,7 @@ public class Trial {
     }
 
     public Date getDateStarted() {
-        return dateStarted;
+        return this.dateStarted;
     }
 
     public void setDateStarted(Date dateStarted) {
@@ -83,7 +90,7 @@ public class Trial {
     }
 
     public Date getDateCompleted() {
-        return dateCompleted;
+        return this.dateCompleted;
     }
 
     public void setDateCompleted(Date dateCompleted) {
@@ -91,7 +98,7 @@ public class Trial {
     }
 
     public String getComments() {
-        return comments;
+        return this.comments;
     }
 
     public void setComments(String comments) {
@@ -99,38 +106,60 @@ public class Trial {
     }
 
     public String getBenchmarkId() {
-        return benchmarkId;
+        return this.benchmarkId;
     }
 
     public void setBenchmarkId(String benchmarkId) {
         this.benchmarkId = benchmarkId;
     }
 
-    public int getEnabled() {
-        return enabled;
+    public Benchmark getBenchmark() {
+        return this.benchmark;
     }
 
-    public void setEnabled(int enabled) {
-        this.enabled = enabled;
+    public void setBenchmark(Benchmark benchmark) {
+        this.benchmark = benchmark;
     }
 
     public List<Tracking> getTrackings() {
-        return trackings;
+        return this.trackings;
     }
 
     public void setTrackings(List<Tracking> trackings) {
         this.trackings = trackings;
     }
 
+    public List<Document> getDocuments() {
+        return this.documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
+    public int getEnabled() {
+        return this.enabled;
+    }
+
+    public void setEnabled(int enabled) {
+        this.enabled = enabled;
+    }
+
+
     @Override
     public String toString() {
-        return "Trial{" +
-                "id='" + id + '\'' +
-                ", dateStarted=" + dateStarted +
-                ", dateCompleted=" + dateCompleted +
-                ", comments='" + comments + '\'' +
-                ", benchmarkId='" + benchmarkId + '\'' +
-                ", enabled=" + enabled +
-                '}';
+        return "{" +
+            " id='" + getId() + "'" +
+            ", trialNumber='" + getTrialNumber() + "'" +
+            ", dateStarted='" + getDateStarted() + "'" +
+            ", dateCompleted='" + getDateCompleted() + "'" +
+            ", comments='" + getComments() + "'" +
+            ", benchmarkId='" + getBenchmarkId() + "'" +
+            ", benchmark='" + getBenchmark() + "'" +
+            ", trackings='" + getTrackings() + "'" +
+            ", documents='" + getDocuments() + "'" +
+            ", enabled='" + getEnabled() + "'" +
+            "}";
     }
+
 }

@@ -5,11 +5,14 @@ import * as serviceWorker from './serviceWorker';
 import {BrowserRouter, Route} from "react-router-dom";
 import './css/styles.scss';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import AuthProvider from 'utils/auth/AuthProvider';
 
 ReactDOM.render(
-    <BrowserRouter>
-        <Route path="/" component={App}/>
-    </BrowserRouter>,
+        <BrowserRouter>
+            <AuthProvider>
+                <Route path="/" component={App}/>
+            </AuthProvider>
+        </BrowserRouter>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

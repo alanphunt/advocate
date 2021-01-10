@@ -51,6 +51,10 @@
   margin: 0 auto 1rem auto;
 }
 
+.centeredform input{
+  max-width: none;
+}
+
 .cancelButton:hover{
   background-color: $incomplete;
 }
@@ -87,6 +91,13 @@
 
 .width-50{
   width: 50%;
+}
+
+.width-25{
+  width: 25%;
+}
+.width-fit{
+  width: fit-content;
 }
 
 .flex-half{
@@ -234,4 +245,8 @@
 
 .flex-center-horz{
   @include flex($jus-con: center);
+}
+
+.loading-icon-spinner{
+  animation: ldio-qw71tr0evte 1.2048192771084336s linear infinite;
 }

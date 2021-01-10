@@ -81,14 +81,13 @@ first 3 letters concatenated with hyphens
 
 .modal{
   background: $white;
-  padding: 1rem 2rem;
   width: 100%;
   color: $dar-gra;
   overflow: auto;
 }
 
 .modal-lg{
-  @include wid-hei(75%, 75%);
+  @include wid-hei(85%, 85%);
 }
 
 .modal-exit{
@@ -98,7 +97,7 @@ first 3 letters concatenated with hyphens
   font-size: 2rem;
   @include cur-poi;
   @include transition;
-  color: $primary;
+  color: $dar-gra;
 }
 
 .formcontainer{

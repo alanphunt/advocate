@@ -1,6 +1,6 @@
 import React from "react";
 import TextArea from "./TextArea";
-import { convertToRaw, EditorState, convertFromRaw } from 'draft-js';
+import { EditorState, convertFromRaw } from 'draft-js';
 
 /*
      props:

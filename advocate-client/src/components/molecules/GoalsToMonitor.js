@@ -1,5 +1,5 @@
 import React from "react";
-import NewTable from "./NewTable";
+import Table from "./Table";
 
 const GoalsToMonitor = (props) => {
     const teacher = props.teacher;
@@ -25,7 +25,7 @@ const GoalsToMonitor = (props) => {
     extractMonitorGoals();
 
     return (
-            <NewTable
+            <Table
                 headers={["Student", "Classroom", "Goal", "Mastery Date"]}
                 data={dataObjects}
             />

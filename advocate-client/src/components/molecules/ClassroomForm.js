@@ -1,11 +1,12 @@
 import React, {useState} from "react";
 import Section from "components/atoms/Section";
-import NewTable from "components/molecules/NewTable";
+import Table from "components/molecules/Table";
 import FormElement from "components/atoms/FormElement";
 import NumberPicker from "components/atoms/NumberPicker";
 import { BASIC_STUDENT_TABLE_HEADERS, JSON_HEADER} from "utils/constants";
 import {FaAddressBook as BookIcon, FaRegTrashAlt as TrashIcon} from "react-icons/fa";
 import ConfirmOrCancelButtons from "./ConfirmOrCancelButtons";
+import RequiredField from "components/atoms/RequiredField";
 
 /*
      props:
@@ -122,7 +123,7 @@ const ClassroomForm = ({
                 />
             </Section>
             <Section>
-                <h3 className={"i-bottom"}><span className="incomp-color">*</span>Number of students</h3>
+                <h3 className={"i-bottom"}><RequiredField/>Number of students</h3>
                 <NumberPicker updateState={adjustStudentCount} object={student} objectArray={determinedStudents}/>
             </Section>
             <Section>
@@ -131,7 +132,7 @@ const ClassroomForm = ({
                         ? <p className={"inputerror"}>{determinedErrors.students}</p>
                         : <></>
                 }
-                <NewTable
+                <Table
                     iconColumn={isEditing}
                     headers={tableHeaders}
                     data={determinedStudents.map((student, index) => renderStudentRow(student, index))}
@@ -139,7 +140,7 @@ const ClassroomForm = ({
             </Section>
             { warning === "" ? <></> : <p className="incomp-color marg-bot">{warning}</p>}
             <ConfirmOrCancelButtons
-                confirmCallback={() => confirmCallback(students, className, createClassroom, setFormErrors)}
+                confirmCallback={confirmCallback}
                 cancelCallback={cancelCallback}
             />
         </>

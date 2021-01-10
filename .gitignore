@@ -39,3 +39,5 @@ advocate-client/yarn-error.log*
 *.classpath
 *.prefs
 *.project
+
+test.js

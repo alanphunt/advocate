@@ -42,18 +42,28 @@
   height: 100%;
 }
 
-.sideitem {
+.sideitemwrapper a, .sidebarfooter .sideitem{
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
+  display: block;
 }
 
-.sideitem:hover{
+.sideitemwrapper a:hover, .sidebarfooter .sideitem:hover{
   color: $white;
   border-top: 1px solid #cccccc50;
   border-bottom: 1px solid #cccccc50;
 }
 
-a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
+a.active{
+  color: $primary;
+}
+
+a.active-border{
+  border-top: 1px solid #cccccc50;
+  border-bottom: 1px solid #cccccc50;
+}
+
+a.active.active-border:hover{
   color: $primary;
 }
 
@@ -157,15 +167,6 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   padding: 1rem;
 }
 
-.active{
-  color: $primary;
-}
-
-.active-border{
-  border-top: 1px solid #cccccc50;
-  border-bottom: 1px solid #cccccc50;
-}
-
 .sidebar-default-pic{
   @include bor-rad;
   width: 50px;
@@ -181,7 +182,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 
 .cardwrapperrow{
   @include flex;
-  @include wid-hei(100%, 450px);
+  @include wid-hei(100%, 350px);
   position: relative;
   margin-bottom: 2rem;
 }
@@ -217,7 +218,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 
 .infocard{
   width: 100%;
-  min-height: 400px;
+  //min-height: 400px;
 }
 
 .cropped {
@@ -270,11 +271,13 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 }
 
 .cardheader{
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid $lig-gra;
 }
 
 .cardheader h2{
   font-weight: bold;
+  margin-bottom: 8px;
 }
 
 /*************TABLE STYLES**************/
@@ -324,6 +327,10 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   flex-flow: column;
 }
 
+.th h3, .th p{
+    user-select: none;
+}
+
 .td{
   align-items: center;
   justify-content: space-between;
@@ -351,6 +358,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 
 .tcols h3{
   font-weight: bold;
+  margin-bottom: 8px;
 }
 
 .getstarted{
@@ -364,15 +372,16 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 
 .goalcenterrow{
   height: 49%;
+  overflow: auto;
 }
 
 .row-wrapper{
   @include flex($fle-flo: column, $jus-con: space-between);
 }
 
-.goalcenterrowmarg:not(:last-child){
+/* .goalcenterrowmarg:not(:last-child){
   margin-bottom: 2%;
-}
+} */
 
 .getstarted:hover{
   color: $primary;
@@ -383,9 +392,6 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   position: relative;
   @include flex($jus-con: space-between);
   width: max-content;
-}
-
-.numberinput{
 }
 
 .numberinput input{
@@ -462,6 +468,7 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   position: relative;
   margin: 0 1rem 1rem 0;
   padding: 1rem;
+  text-align: center;
 }
 
 .itemcardcontainer{
@@ -469,7 +476,6 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 }
 
 .itemcardhead{
-  text-align: center;
   margin-bottom: 2rem;
   border-bottom: 1px solid $lig-gra;
   padding: 0 0 10px 0;
@@ -493,6 +499,14 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 
 .createtrialwrapper{
   width: 100%;
+}
+
+.modalbody{
+  margin: 2rem;
+}
+
+.creategoalbuttons{
+  @include flex($fle-flo: column);
 }
 
 .itemsuccess{
@@ -523,16 +537,20 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
 }
 */
 
-.stuinfocardwrapper{
+.infocardwrapper{
   @include bor-rad;
   padding: 1rem;
   @include lig-bor;
-  width: 75%;
+  width: 100%;
   margin-left: auto;
 }
 
 .trialgraphwrapper{
   margin: 2rem 0;
+}
+
+.canvasjs-chart-credit{
+  display: none;
 }
 
 .toasterwrapper{
@@ -567,8 +585,14 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   padding: 0 1rem;
 }
 
-.text-area.immutable-text-area{
-  @include bor-rad;
+.text-area.immutable-text-area.rdw-editor-main{
+  border: none;
+  padding: 0;
+  min-height: fit-content;
+}
+
+.rdw-editor-main{
+  min-height: 300px;
 }
 
 .rdw-editor-toolbar.toolbar{
@@ -576,4 +600,119 @@ a.active .itemmain:hover, .dropdown li a.active:hover, .itemmain.active:hover{
   border-radius: 8px 8px 0 0;
   border-bottom: none !important;
   @include lig-bor;
+}
+
+.modalbody .textarea-wrapper{
+  max-width: none;
+}
+
+.textarea-wrapper{
+  width: 100%;
+  max-width: 500px;
+}
+
+.card-uploader-column{
+  width: 45%;
+  margin-left: auto;
+}
+
+/* DROP ZONE STYLES */
+
+.dropfile{
+  position: relative;
+  @include bor-rad;
+  @include lig-bor;
+  width: 100%;
+}
+
+.dropfile__inner{
+  position: relative;
+  @include flex($ali-ite: center, $fle-flo: column, $jus-con: space-between);
+}
+
+.dropfile__label{
+  height: 200px;
+  width: 100%;
+  text-align: center;
+  @include flex($ali-ite: center, $jus-con: center);
+  @include cur-poi;
+  // border-radius: $rad8px $rad8px 0 0;
+  @include bor-rad;
+  &:hover{
+    border: 2px solid $primary;
+  }
+}
+
+.dropfile__text{
+}
+
+#dropfile-input{
+  display: none;
+}
+
+.dropfile__inner__filechip{
+  padding: 0 8px 8px 8px;
+  width: 100%;
+}
+
+.filechip-size{
+  margin-top: 8px;
+}
+
+.filechip-wrapper{
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.filechip{
+  @include cur-poi;
+  margin: 8px 8px 0 0;
+  @include flex($fle-flo: row nowrap, $ali-ite: center);
+  position: relative;
+}
+
+.filechip__text{
+  padding: .45rem .65rem;
+  border: 1px solid $primary;
+  border-radius: 25px;
+  font-size: 12px;
+  &:hover{
+    color: $black;
+  }
+}
+
+.filechip__icons{
+  color: $white;
+  font-size: 1.3rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 25px;
+  @include wid-hei(100%, 100%);
+  z-index: 2;
+  background-color: $opacity-bg;
+  & svg:hover{
+    color: $primary;
+  }
+  display: none;
+}
+
+.form-element-wrapper{
+  width: 100%;
+}
+
+.border-green{
+  border: 1px solid $success;
+}
+
+.display-centered{
+  @include flex($ali-ite: center, $jus-con: center);
+}
+
+.hidden{
+  visibility: hidden;
+}
+
+.pos-rel{
+  position: relative;
 }

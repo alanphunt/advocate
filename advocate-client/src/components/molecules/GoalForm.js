@@ -11,12 +11,11 @@ import {
 import NumberPicker from "components/atoms/NumberPicker";
 import FormElement from "components/atoms/FormElement";
 import Section from "components/atoms/Section";
-import NewTable from "./NewTable";
+import Table from "./Table";
+import TextArea from "./TextArea";
+import RequiredField from "components/atoms/RequiredField";
 
-const GoalForm = (props) => {
-    const goal = props.goal || null;
-    const updateGoal = props.updateGoal || null;
-    const formErrors = props.formErrors || null;
+const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) => {
 
     const [warning, setWarning] = useState("");
     const warningMessage = "You've deleted a benchmark that had associated trial data. Clicking confirm will make these changes permanent. Click cancel to undo.";
@@ -51,7 +50,12 @@ const GoalForm = (props) => {
     };
 
     const updateGoalLogic = (e, key, monitor) => {
-        updateGoal({...goal, [key]: (key === "monitor" ? monitor : e.currentTarget.value)});
+        if(key !== "goal")
+            updateGoal({...goal, [key]: (key === "monitor" ? monitor : e.currentTarget.value)});
+        else{
+            setEditorState(e);
+            updateGoal({...goal, goal: e.getCurrentContent()});
+        }
     };
 
     const adjustBenchmarkCount = (objArray) => {
@@ -72,13 +76,23 @@ const GoalForm = (props) => {
                     value={goal?.goalName || ""}
                     onChange={(e) => {updateGoalLogic(e, "goalName")}}
                     errorMessage={formErrors?.goalName}
-                    autoFocus
                     required
+                    autoFocus
                 />
             </Section>
             
             <Section>
-                <FormElement
+                <h3 className={"marg-bot"}><RequiredField/>Goal</h3>
+                {
+                    formErrors?.goal
+                        ? <p className={"inputerror"}>{formErrors.goal}</p>
+                        : <></>
+                }
+                <TextArea
+                    editorState={editorState}
+                    setEditorState={(editorState) => updateGoalLogic(editorState, "goal")}                     
+                />
+{/*                 <FormElement
                     icon={<BookIcon/>}
                     placeholder={"Goal"}
                     label={"Goal"}
@@ -86,7 +100,7 @@ const GoalForm = (props) => {
                     onChange={(e) => {updateGoalLogic(e, "goal")}}
                     errorMessage={formErrors?.goal}
                     required
-                />
+                /> */}
             </Section>
 
             <Section>
@@ -167,7 +181,7 @@ const GoalForm = (props) => {
                         ? <p className={"inputerror marg-bot"}>{formErrors?.benchmarks}</p>
                         : <></>
                 }
-                <NewTable headers={["Label", "Benchmark", "Mastery Date", "Tracking Type"]}>
+                <Table headers={["Label", "Benchmark", "Mastery Date", "Tracking Type"]}>
                     {
                         goal?.benchmarks?.map((benchmark, ind) => {
                                 return (
@@ -184,22 +198,20 @@ const GoalForm = (props) => {
                                         <div className="td">
                                             <FormElement
                                                 onChange={(e) => updateBenchmark(ind, e, "description")}
-                                                key={`desc${ind}`}
                                                 placeholder='Benchmark'
                                                 value={goal?.benchmarks[ind]?.description}
+                                                autoFocus={!!goal}
                                             />
                                         </div>
                                         <div className="td">
                                             <FormElement 
                                                 onChange={(e) => updateBenchmark(ind, e, "masteryDate")}
-                                                key={`masterydate${ind}`}
                                                 placeholder='MM/DD/YY'
                                                 value={goal?.benchmarks[ind]?.masteryDate}
                                             />
                                         </div>
                                         <div className="td">
                                             <select
-                                                key={`tracktype${ind}`}
                                                 onChange={(e) => {
                                                     updateBenchmark(ind, e, "tracking")
                                                 }}
@@ -218,7 +230,7 @@ const GoalForm = (props) => {
                                 )
                             })
                     }
-                </NewTable> 
+                </Table> 
             </Section>
 
             {

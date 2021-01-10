@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState} from 'react';
 import DashCard from "components/molecules/DashCard";
 import FilterableTable from 'components/molecules/FilterableTable';
 import {crudFetch, editDeleteIcons} from 'utils/functions/functions';
@@ -11,10 +11,10 @@ import Button from 'components/atoms/Button';
 import { BAD_REQUEST_STATUS, JSON_HEADER } from 'utils/constants';
 import Section from 'components/atoms/Section';
 import Box from 'components/atoms/Box';
-import {TeacherContext} from "utils/hooks/hooks"
+import { useAuth } from "utils/auth/AuthHooks";
 
-const Classroom = ({/* teacher, updateTeacher, */ logout, handleToaster}) => {
-    const {teacher, setTeacher} = useContext(TeacherContext);
+const Classroom = ({handleToaster}) => {
+    const {teacher, setTeacher, signout} = useAuth();
 
     const classrooms = teacher.classrooms;
 
@@ -33,8 +33,6 @@ const Classroom = ({/* teacher, updateTeacher, */ logout, handleToaster}) => {
     };
     
     const renderDeleteClassroomModalBody = () => {
-
-
         return (
             <ModalBody
                 header={`Delete ${selectedClassroom.className}?`}
@@ -51,31 +49,32 @@ const Classroom = ({/* teacher, updateTeacher, */ logout, handleToaster}) => {
 
     const executeClassroomDeletion = (body) => {
         crudFetch(
-            "deleteclassroom", 
-            "DELETE",
-            JSON.stringify({classroomId: selectedClassroom.id}), 
-            (body) => crudOperationSuccessful(body, `Successfully deleted ${selectedClassroom.className}`), 
-            handleCrudError, 
-            logout, 
-            JSON_HEADER
+            {
+                path: `deleteclassroom?classroomId=${selectedClassroom.id}`, 
+                method: "DELETE",
+                success: (body) => crudOperationSuccessful(body, `Successfully deleted ${selectedClassroom.className}`), 
+                error: handleCrudError, 
+                serverError: signout
+            }
         )
     };
 
-    const executeClassroomUpdate = (students, className, createClassroom, setFormErrors) => {
-        crudFetch(
-            "updateclassroom", 
-            "PUT",
-            JSON.stringify(selectedClassroom),
-            (body) => crudOperationSuccessful(body, `Successfully updated ${selectedClassroom.className}`), 
-            handleCrudError,
-            logout,
-            JSON_HEADER
-            )
+    const executeClassroomUpdate = () => {
+        crudFetch({
+            path: "updateclassroom", 
+            method: "PUT",
+            body: JSON.stringify(selectedClassroom),
+            success: (body) => crudOperationSuccessful(body, `Successfully updated ${selectedClassroom.className}`), 
+            error: handleCrudError,
+            serverError: signout,
+            headers: JSON_HEADER
+        })
     };
 
     const crudOperationSuccessful = (body, message) => {
         handleToaster(<p>{<CheckIcon className="i-right"/>}{message}</p>);
         setTeacher(body);
+        closeModal();
     };
 
     const updateClassroomName = (name) => {
@@ -120,7 +119,7 @@ const Classroom = ({/* teacher, updateTeacher, */ logout, handleToaster}) => {
             >
                 <ClassroomForm
                     teacherId={teacher.id}
-                    logout={logout}
+                    logout={signout}
                     confirmCallback={confirmCreateClassroomCallback}
                     cancelCallback={closeModal}
                 />
@@ -137,7 +136,7 @@ const Classroom = ({/* teacher, updateTeacher, */ logout, handleToaster}) => {
             else if(status === BAD_REQUEST_STATUS)
                 setFormErrors(JSON.parse(body));
             else
-                logout();
+                signout();
         });
     };
 

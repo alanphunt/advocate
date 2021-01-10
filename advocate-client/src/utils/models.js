@@ -1,4 +1,4 @@
-const TEACHER_MODEL = {
+export const TEACHER_MODEL = {
   id: "",
   dateCreated: "",
   firstName: "",
@@ -80,4 +80,41 @@ const TEACHER_MODEL = {
   ]
 }
 
-export default TEACHER_MODEL;
+export const homepageErrorModel = {
+  login: "",
+  registerUsername: "",
+  registerPassword: "",
+  registerFirstName: "",
+  registerLastName: ""
+};
+
+export const loginModel = {
+  username: '',
+  password: ''
+};
+
+export const registrationModel = {
+  username: '',
+  password: '',
+  firstName: '',
+  lastName: '',
+};
+
+export const goalFormErrorModel = {
+  goalName: "",
+  goal: "",
+  masteryDate: "",
+  startDate: "",
+  process: "",
+  benchmarks: ""
+};
+
+export const goalModel = {
+  goalName: "",
+  startDate: "",
+  masteryDate: "",
+  process: "",
+  monitor: 0,
+  benchmarks: [],
+  studentId: ""
+};

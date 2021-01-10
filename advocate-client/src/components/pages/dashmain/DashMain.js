@@ -7,8 +7,10 @@ import DashCard from "components/molecules/DashCard";
 import { studentViewObject } from "utils/functions/functions";
 import TableAccordionGroup from "components/molecules/TableAccordionGroup";
 import { BASIC_STUDENT_TABLE_HEADERS } from "utils/constants";
+import { useAuth } from "utils/auth/AuthHooks";
 
-const DashMain = ({teacher}) => {
+const DashMain = () => {
+    const {teacher} = useAuth();
     const classrooms = teacher.classrooms;
     const createClass = () => {
         return (
