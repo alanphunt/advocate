@@ -1,69 +1,81 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
     FaAddressBook as BookIcon,
     FaCalendarCheck as CalCheckIcon,
     FaCalendarPlus as CalPlusIcon,
-    FaClipboard as ClipIcon,
     FaRegSquare as UncheckedIcon,
     FaRegCheckSquare as CheckedIcon,
-    FaRegTrashAlt as TrashIcon
-} from "react-icons/fa";
+    FaRegTrashAlt as TrashIcon,
+    FaRegCopy as CopyIcon } from "react-icons/fa";
 import NumberPicker from "components/atoms/NumberPicker";
 import FormElement from "components/atoms/FormElement";
 import Section from "components/atoms/Section";
 import Table from "./Table";
 import TextArea from "./TextArea";
+import {benchmarkModel} from "utils/models";
 import RequiredField from "components/atoms/RequiredField";
+import ErrorLabel from "components/atoms/ErrorLabel";
+import TextAreaForTable from "./TextAreaForTable";
+import { convertFromRaw, EditorState } from 'draft-js';
 
-const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) => {
+const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
+    useEffect(() => {
+        // if(goal.goal.getCurrentContent().hasText()){
+            try{
+                let parsedBenchmarks = mutableGoal.benchmarks.map(bm =>{
+                    return {...bm, description: EditorState.createWithContent(convertFromRaw(JSON.parse(bm.description)))}
+                });
+                setMutableGoal({...mutableGoal, goal: EditorState.createWithContent(convertFromRaw(JSON.parse(mutableGoal.goal))), benchmarks: parsedBenchmarks});
+            }catch(e){console.log("couldn't parse editorstate")}
+        // }
+    }, []);
+
+    const [focused, setFocused] = useState(-1);
 
     const [warning, setWarning] = useState("");
     const warningMessage = "You've deleted a benchmark that had associated trial data. Clicking confirm will make these changes permanent. Click cancel to undo.";
 
-    const benchmark = {
-        label: "",
-        description: "",
-        masteryDate: "",
-        tracking: ""
-    };
-
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     const updateBenchmark = (index, event, key) => {
-        let val = event.currentTarget.value;
-        let bm = {...goal.benchmarks[index], [key]: val, label: `Benchmark ${alphabet[index]}.`};
-        let bms = [...goal.benchmarks];
+        let val = key === "description" ? event : event.currentTarget.value;
+        let bms = [...mutableGoal.benchmarks];
+        let bm = {...bms[index], [key]: val, label: `Benchmark ${alphabet[index]}.`};
         bms.splice(index, 1, bm);
-        updateGoal({ ...goal, benchmarks: [...bms] });
+        setMutableGoal({ ...mutableGoal, benchmarks: [...bms]});
     };
 
     const deleteSpecificBenchmark = (index) => {
         //delete the specified benchmark then update the remaining labels to the correct letter
-        let bms = [...goal.benchmarks];
+        let bms = [...mutableGoal.benchmarks];
         bms.splice(index, 1);
         bms = bms.map((bm, i) => {
             return {...bm, label: `Benchmark ${alphabet[i]}.`};
         });
-        updateGoal({...goal, benchmarks: [...bms]});
-        if(goal && goal.benchmarks[index].enabled)
+        setMutableGoal({...mutableGoal, benchmarks: [...bms]});
+        if(mutableGoal && mutableGoal.benchmarks[index].enabled)
             setWarning(warningMessage);
     };
 
     const updateGoalLogic = (e, key, monitor) => {
         if(key !== "goal")
-            updateGoal({...goal, [key]: (key === "monitor" ? monitor : e.currentTarget.value)});
+            setMutableGoal({...mutableGoal, [key]: (key === "monitor" ? monitor : e.currentTarget.value)});
         else{
-            setEditorState(e);
-            updateGoal({...goal, goal: e.getCurrentContent()});
+            setMutableGoal({...mutableGoal, goal: e});
         }
     };
 
     const adjustBenchmarkCount = (objArray) => {
-        goal.benchmarks.forEach((obj, ind) => {
+        mutableGoal.benchmarks.forEach((obj, ind) => {
             if(obj.enabled && !objArray[ind]?.enabled)
                 setWarning(warningMessage);
         })
-        updateGoal({...goal, benchmarks: objArray});
+        console.log(objArray);
+        setMutableGoal({...mutableGoal, benchmarks: [...objArray]});
+    };
+
+    const copySpecificBenchmark = (benchmark) => {
+        setMutableGoal({...mutableGoal, benchmarks: mutableGoal.benchmarks.concat(benchmark)})
     };
 
     return (
@@ -73,7 +85,7 @@ const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) =
                     label={"Goal Name"}
                     placeholder={"Name"}
                     icon={<BookIcon/>}
-                    value={goal?.goalName || ""}
+                    value={mutableGoal.goalName}
                     onChange={(e) => {updateGoalLogic(e, "goalName")}}
                     errorMessage={formErrors?.goalName}
                     required
@@ -83,36 +95,15 @@ const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) =
             
             <Section>
                 <h3 className={"marg-bot"}><RequiredField/>Goal</h3>
-                {
-                    formErrors?.goal
-                        ? <p className={"inputerror"}>{formErrors.goal}</p>
-                        : <></>
+                {        
+                    typeof mutableGoal.goal === "string"
+                    ? <></>
+                    :   <TextArea
+                            editorState={mutableGoal.goal}
+                            setEditorState={(editorState) => updateGoalLogic(editorState, "goal")}                     
+                        />
                 }
-                <TextArea
-                    editorState={editorState}
-                    setEditorState={(editorState) => updateGoalLogic(editorState, "goal")}                     
-                />
-{/*                 <FormElement
-                    icon={<BookIcon/>}
-                    placeholder={"Goal"}
-                    label={"Goal"}
-                    value={goal?.goal || ""}
-                    onChange={(e) => {updateGoalLogic(e, "goal")}}
-                    errorMessage={formErrors?.goal}
-                    required
-                /> */}
-            </Section>
-
-            <Section>
-                <FormElement
-                    label={"Projected Mastery Date"}
-                    icon={<CalCheckIcon/>}
-                    placeholder={"MM/DD/YY"}
-                    value={goal?.masteryDate || ""}
-                    onChange={(e) => {updateGoalLogic(e, "masteryDate")}}
-                    errorMessage={formErrors?.masteryDate}
-                    required
-                />
+                <ErrorLabel text={formErrors?.goal}/>
             </Section>
 
             <Section>
@@ -120,9 +111,20 @@ const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) =
                     label={"Start Date"}
                     icon={<CalPlusIcon/>}
                     placeholder={"MM/DD/YY"}
-                    value={goal?.startDate || ""}
+                    value={mutableGoal.startDate}
                     onChange={(e) => {updateGoalLogic(e, "startDate")}}
                     errorMessage={formErrors?.startDate}
+                />
+            </Section>
+
+            <Section>
+                <FormElement
+                    label={"Projected Mastery Date"}
+                    icon={<CalCheckIcon/>}
+                    placeholder={"MM/DD/YY"}
+                    value={mutableGoal.masteryDate}
+                    onChange={(e) => {updateGoalLogic(e, "masteryDate")}}
+                    errorMessage={formErrors?.masteryDate}
                     required
                 />
             </Section>
@@ -131,7 +133,7 @@ const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) =
                 <FormElement>
                     <h3 className={"i-bottom flex-center-vert"}>Monitor after mastery?
                         {
-                            goal?.monitor
+                            mutableGoal?.monitor
                                 ? <CheckedIcon
                                     tabIndex={0}
                                     className={"i-left selectable"}
@@ -156,58 +158,53 @@ const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) =
             </Section>
 
             <Section>
-                <FormElement
-                    label={"How to implement goal"}
-                    icon={<ClipIcon/>}
-                    placeholder={"Process"}
-                    value={goal?.process || ""}
-                    onChange={(e) => {updateGoalLogic(e, "process")}}
-                    errorMessage={formErrors?.process}
-                />
-            </Section>
-
-            <Section>
-                <h3 className={"i-bottom"}><span className="incomp-color">*</span>Benchmarks</h3>
+                <h3 className={"i-bottom"}><RequiredField/>Benchmarks</h3>
                 <Section>
                     <NumberPicker
                         updateState={adjustBenchmarkCount}
                         limit={26}
-                        object={benchmark}
-                        objectArray={goal?.benchmarks}
+                        object={benchmarkModel}
+                        objectArray={mutableGoal.benchmarks}
                     />
                 </Section>
-                {
-                    formErrors?.benchmarks
-                        ? <p className={"inputerror marg-bot"}>{formErrors?.benchmarks}</p>
-                        : <></>
-                }
-                <Table headers={["Label", "Benchmark", "Mastery Date", "Tracking Type"]}>
+                <Table
+                    headers={["Label", "Benchmark", "Mastery Date", "Tracking Type"]}
+                    requiredHeaderIndexes={[1,2,3]}
+                >
                     {
-                        goal?.benchmarks?.map((benchmark, ind) => {
+                        mutableGoal?.benchmarks?.map((benchmark, ind) => {
                                 return (
                                     <div key={"benchmark"+ind} className={"tr"}>
                                         <div className="td">
                                             <strong>Benchmark {alphabet[ind]}.</strong>
-                                            <TrashIcon
-                                                className={"selectable hover-color"}
-                                                onClick={() => {
-                                                    deleteSpecificBenchmark(ind);
-                                                }}
-                                            />
+                                            <div>
+                                                <CopyIcon
+                                                    className={"selectable hover-color i-right"}
+                                                    onClick={() => {
+                                                        copySpecificBenchmark(benchmark);
+                                                    }}/>
+                                                <TrashIcon
+                                                    className={"selectable hover-color"}
+                                                    onClick={() => {
+                                                        deleteSpecificBenchmark(ind);
+                                                    }}/>
+                                                </div>
                                         </div>
                                         <div className="td">
-                                            <FormElement
-                                                onChange={(e) => updateBenchmark(ind, e, "description")}
-                                                placeholder='Benchmark'
-                                                value={goal?.benchmarks[ind]?.description}
-                                                autoFocus={!!goal}
+                                            <TextAreaForTable
+                                                placeholder="Benchmark Description"
+                                                editorState={benchmark.description}
+                                                setEditorState={(es) => updateBenchmark(ind, es, "description")}
+                                                focused={focused === ind}
+                                                index={ind}
+                                                setFocused={setFocused}
                                             />
                                         </div>
                                         <div className="td">
                                             <FormElement 
                                                 onChange={(e) => updateBenchmark(ind, e, "masteryDate")}
                                                 placeholder='MM/DD/YY'
-                                                value={goal?.benchmarks[ind]?.masteryDate}
+                                                value={benchmark.masteryDate}
                                             />
                                         </div>
                                         <div className="td">
@@ -215,7 +212,7 @@ const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) =
                                                 onChange={(e) => {
                                                     updateBenchmark(ind, e, "tracking")
                                                 }}
-                                                value={goal?.benchmarks[ind]?.tracking}
+                                                value={benchmark.tracking}
                                             >
                                                 <option>Select a type..</option>
                                                 <option value={"score"}>Score</option>
@@ -231,10 +228,11 @@ const GoalForm = ({goal, updateGoal, formErrors, editorState, setEditorState}) =
                             })
                     }
                 </Table> 
+                <ErrorLabel text={formErrors?.benchmarks}/>
             </Section>
 
             {
-                goal && warning !== ""
+                mutableGoal && warning !== ""
                     ? <p className={"incomp-color"}>{warning}</p>
                     : <></>
             }

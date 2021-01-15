@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from "react";
-import { EditorState, convertFromRaw } from 'draft-js';
+import React, {useState} from "react";
 import ModalBody from "components/molecules/ModalBody";
 import GoalForm from "components/molecules/GoalForm";
 import {goalFormErrorModel} from "utils/models";
-
+import {crudFetch, formifyObject, prepareEditorStateForRequest,} from "utils/functions/functions";
+import {FaCheck as CheckIcon} from "react-icons/fa";
+import {SERVER_ERROR} from "utils/constants";
 /*
      props:
 
@@ -11,21 +12,40 @@ import {goalFormErrorModel} from "utils/models";
 
 */
 
-const EditGoal = ({goal, updateGoal, closeModal, editGoal}) => {
-    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+const EditGoal = ({mutableGoal, setMutableGoal, closeModal, completeCrudOp}) => {
     const [editGoalFormErrors, setEditGoalFormErrors] = useState(goalFormErrorModel);
-
+/* 
     useEffect(() => {
         setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(goal.goal))));
-    }, []);
+         let parsedBenchmarks = goal.benchmarks.map(bm =>{
+            return {...bm, description: EditorState.createWithContent(convertFromRaw(JSON.parse(bm.description)))}
+        });
+        setMutableGoal({...goal, benchmarks: parsedBenchmarks}); 
+    }, []); */
+
+  
+    const editGoal = () => {
+        crudFetch({
+            path: "editgoal",
+            method: "POST",
+            body: formifyObject({
+                ...mutableGoal, 
+                goal: prepareEditorStateForRequest(mutableGoal?.goal),
+                benchmarks: JSON.stringify(mutableGoal?.benchmarks.map(bm => prepareEditorStateForRequest(bm.description)))
+            }),
+            success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated goal {mutableGoal?.goalName}</>),
+            error: (data, headers, status) => setEditGoalFormErrors(data),
+            serverError: () => alert(SERVER_ERROR)
+        });
+      };
 
     return (
         <ModalBody
-            header={`Edit goal '${goal.goalName}'`}
+            header={`Edit goal '${mutableGoal?.goalName}'`}
             cancelCallback={closeModal}
-            confirmCallback={() => editGoal(setEditGoalFormErrors)}
+            confirmCallback={editGoal}
         >
-            <GoalForm formErrors={editGoalFormErrors} goal={goal} updateGoal={updateGoal} editorState={editorState} setEditorState={setEditorState}/>
+            <GoalForm formErrors={editGoalFormErrors} mutableGoal={mutableGoal} setMutableGoal={setMutableGoal}/>
         </ModalBody>
     );
 };

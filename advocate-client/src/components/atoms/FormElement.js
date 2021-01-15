@@ -1,4 +1,5 @@
 import React, {useEffect, useRef} from "react";
+import ErrorLabel from "./ErrorLabel";
 import RequiredField from "./RequiredField";
 
 const FormElement = ({
@@ -16,11 +17,12 @@ const FormElement = ({
     onKeyPress, 
     multiple,
     accept,
-    errorMessage
+    errorMessage,
+    onFocus
 }) => {
     const ele = useRef(null);
     useEffect(() => {
-        if (!!autoFocus)
+        if (autoFocus)
             ele.current.focus();
     }, [autoFocus]);
 
@@ -44,25 +46,22 @@ const FormElement = ({
                     children
                         ? children
                         : <input
-                            id={id || undefined}
+                            id={id}
                             type={type || "text"}
                             placeholder={placeholder}
-                            value={value || ''}
+                            value={value}
                             onChange={onChange}
                             name={name}
                             ref={ele}
-                            autoFocus
+                            autoFocus={autoFocus}
                             onKeyPress={onKeyPress || null}
                             multiple={multiple || false}
                             accept={accept}
+                            onFocus={onFocus}
                         />
                 }
             </label>
-            {
-                errorMessage
-                    ? <p className={"inputerror"}>{errorMessage}</p>
-                    : <></>
-            }
+            <ErrorLabel text={errorMessage}/>
         </div>
     )
 };

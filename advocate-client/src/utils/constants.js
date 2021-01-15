@@ -13,3 +13,4 @@ export const BASIC_STUDENT_TABLE_HEADERS = ["Name", "Age", "Grade"];
 export const JSON_HEADER = {"Content-Type": "application/json"};
 
 export const FILE_UPLOAD_LIMIT = 15;
+export const EMPTY_RICH_TEXT_FIELD = "This field is required.";

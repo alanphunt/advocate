@@ -1,9 +1,13 @@
 package com.structure.models;
 
 import com.google.gson.annotations.Expose;
+import com.structure.utilities.Constants;
+
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +19,9 @@ public class Trial {
     @Id
     @Expose
     private String id;
+
+    @Expose
+    private String label;
 
     @Expose
     @Column(name = "trial_number")
@@ -57,6 +64,7 @@ public class Trial {
 
     public Trial(String id, int trialNumber, Date dateStarted, String comments, String benchmarkId) {
         this.id = id;
+        this.label = "Trial #" + trialNumber + " - " + new SimpleDateFormat(Constants.DATE_FORMAT).format(dateStarted);
         this.trialNumber = trialNumber;
         this.dateStarted = dateStarted;
         this.comments = comments;
@@ -64,13 +72,21 @@ public class Trial {
         this.enabled = 1;
     }
 
-
     public String getId() {
         return this.id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public int getTrialNumber() {
@@ -152,6 +168,7 @@ public class Trial {
             " id='" + getId() + "'" +
             ", trialNumber='" + getTrialNumber() + "'" +
             ", dateStarted='" + getDateStarted() + "'" +
+            ", label='" + getLabel() + "'" +
             ", dateCompleted='" + getDateCompleted() + "'" +
             ", comments='" + getComments() + "'" +
             ", benchmarkId='" + getBenchmarkId() + "'" +

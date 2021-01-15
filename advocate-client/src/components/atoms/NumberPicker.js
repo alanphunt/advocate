@@ -12,7 +12,8 @@ const NumberPicker = (props) => {
     let limit = props.limit || 100;
 
     const change = (num, object, objArr) => {
-        let newObjArr = JSON.parse(JSON.stringify(objArr));
+        // let newObjArr = JSON.parse(JSON.stringify(objArr));
+        let newObjArr = [...objArr];
         let x = parseInt(num) || 0;
         x = (x > limit ? limit : x);
 

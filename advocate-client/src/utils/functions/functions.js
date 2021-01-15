@@ -1,6 +1,7 @@
 import React from "react";
 import {SERVER_ERROR, FORBIDDEN_STATUS, JSON_HEADER} from "utils/constants";
 import {FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon} from "react-icons/fa";
+import { convertToRaw } from 'draft-js';
 
 export const fetchPost = (path, body, callback, errorCallback, catchCallback) => {
     const formData = new FormData();
@@ -53,7 +54,7 @@ export const calculateGoalCompletion = (student) => {
 
 export const studentGoalMeta = (students) => {
     return students.map(student => {
-        return {name: student.name, goalFocus: student.goalFocus, goalCount: student.goals.length, completion: `${calculateGoalCompletion(student)}%`};
+        return {name: student.name, goalCount: student.goals.length, completion: `${calculateGoalCompletion(student)}%`};
     });
 };
 
@@ -191,11 +192,41 @@ export const formifyObject = (object) => {
     return fd;
 };
 
-//returns array of updated document object metadata
+//returns array of updated document metadata
 export const mapFileMetaDataToDocument = (fileArray, docArray, trialId) => {
     let fileMeta = [...docArray]
     fileArray.forEach(file => {
-        fileMeta.push({trialId: trialId, name: file.name, type: file.type, size: file.size, lastModified: file.lastModified})
+        fileMeta.push({trialId: trialId || "", name: file.name, type: file.type, size: file.size, lastModified: file.lastModified})
     })
     return fileMeta
+};
+
+export const prepareEditorStateForRequest = (text) => {
+    try{ 
+        return JSON.stringify(convertToRaw(text))
+    }catch(e){
+        return text
+    }
+};
+
+//takes in an array of student objects (a classroom) to which it'll extract only name, age, and grade properties of the student
+export const formatStudentObject = (studentArray) => {
+    return studentArray.map(student => {
+        const {name, age, grade} = student;
+        return {name, age, grade}
+    })
+};
+
+export const determineTrialAccuracy = (trackings) => {
+    const correct = trackings.filter(t => t.correct === 1);
+    const a = Math.floor((correct?.length / trackings?.length * 100));
+    let obj = {};
+    obj.accuracy = a || 0;
+    obj.inaccuracy = 100-a;
+    obj.correct = correct?.length || 0;
+    obj.incorrect = trackings?.length - correct?.length || 0;
+    obj.total = trackings?.length || 0;
+    obj.correctLabels = correct.map(trial => trial.label).join(", ");
+    obj.incorrectLabels = trackings.filter(track => track.correct !== 1).map(trial => trial.label).join(", ");
+    return obj;
 };

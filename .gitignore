@@ -41,3 +41,4 @@ advocate-client/yarn-error.log*
 *.project
 
 test.js
+advocate-client/.eslintcache

@@ -4,7 +4,7 @@ import Section from "components/atoms/Section";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import ModalBody from "components/molecules/ModalBody";
 
-const CompleteBenchmark = ({benchmark, cleanupCrudOp, closeModal, benchmarkParentGoal: goal}) => {
+const CompleteBenchmark = ({benchmark, completeCrudOp, closeModal, benchmarkParentGoal: goal}) => {
     //if the BM isn't complete then we're updating it as complete and vice versa
     const currentStatus = benchmark.complete;
     const updatedStatus = currentStatus ? 0 : 1;
@@ -25,7 +25,7 @@ const CompleteBenchmark = ({benchmark, cleanupCrudOp, closeModal, benchmarkParen
             .then(response => Promise.all([response.ok, (response.ok ? response.json() : response.text()), response.status]))
             .then(([ok, data, status]) => {
                 if (ok)
-                    cleanupCrudOp(data, <><CheckIcon className="i-right"/>Successfully {updatedStatus ? "" : "un"}mastered {benchmark.label}!</>);
+                completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully {updatedStatus ? "" : "un"}mastered {benchmark.label}!</>);
             });
     };
 

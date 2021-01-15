@@ -11,8 +11,9 @@ import CreateGoal from "components/pages/creategoal/CreateGoal";
 import Test from "components/pages/Test/Test"
 import DashNav from 'components/molecules/DashNav';
 
-const Dashboard = ({handleToaster}) => {
+const Dashboard = () => {
     const [expanded, setExpanded] = useState(true);
+    
     return (
         <div className={"dashboardwrapper"}>
             <Sidebar
@@ -23,22 +24,22 @@ const Dashboard = ({handleToaster}) => {
             <DashNav/>
                 <Switch>
                     <Route path="/dashboard/classroom" exact>
-                        <Classroom handleToaster={handleToaster} />
+                        <Classroom />
                     </Route>
                     <Route path="/dashboard/progressreport" exact>
-                        <ProgressReport handleToaster={handleToaster}/>
+                        <ProgressReport />
                     </Route>
                     <Route path="/dashboard/help" exact>
                         <Help/>
                     </Route>
                     <Route path="/dashboard/goalcenter" exact>
-                        <GoalCenter handleToaster={handleToaster} />
+                        <GoalCenter />
                     </Route>
                     <Route path="/dashboard/goalcenter/create" exact>
                         <CreateGoal />
                     </Route>
                     <Route path="/dashboard/profile" exact>
-                        <Profile handleToaster={handleToaster}/>
+                        <Profile/>
                     </Route>
                     <Route path="/dashboard/test" exact>
                         <Test />

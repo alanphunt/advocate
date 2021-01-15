@@ -3,6 +3,10 @@
   height: $height;
 }
 
+@mixin box-sha($opa: .15){
+  box-shadow: 0 6px 10px -4px rgba(0,0,0,$opa);
+}
+
 @mixin pri-bor(){
   border: 1px solid $primary;
 }

@@ -2,7 +2,7 @@ import React from "react";
 import ScoreTrial from "components/molecules/ScoreTrial";
 import TrialTemplateSelector from "components/molecules/TrialTemplateSelector";
 
-const CreateTrial = ({benchmark, template, setTemplate, student, cleanupCrudOp}) => {
+const CreateTrial = ({benchmark, template, setTemplate, student, completeCrudOp}) => {
 
     const goBack = () => {
         setTemplate("");
@@ -10,8 +10,8 @@ const CreateTrial = ({benchmark, template, setTemplate, student, cleanupCrudOp})
 
     const trialOptions = (type) => {
         return {
-            "": <TrialTemplateSelector benchmark={benchmark} setTemplate={setTemplate}/>,
-            "score": <ScoreTrial goBack={goBack} benchmark={benchmark} student={student} cleanupCrudOp={cleanupCrudOp}/>,
+            "": <TrialTemplateSelector trackingType={benchmark.tracking} setTemplate={setTemplate}/>,
+            "score": <ScoreTrial goBack={goBack} benchmark={benchmark} student={student} completeCrudOp={completeCrudOp}/>,
             "cue": cueTrial(goBack),
             "wpm": wpmTrial(goBack)
         }[type];

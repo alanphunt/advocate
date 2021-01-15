@@ -6,11 +6,14 @@ import {BrowserRouter, Route} from "react-router-dom";
 import './css/styles.scss';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import AuthProvider from 'utils/auth/AuthProvider';
+import UiProvider from 'utils/ui/UiProvider';
 
 ReactDOM.render(
         <BrowserRouter>
             <AuthProvider>
-                <Route path="/" component={App}/>
+                <UiProvider>
+                    <Route path="/" component={App}/>
+                </UiProvider>
             </AuthProvider>
         </BrowserRouter>,
     document.getElementById('root'));

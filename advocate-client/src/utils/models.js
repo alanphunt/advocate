@@ -1,3 +1,5 @@
+import { EditorState, convertFromRaw } from 'draft-js';
+
 export const TEACHER_MODEL = {
   id: "",
   dateCreated: "",
@@ -26,7 +28,6 @@ export const TEACHER_MODEL = {
               id: "",
               goal: "",
               goalName: "",
-              process: "",
               enabled: 0,
               monitor: 0,
               startDate: "",
@@ -105,7 +106,6 @@ export const goalFormErrorModel = {
   goal: "",
   masteryDate: "",
   startDate: "",
-  process: "",
   benchmarks: ""
 };
 
@@ -113,8 +113,15 @@ export const goalModel = {
   goalName: "",
   startDate: "",
   masteryDate: "",
-  process: "",
   monitor: 0,
   benchmarks: [],
-  studentId: ""
+  studentId: "",
+  goal: EditorState.createEmpty()
+};
+
+export const benchmarkModel = {
+  label: "",
+  description: EditorState.createEmpty(),
+  masteryDate: "",
+  tracking: ""
 };

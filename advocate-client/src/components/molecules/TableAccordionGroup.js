@@ -10,18 +10,38 @@ import Table from "./Table";
         allOpen: boolean: optional- to render each accordion item opened or not
         openIndex: number: optional- the specific accordion item to render open
         accordionIcons: object: optional- adds icons to the accordion item header
-        tableIcons: object: optional- the key will be the key of the column to display the icon in, the value will be the <IconComponent/>
+        tableIcons: object: optional-{columnKey: <IconComponent/>}, displays in all columns with the specified key
+        accordionIconCallback: function(key, accordionIndex): optional- 
         tableSubheaders:  misc array: optional- used for column subheaders 
         selectedRowCallback: function(object, accordionIndex, rowIndex): optional- 
-        accordionIconCallback: function(key, accordionIndex): optional- 
         children: object array: optional- if you need to use a different kind of table just render them as children
+        conditionalIcons: {columnKey: [array of either icons or null values]} - icons rendered in specified columns
+        based on condtionals in the parent component. also a great way to attach callbacks to icons.
+        includeCountInTableHeader: boolean:optional - includes the row count of the table in the table header
+        includeCountInAccordionHeader: boolean:optional - includes the table count of the accordion group in the accordion header
+        noTable: boolean: optional- hide the table if you're rendering your own as children
      state:
 
 */
 
-const TableAccordionGroup = ({accordionHeaders, tableData, tableHeaders, allOpen, openIndex, accordionIcons, accordionIconCallback, tableIcons, tableSubheaders, selectedRowCallback, children}) => {
+const TableAccordionGroup = ({
+    accordionHeaders,
+    tableData,
+    tableHeaders,
+    allOpen,
+    openIndex,
+    accordionIcons,
+    accordionIconCallback,
+    tableIcons,
+    conditionalIcons,
+    tableSubheaders,
+    selectedRowCallback,
+    children,
+    includeCountInTableHeader,
+    includeCountInAccordionHeader,
+    noTable
+}) => {
     const [indexes, setIndexes] = useState({accordionIndex: 999, rowIndex: 999});
-
     const callbackWrapper = (object, rowIndex, accordionIndex) => {
         setIndexes({accordionIndex: accordionIndex, rowIndex: rowIndex});
         selectedRowCallback(object, accordionIndex, rowIndex);
@@ -33,13 +53,43 @@ const TableAccordionGroup = ({accordionHeaders, tableData, tableHeaders, allOpen
                 accordionHeaders.map((header, accordionIndex) => {
                     return (
                         <AccordionItem
-                            key={`accordionItem-${header}`}
-                            header={header}
+                            key={`accordionItem-${header}-${accordionIndex}`}
+                            header={`${header}${includeCountInAccordionHeader ? ` (${tableData[accordionIndex].length})` : ''}`}
                             icons={accordionIcons || null}
                             open={allOpen || openIndex === accordionIndex}
                             index={accordionIndex}
                             sendIndexUp={accordionIconCallback}
                             >
+                                {
+                                    children ? children[accordionIndex] : <></>
+                                }
+                                {
+                                    noTable 
+                                    ?<></>
+                                    : 
+                                    <Table
+                                    accordionIndex={accordionIndex}
+                                    headers={tableHeaders}
+                                    subheaders={tableSubheaders}
+                                    data={tableData[accordionIndex]}
+                                    selectedCallback={selectedRowCallback ? (object, index) => callbackWrapper(object, index, accordionIndex) : null}
+                                    selectedRowIndex={indexes.accordionIndex === accordionIndex ? indexes.rowIndex : 999}
+                                    icons={tableIcons || null}
+                                    conditionalIcons={conditionalIcons}
+                                    includeCountInHeader={includeCountInTableHeader}
+                                />
+                                }
+                        </AccordionItem>
+                    )
+                })
+            }
+        </div>
+    );
+};
+
+export default TableAccordionGroup;
+
+/*
                                 {
                                     children 
                                         ? children[accordionIndex]
@@ -52,12 +102,4 @@ const TableAccordionGroup = ({accordionHeaders, tableData, tableHeaders, allOpen
                                             icons={tableIcons || null}
                                           />
                                 }
-                        </AccordionItem>
-                    )
-                })
-            }
-        </div>
-    );
-};
-
-export default TableAccordionGroup;
+*/

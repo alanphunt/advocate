@@ -8,22 +8,23 @@ import ProtectedRoute from 'components/molecules/ProtectedRoute';
 import { useAuth } from 'utils/auth/AuthHooks';
 import { useLocation } from 'react-router';
 import Loading from 'components/atoms/Loading';
+import { useUi } from 'utils/ui/UiHooks';
+import Modal from "components/molecules/Modal";
 
 const App = () => {
     const teacherObject = useAuth();
     const location = useLocation();
-    const [toaster, setToaster] = useState({display: false, body: ""});
+    // const [toaster, setToaster] = useState({display: false, body: ""});
     const [isFetching, setIsFetching] = useState(false);
+    const {largeModal, setLargeModal, toasterText, modalBody, closeModal, closeToaster} = useUi();
 
     useEffect(() => {
         let timer = null;
-        if(toaster.display){
-            timer = setTimeout(() => {
-                setToaster({...toaster, display: false});
-            }, 4000);
+        if(toasterText){
+            timer = setTimeout(() => closeToaster, 4000);
         }
         return timer ? () => clearTimeout(timer) : () => {};
-    }, [toaster]);
+    }, [toasterText]);
 
     useEffect(() => {
         if(!teacherObject.teacher && location.pathname.includes("/dashboard/")){
@@ -32,8 +33,11 @@ const App = () => {
         }
         
     }, [teacherObject]);
-
-    const handleToaster = (message) => setToaster({display: true, body: message});
+    
+    useEffect(() => {
+        if(!modalBody && largeModal)
+            setLargeModal(false)
+    }, [modalBody])
 
     return (
         <div className="App">
@@ -42,12 +46,15 @@ const App = () => {
                 ? <Loading/>
                 : <></>
             }
+            <Modal displayed={!!modalBody} closeModal={closeModal} largeModal={largeModal} >
+                { modalBody ? modalBody : <></> }
+            </Modal>
             <Switch>
                 <Route path="/" exact >
                     <Home setIsFetching={setIsFetching} /> 
                 </Route>
                 <ProtectedRoute path="/dashboard/:page" >
-                    <Dashboard handleToaster={handleToaster} />
+                    <Dashboard />
                 </ProtectedRoute>
                 <ProtectedRoute path="/dashboard">
                     <Redirect to="/dashboard/main"/>
@@ -56,7 +63,7 @@ const App = () => {
                     <PageNotFound/>
                 </Route>
             </Switch>
-            <Toaster display={toaster.display} setDisplay={(displayed) => setToaster({...toaster, display: displayed})}>{toaster.body}</Toaster>
+            <Toaster display={!!toasterText} setDisplay={closeToaster}>{toasterText}</Toaster>
         </div>
     );
 }

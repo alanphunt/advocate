@@ -24,9 +24,6 @@ public class Goal {
     private String goalName;
 
     @Expose
-    private String process;
-
-    @Expose
     private int enabled, monitor;
 
     @Expose
@@ -59,11 +56,10 @@ public class Goal {
 
     public Goal(){}
 
-    public Goal(String id, String goal, String goalName, String process, String studentId, Date startDate, Date masteryDate, int monitor) {
+    public Goal(String id, String goal, String goalName, String studentId, Date startDate, Date masteryDate, int monitor) {
         this.id = id;
         this.goal = goal;
         this.goalName = goalName;
-        this.process = process;
         this.studentId = studentId;
         this.startDate = startDate;
         this.masteryDate = masteryDate;
@@ -93,14 +89,6 @@ public class Goal {
 
     public void setGoalName(String goalName) {
         this.goalName = goalName;
-    }
-
-    public String getProcess() {
-        return process;
-    }
-
-    public void setProcess(String process) {
-        this.process = process;
     }
 
     public int getEnabled() {
@@ -156,7 +144,6 @@ public class Goal {
         return "Goal{" +
                 "id='" + id + '\'' +
                 ", goalName='" + goalName + '\'' +
-                ", process='" + process + '\'' +
                 ", enabled=" + enabled +
                 ", monitor=" + monitor +
                 ", startDate=" + startDate +

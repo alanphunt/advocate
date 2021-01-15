@@ -8,25 +8,21 @@ import TableAccordionGroup from 'components/molecules/TableAccordionGroup';
 import {FaCheck as CheckIcon, FaPlus as PlusIcon} from "react-icons/fa";
 import ClassroomForm from 'components/molecules/ClassroomForm';
 import Button from 'components/atoms/Button';
-import { BAD_REQUEST_STATUS, JSON_HEADER } from 'utils/constants';
+import { BAD_REQUEST_STATUS, BASIC_STUDENT_TABLE_HEADERS, JSON_HEADER } from 'utils/constants';
 import Section from 'components/atoms/Section';
 import Box from 'components/atoms/Box';
 import { useAuth } from "utils/auth/AuthHooks";
+import { useUi } from 'utils/ui/UiHooks';
 
-const Classroom = ({handleToaster}) => {
+const Classroom = () => {
     const {teacher, setTeacher, signout} = useAuth();
+    const {setLargeModal, setToasterText, modalBody, setModalBody, closeModal} = useUi();
 
     const classrooms = teacher.classrooms;
 
     const [selectedClassroom, setSelectedClassroom] = useState({});
-    const [modalBody, setModalBody] = useState("");
     const [formErrors, setFormErrors] = useState({});
-    const modalVisible = modalBody !== "";
-    const modalSize = modalBody === "edit" || modalBody === "create";
 
-    const closeModal = () => { 
-        setModalBody("");
-    };
 
     const handleCrudError = (body) => {
         setFormErrors(JSON.parse(body));
@@ -72,7 +68,7 @@ const Classroom = ({handleToaster}) => {
     };
 
     const crudOperationSuccessful = (body, message) => {
-        handleToaster(<p>{<CheckIcon className="i-right"/>}{message}</p>);
+        setToasterText(<p>{<CheckIcon className="i-right"/>}{message}</p>);
         setTeacher(body);
         closeModal();
     };
@@ -108,7 +104,7 @@ const Classroom = ({handleToaster}) => {
 
     const handleIconClick = (action, index) => {
         setSelectedClassroom(classrooms[index]);
-        setModalBody(action);
+        setModalBody(determineModalBody(action));
     };
 
     const renderCreateClassroomModalBody = () => {
@@ -140,15 +136,17 @@ const Classroom = ({handleToaster}) => {
         });
     };
 
-    const determineModalBody = () => { 
-        switch(modalBody){
+    const determineModalBody = (action) => { 
+        switch(action){
             case "create":
+                setLargeModal(true);
                 return renderCreateClassroomModalBody();
             case "edit":
+                setLargeModal(true);
                 return renderEditClassroomModalBody();
             case "delete":
                 return renderDeleteClassroomModalBody();
-            default: return <></>;
+            default: null;
         }
     };
 
@@ -160,6 +158,7 @@ const Classroom = ({handleToaster}) => {
                     accordionHeaders={classrooms.map(cr => cr.className)}
                     accordionIcons={editDeleteIcons()}
                     accordionIconCallback={handleIconClick}
+                    noTable
                   >
                     {
                         classrooms.map((cr, ind) => {
@@ -167,7 +166,7 @@ const Classroom = ({handleToaster}) => {
                                     cr.students.length
                                     ? <FilterableTable
                                         key={`classroomtable${ind}`}
-                                        headers={["Name", "Grade", "Age"]}
+                                        headers={BASIC_STUDENT_TABLE_HEADERS}
                                         data={cr.students.map(stu => 
                                             ({
                                                name: stu.name,
@@ -192,12 +191,9 @@ const Classroom = ({handleToaster}) => {
                 <Button
                     text="Create new class"
                     icon={<PlusIcon className="i-right"/>}
-                    onClick={() => setModalBody("create")}
+                    onClick={() => setModalBody(determineModalBody("create"))}
                 />
             </Section>
-            <Modal closeModal={closeModal} displayed={modalVisible} large={modalSize}>
-                {determineModalBody(modalBody)}
-            </Modal>
             {renderAccordion()}
         </DashCard>
     )

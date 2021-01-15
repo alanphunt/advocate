@@ -43,7 +43,7 @@ public class Utils {
     public static Gson gson(){
         GsonBuilder builder = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
-                .setDateFormat("MM/dd/yy");
+                .setDateFormat(Constants.DATE_FORMAT);
         return builder.create();
     }
 
@@ -74,6 +74,10 @@ public class Utils {
 
     public static String escape(String text){
         return StringEscapeUtils.escapeJava(text);
+    }
+
+    public static boolean richTextFieldIsEmpty(String text){
+        return text.contains("\"text\":\"\",\"type\":\"");
     }
 
 

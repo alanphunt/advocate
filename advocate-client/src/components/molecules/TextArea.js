@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef, useEffect} from "react";
 import { Editor } from "react-draft-wysiwyg";
 
 /*
@@ -8,10 +8,16 @@ import { Editor } from "react-draft-wysiwyg";
 
 */
 
-const TextArea = ({editorState, setEditorState, immutable}) => {
+const TextArea = ({editorState, setEditorState, immutable, autoFocus}) => {
     const toolbarOptions = {
         options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'emoji', 'remove', 'history']
     };
+    const innerRef = useRef()
+    
+    useEffect(() => {
+        if(autoFocus)
+            innerRef.current.focusEditor();
+    }, []);
 
     return (
         <div className={"textarea-wrapper"}>
@@ -23,6 +29,7 @@ const TextArea = ({editorState, setEditorState, immutable}) => {
                 editorClassName={`text-area${immutable ? ' immutable-text-area' : ""}`}
                 toolbar={toolbarOptions}
                 toolbarHidden={immutable || false}
+                ref={innerRef}
             />
         </div>
     );

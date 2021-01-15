@@ -14,9 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,23 +44,30 @@ public class GoalController {
 
     @PostMapping(value = "/creategoal")
     public ResponseEntity<?>createGoal(@RequestParam Map<String, String> body, HttpServletRequest req) throws ParseException {
-        Map<String, String> errors = determineGoalCreationErrors(body);
+        List<Benchmark> bms = Utils.gson().fromJson(body.get("benchmarks"), Utils.getListType(Benchmark.class));
+        Map<String, String> errors = determineGoalCreationErrors(body, bms);
 
         if(errors.size() == 0) {
             String goalId = Utils.generateUniqueId();
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
+
+            Date potentialStartDate = null;
+            try{
+                System.out.println("trying to parse");
+                potentialStartDate = sdf.parse(body.get("startDate"));
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+            System.out.println("moving on..");
             Goal goal = new Goal(
                     goalId,
                     body.get("goal"),
                     body.get("goalName"),
-                    body.get("process"),
                     body.get("studentId"),
-                    sdf.parse(body.get("startDate")),
+                    potentialStartDate,
                     sdf.parse(body.get("masteryDate")),
                     (body.get("monitor").equals("true") ? 1 : 0)
             );
-
-            List<Benchmark> bms = Utils.gson().fromJson(body.get("benchmarks"), Utils.getListType(Benchmark.class));
 
             for (Benchmark bm : bms) {
                 bm.setId(Utils.generateUniqueId());
@@ -96,7 +105,7 @@ public class GoalController {
         return LC.getTeacher(req);
     }
 
-    @PostMapping(value = "/editGoal")
+    @PostMapping(value = "/editgoal")
     public ResponseEntity<?> editGoal(HttpServletRequest req, @RequestParam Map<String, String> body){
         Goal goal = Utils.gson().fromJson(body.get("body"), Goal.class);
         for(Benchmark bm : goal.getBenchmarks()){
@@ -111,31 +120,31 @@ public class GoalController {
         return LC.getTeacher(req);
     }
 
-    private Map<String, String> determineGoalCreationErrors(Map<String, String> body){
+    private Map<String, String> determineGoalCreationErrors(Map<String, String> body, List<Benchmark> benchmarks){
         Map<String, String> errors = new HashMap<>();
-        List<Benchmark> benchmarks = null;
-
-        try {
-            benchmarks = Utils.gson().fromJson(body.get("benchmarks"),  Utils.getListType(Benchmark.class));
-            if(benchmarks != null)
+        if(benchmarks.isEmpty())
+            errors.put("benchmarks", Constants.NO_BENCHMARKS_RESPONSE);
+        else
+            try {
                 for (Benchmark bm : benchmarks) {
-                    if(bm.getLabel().isBlank()
-                            || bm.getDescription().isBlank()
+                    if(Utils.richTextFieldIsEmpty(bm.getDescription())
                             || bm.getTracking().isBlank()
                             || bm.getMasteryDate() == null
-                    ) {
-                        //errors.put("benchmarks", Constants.BENCHMARKS_EMPTY_RESPONSE);
+                    ) 
                         throw new Exception("");
-                    }
                 }
-        }catch(Exception e){
-            errors.put("benchmarks", Constants.BENCHMARKS_EMPTY_RESPONSE);
-        }
+            }catch(Exception e){
+                errors.put("benchmarks", Constants.BENCHMARKS_EMPTY_RESPONSE);
+            }
 
         for (String key : body.keySet()){
-            if(key.toLowerCase().contains("date") && !body.get(key).matches(Constants.DATE_REGEX))
+            if(key.equals("goal") && Utils.richTextFieldIsEmpty(body.get(key)))
+                errors.put(key, Constants.EMPTY_FIELD_RESPONSE);
+            else if(key.equals("masteryDate") && !body.get(key).matches(Constants.DATE_REGEX))
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
-            else if(body.get(key).isBlank() && !key.equals("process"))
+            else if(key.equals("startDate") && !body.get(key).isBlank() && !body.get(key).matches(Constants.DATE_REGEX))
+                errors.put(key, Constants.INVALID_DATE_FORMAT);
+            else if(body.get(key).isBlank() && !key.equals("startDate"))
                 errors.put(key, Constants.EMPTY_FIELD_RESPONSE);
         }
 

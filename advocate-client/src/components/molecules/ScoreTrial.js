@@ -5,11 +5,14 @@ import Table from "./Table";
 import Section from "components/atoms/Section";
 import Button from "components/atoms/Button";
 import TextArea from "./TextArea";
-import { convertToRaw, EditorState, convertFromRaw } from 'draft-js';
+import { EditorState, convertFromRaw } from 'draft-js';
 import FormElement from "components/atoms/FormElement";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import CardAndUploadColumn from "./CardAndUploadColumn";
-import { mapFileMetaDataToDocument } from "utils/functions/functions";
+import { crudFetch, formifyObject, mapFileMetaDataToDocument, prepareEditorStateForRequest } from "utils/functions/functions";
+import { SERVER_ERROR } from "utils/constants";
+import ConfirmOrCancelButtons from "./ConfirmOrCancelButtons";
+import ErrorLabel from "components/atoms/ErrorLabel";
 
 /*
     goback: function- for creating a new trial and going back a page to select a new template
@@ -18,7 +21,7 @@ import { mapFileMetaDataToDocument } from "utils/functions/functions";
     mutableTrial: Trial: optional- when we wish to edit the trial
     updateTeacher: function- for when we're done creating/editing and we need to refresh the teacher
  */
-const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, updateMutableTrial, cleanupCrudOp, trialFiles, setTrialFiles}) => {
+const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, setMutableTrial, completeCrudOp, closeModal}) => {
     const track =  {label: "", correct: 0};
 
     const mutableTrackings = mutableTrial?.trackings;
@@ -27,7 +30,10 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
     
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
-    //for storing the uploads, metadata will be stored in trial.documents
+    const [requestErrors, setRequestErrors] = useState("");
+
+    const [trialFiles, setTrialFiles] = useState([]);
+    const [docMetaForNewTrial, setDocMetaForNewTrial] = useState([]);
 
     const handleFiles = (fileArray, method) => {
         // let metaArray = [...mapFileMetaDataToDocument(fileArray, mutableTrial.documents, mutableTrial.id)];
@@ -36,7 +42,7 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
         ? 
         setTrialFiles(fileArray) 
         : 
-        updateMutableTrial(prev => ({...prev, documents: fileArray}));
+        setMutableTrial(prev => ({...prev, documents: fileArray}));
     };
 
     useEffect(() => {
@@ -44,7 +50,7 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
             try{
                 const fromRaw = EditorState.createWithContent(convertFromRaw(JSON.parse(mutableTrial?.comments)));
                 setEditorState(fromRaw);
-                updateMutableTrial({...mutableTrial, comments: fromRaw.getCurrentContent()})
+                setMutableTrial({...mutableTrial, comments: fromRaw.getCurrentContent()})
             }catch(e){
                 console.log(e);
             }
@@ -54,15 +60,19 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
 
     useEffect(() => {
         //if a file is added we need to add meta, if a file is deleted it needs to be removed from meta
-        if(trialFiles.length){
-            let updatedMetaArray = [...mapFileMetaDataToDocument(trialFiles, mutableTrial.documents, mutableTrial.id)];
-            updateMutableTrial({...mutableTrial, documents: updatedMetaArray});
+        if(mutableTrial){
+            if(trialFiles.length){
+                let updatedMetaArray = [...mapFileMetaDataToDocument(trialFiles, mutableTrial.documents, mutableTrial.id)];
+                setMutableTrial({...mutableTrial, documents: updatedMetaArray});
+            }else
+                setMutableTrial({...mutableTrial, documents: mutableTrial.documents.filter(doc => doc.id)})
         }else{
-            updateMutableTrial({...mutableTrial, documents: mutableTrial.documents.filter(doc => doc.id)})
+            setDocMetaForNewTrial([...mapFileMetaDataToDocument(trialFiles, docMetaForNewTrial)])
         }
     }, [trialFiles])
 
-    const updateTrack = (key, index, value) => {
+    //todo
+    const updateTrackForNewTrial = (key, index, value) => {
         let newSt = JSON.parse(JSON.stringify(trackingArray));
         newSt = newSt.map((track, tIndex) => {
             if (index === tIndex)
@@ -74,39 +84,69 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
     };
 
     const createTrial = () => {
-        let formData = new FormData();
-        formData.append("comments", JSON.stringify(convertToRaw(editorState.getCurrentContent())));
-        formData.append("trialNumber", benchmark.trials.length + 1);
-        formData.append("tracking", JSON.stringify(trackingArray));
-        formData.append("benchmarkId", benchmark.id);
-        const fileStrings = [];
-        trialFiles.forEach(file => fileStrings.push(JSON.stringify(file)));
-        formData.append("documents", JSON.stringify(fileStrings));
-
-        fetch("/api/createTrial", {method: "POST", body: formData})
-            .then(r => r.json())
-            .then(data => {
-                cleanupCrudOp(data, <><CheckIcon className="i-right"/>Successfully created score trial #{benchmark.trials.length + 1}!</>);
-                setTrialFiles([]);
+        const trialNumber = benchmark.trials.length + 1;
+        let formData = formifyObject({
+                "comments": prepareEditorStateForRequest(editorState.getCurrentContent()),
+                "trialNumber": trialNumber,
+                "trackings": JSON.stringify(trackingArray),
+                "benchmarkId": benchmark.id,
+                "documents": trialFiles,
+                "documentMeta": JSON.stringify(docMetaForNewTrial)
             });
+
+        crudFetch({
+            path: "createtrial",
+            method: "POST",
+            body: formData,
+            success: (data) => {
+                completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully created Score Trial #{trialNumber}!</>);
+                setTrialFiles([]);
+            },
+            error: (res) => setRequestErrors(res),
+            serverError: () => alert(SERVER_ERROR)
+        });
     };
 
-    const updateTrackLogic = (key, index, value) => {
-        if(key === "correct")
-            value = mutableTrackings[index].correct === 1 ? 0 : 1;
-        else if(key == "trackings") {
-            let track = {...mutableTrackings[index], [key]: value};
-            let trackings = [...mutableTrial.trackings];
+    const editTrial = () => {
+        let fd = new FormData();
+        fd.append("body", 
+            JSON.stringify(
+                {
+                    ...mutableTrial, 
+                    comments: prepareEditorStateForRequest(mutableTrial.comments)
+                }
+            )
+        );
+        for(let i = 0; i < trialFiles.length; i++){
+            fd.append("documents", trialFiles[i]);
+        }
+        crudFetch({
+            path: "edittrial",
+            method: "POST",
+            body: fd,
+            success: (data) => 
+                completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated {mutableTrial.label}</>),
+            error: (res) => setRequestErrors(res),
+            serverError: () => alert(SERVER_ERROR)
+        });
+    };
+
+    const handleTrialUpdate = (key, index, value) => {
+        let trackings = [...mutableTrial.trackings];
+        let track = {...trackings[index]};
+
+        if(key === "correct" || key ==="label"){
+            Object.assign(track, (key === "correct" ? {correct: track.correct === 1 ? 0 : 1} : {[key]: value}))
             trackings.splice(index, 1, track);
-            updateMutableTrial({...mutableTrial, trackings: [...trackings]});
+            setMutableTrial({...mutableTrial, trackings: [...trackings]});
         }else if(key === "comments"){
-            updateMutableTrial({...mutableTrial, comments: value.getCurrentContent()})
+            setMutableTrial({...mutableTrial, comments: value.getCurrentContent()})
             setEditorState(value);
         }
     };
 
     const addRemoveTracks = (tracking) => {
-        updateMutableTrial({...mutableTrial, trackings: [...tracking]});
+        setMutableTrial({...mutableTrial, trackings: [...tracking]});
     };
 
     const tableInputs = (track, index) => {
@@ -115,15 +155,15 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
                 <FormElement
                     onChange={(e) => {
                         mutableTrackings
-                        ? updateTrackLogic("label", index, e.currentTarget.value)
-                        : updateTrack("label", index, e.currentTarget.value)
+                        ? handleTrialUpdate("label", index, e.currentTarget.value)
+                        : updateTrackForNewTrial("label", index, e.currentTarget.value)
                     }}
                     value={track.label || ""}
                     onKeyPress={(e) => {
                         if(e.key === "Enter"){
                             mutableTrackings
-                                ? updateTrackLogic("correct", index)
-                                : updateTrack("correct", index)
+                                ? handleTrialUpdate("correct", index)
+                                : updateTrackForNewTrial("correct", index)
                         }
                     }}
                     placeholder='Item label'
@@ -133,8 +173,8 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
                 className={"itemsuccess"}
                 onClick={() => {
                     mutableTrackings
-                    ? updateTrackLogic("correct", index)
-                    : updateTrack("correct", index)}}>
+                    ? handleTrialUpdate("correct", index)
+                    : updateTrackForNewTrial("correct", index)}}>
                     <span>
                         <PlusIcon
                             className={`marg-right comp-color ${track.correct === 1 ? "" : "grayscale"}`}
@@ -170,6 +210,7 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
                             objectArray={mutableTrackings || trackingArray}
                         />
                     </Section>
+                    {requestErrors ? <ErrorLabel text={requestErrors.label}/> : <></>}
                     <Table                         
                         headers={["Item Label", "Correct/Incorrect"]}
                         subheaders={["(press Tab for next item)", "(press Enter to toggle)"]}
@@ -180,27 +221,33 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, upd
                     <h3 className={"marg-bot"}>Trial Comments</h3>
                     <TextArea
                         editorState={editorState}
-                        setEditorState={mutableTrial ? (editorState) => updateTrackLogic("comments", null, editorState) : setEditorState}                     
+                        setEditorState={mutableTrial ? (editorState) => handleTrialUpdate("comments", null, editorState) : setEditorState}                     
                     />
                 </Section>
                     {
-                        !mutableTrial
-                            ? <div className={"marg-bot"}>
-                                <Button className={"marg-right"} onClick={goBack} text="Back to templates"/>
-                                <Button onClick={createTrial} text="Submit Trial"/>
-                              </div>
-                            : <></>
+                    mutableTrial
+                            ? (
+                                <ConfirmOrCancelButtons                     
+                                    cancelCallback={closeModal}
+                                    confirmCallback={editTrial}
+                                />
+                            ) : ( 
+                                <div className={"marg-bot"}>
+                                    <Button className={"marg-right"} onClick={createTrial} text="Submit Trial"/>
+                                    <Button className={"cancelButton"} onClick={goBack} text="Back to templates"/>
+                                </div>
+                            )
                     }
                 </div>
             <CardAndUploadColumn
-                header={`Trial for ${studentName.substring(0,1).toUpperCase() + studentName.substring(1)}`}
+                header={`Trial for ${studentName}`}
                 object={{
                     Goal: goalName, 
                     Benchmark: benchmark.label, 
                     Description: benchmark.description
                 }}
                 files={trialFiles}
-                fileMetaData={mutableTrial.documents || []}
+                fileMetaData={mutableTrial?.documents || []}
                 setFiles={handleFiles}
                 apiPath="/api/retrievedocument"
             />

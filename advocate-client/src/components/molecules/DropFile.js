@@ -3,7 +3,8 @@ import FormElement from "components/atoms/FormElement";
 import FileChip from "components/atoms/FileChip";
 import { convertFileSize, generateFilePreview, fileFetch } from "utils/functions/functions";
 import {FaPlus as PlusIcon} from "react-icons/fa";
-import {FILE_UPLOAD_LIMIT} from "utils/constants";
+import {FILE_UPLOAD_LIMIT, SERVER_ERROR} from "utils/constants";
+
 /*
      props:
 
@@ -45,7 +46,7 @@ const DropFile = ({files, fileMetaData, setFiles, apiPath}) => {
 
     const handleFileAsyncRetrieval = ({path, name, type}, action, index) => {        
         setIsLoading(index);
-        fileFetch(apiPath, {path, name, type}, action, () => setIsLoading(-1), (res) => setError(res));
+        fileFetch(apiPath, {path, name, type}, action, () => setIsLoading(-1), (res) => setError(res.error), () => {alert(SERVER_ERROR);setIsLoading(-1)});
     };
 
     const handleUploadedFileAction = (file, action, index) => {

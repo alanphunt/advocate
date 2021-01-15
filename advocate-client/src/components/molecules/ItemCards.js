@@ -1,10 +1,10 @@
 import React from "react";
 import {FaChartPie as PieIcon} from "react-icons/fa";
 
-const ItemCards = (props) => {
+const ItemCards = ({trackingType, selectedTemplate}) => {
 
     const handleSelected = (template) => {
-        props.selectedTemplate(template);
+        selectedTemplate(template);
     };
 
     const items = (type) => {
@@ -33,7 +33,7 @@ const ItemCards = (props) => {
         <div className={"itemcardwrapper"}>
             <div className={"itemcardcontainer"}>
                 {
-                    items(props.type).map((item, index) => {
+                    items(trackingType).map((item, index) => {
                         return (
                             <div key={`itemcard${index}`} className={"itemcard"} onClick={() => {handleSelected(item.key)}}>
                                 <div className={"itemcardhead"}>

@@ -21,7 +21,7 @@ const Button = ({text, icon, onClick, onKeyPress, className, type}) => {
             tabIndex={0}
             type={type ? type : "button"}
         >
-            {icon}
+            <span className="i-right">{icon}</span>
             <span>
                 {text}
             </span>

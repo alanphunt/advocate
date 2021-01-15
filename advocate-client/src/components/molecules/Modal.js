@@ -8,7 +8,7 @@ import {FaRegTimesCircle as ExitIcon} from "react-icons/fa";
         closeModal- function- the callback to set the visibility to hidden
         large- boolean- determines if it'll be a full screen modal
  */
-const Modal = ({displayed, children, closeModal, large}) => {
+const Modal = ({displayed, children, closeModal, largeModal}) => {
     const isDisplayed = displayed ? "display fadeinfromtop" : "";
     const preventPropagation = (e) => {
         //prevents click from bubbling and being captured by closeModal event listener on the parent element
@@ -17,7 +17,7 @@ const Modal = ({displayed, children, closeModal, large}) => {
 
     return(
         <div
-            className={`modalwrapper posabs ${isDisplayed} ${large ? "modal-lg" : ""}`}
+            className={`modalwrapper posabs ${isDisplayed} ${largeModal ? "modal-lg" : ""}`}
             onClick={preventPropagation}
         >
             <ExitIcon className={"modal-exit"} onClick={closeModal}/>
