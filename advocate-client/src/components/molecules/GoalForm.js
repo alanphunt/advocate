@@ -10,7 +10,7 @@ import {
 import NumberPicker from "components/atoms/NumberPicker";
 import FormElement from "components/atoms/FormElement";
 import Section from "components/atoms/Section";
-import Table from "./Table";
+import Table from "./table/Table";
 import TextArea from "./TextArea";
 import {benchmarkModel} from "utils/models";
 import RequiredField from "components/atoms/RequiredField";
@@ -28,6 +28,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                 setMutableGoal({...mutableGoal, goal: EditorState.createWithContent(convertFromRaw(JSON.parse(mutableGoal.goal))), benchmarks: parsedBenchmarks});
             }catch(e){console.log("couldn't parse editorstate")}
         // }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [focused, setFocused] = useState(-1);
@@ -37,12 +38,16 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
 
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    const updateBenchmark = (index, event, key) => {
-        let val = key === "description" ? event : event.currentTarget.value;
-        let bms = [...mutableGoal.benchmarks];
-        let bm = {...bms[index], [key]: val, label: `Benchmark ${alphabet[index]}.`};
-        bms.splice(index, 1, bm);
-        setMutableGoal({ ...mutableGoal, benchmarks: [...bms]});
+    const adjustBenchmarkCount = (objArray) => {
+        mutableGoal.benchmarks.forEach((obj, ind) => {
+            if(obj.enabled && !objArray[ind]?.enabled)
+                setWarning(warningMessage);
+        })
+        setMutableGoal({...mutableGoal, benchmarks: [...objArray]});
+    };
+
+    const copySpecificBenchmark = (benchmark) => {
+        setMutableGoal({...mutableGoal, benchmarks: mutableGoal.benchmarks.concat(benchmark)})
     };
 
     const deleteSpecificBenchmark = (index) => {
@@ -57,25 +62,20 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
             setWarning(warningMessage);
     };
 
+    const updateBenchmark = (index, event, key) => {
+        let val = key === "description" ? event : event.currentTarget.value;
+        let bms = [...mutableGoal.benchmarks];
+        let bm = {...bms[index], [key]: val, label: `Benchmark ${alphabet[index]}.`};
+        bms.splice(index, 1, bm);
+        setMutableGoal({ ...mutableGoal, benchmarks: [...bms]});
+    };
+
     const updateGoalLogic = (e, key, monitor) => {
         if(key !== "goal")
             setMutableGoal({...mutableGoal, [key]: (key === "monitor" ? monitor : e.currentTarget.value)});
         else{
             setMutableGoal({...mutableGoal, goal: e});
         }
-    };
-
-    const adjustBenchmarkCount = (objArray) => {
-        mutableGoal.benchmarks.forEach((obj, ind) => {
-            if(obj.enabled && !objArray[ind]?.enabled)
-                setWarning(warningMessage);
-        })
-        console.log(objArray);
-        setMutableGoal({...mutableGoal, benchmarks: [...objArray]});
-    };
-
-    const copySpecificBenchmark = (benchmark) => {
-        setMutableGoal({...mutableGoal, benchmarks: mutableGoal.benchmarks.concat(benchmark)})
     };
 
     return (
@@ -167,10 +167,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                         objectArray={mutableGoal.benchmarks}
                     />
                 </Section>
-                <Table
-                    headers={["Label", "Benchmark", "Mastery Date", "Tracking Type"]}
-                    requiredHeaderIndexes={[1,2,3]}
-                >
+                <Table headers={[<span><RequiredField/>Label</span>, <span><RequiredField/>Benchmark</span>, <span><RequiredField/>Mastery Date</span>, <span><RequiredField/>Tracking Type</span>]}>
                     {
                         mutableGoal?.benchmarks?.map((benchmark, ind) => {
                                 return (
@@ -236,7 +233,6 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                     ? <p className={"incomp-color"}>{warning}</p>
                     : <></>
             }
-
         </div>
     )
 };

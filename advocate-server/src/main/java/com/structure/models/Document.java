@@ -11,7 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.structure.utilities.Constants;
 
 import org.hibernate.annotations.Where;
 
@@ -19,44 +21,38 @@ import org.hibernate.annotations.Where;
 @Table(name = "documents")
 @Where(clause = "enabled=1")
 public class Document {
+    
     @Id
-    @Expose
     private String id;
 
-    @Expose
     @Column(name = "trial_id")
     private String trialId;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "trial_id", insertable = false, updatable = false)
     private Trial trial;
-
-    @Expose
+    
     private String name;
     
-    @Expose
     private String type;
 
-    @Expose
     private long size;
-
-    @Expose
+    
     @Column(name = "formatted_size")
     private String formattedSize;
-
-    @Expose
+    
     private String path;
 
-    @Expose
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
     @Column(name = "upload_date")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Date uploadDate;
 
-    @Expose
+    
     @Column(name = "last_modified")
     private long lastModified;
-
-    @Expose
+    
     private int enabled;
 
     public Document() {}

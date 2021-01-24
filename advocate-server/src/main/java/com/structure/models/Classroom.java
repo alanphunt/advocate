@@ -1,10 +1,13 @@
 package com.structure.models;
 
-import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.Arrays;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,27 +15,27 @@ import java.util.List;
 @Where(clause = "enabled=1")
 public class Classroom {
     @Id
-    @Expose
     private String id;
 
-    @Expose
     private int enabled;
 
-    @Expose
     @Column(name = "class_name")
     private String className;
-
-    @Expose
+    
     @Column(name = "teacher_id")
     private String teacherId;
 
-    @Expose
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Student> students;
+    private List<Student> students;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "teacher_id", insertable = false, updatable = false)
-    Teacher teacher;
+    private Teacher teacher;
+
+    @Transient
+    private ArrayList<String> studentIds = new ArrayList<>();
 
     public Classroom() {
     }
@@ -92,6 +95,14 @@ public class Classroom {
         this.teacher = teacher;
     }
 
+    public ArrayList<String> getStudentIds() {
+        return studentIds;
+    }
+
+    public void setStudentIds(ArrayList<String> studentIds) {
+        this.studentIds = studentIds;
+    }
+
     @Override
     public String toString() {
         return "Classroom{" +
@@ -99,7 +110,8 @@ public class Classroom {
                 ", enabled=" + enabled +
                 ", className=" + className +
                 ", teacherId=" + teacherId +
-                ", students=" + Arrays.toString(students.toArray()) +
+                ", students=" + students +
+                ", studentIds=" + studentIds +
                 '}';
     }
 

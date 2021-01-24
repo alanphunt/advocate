@@ -1,15 +1,17 @@
 package com.structure.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.structure.models.Classroom;
 import com.structure.models.Student;
+import com.structure.utilities.AccountDetailsRequestBean;
 import com.structure.utilities.Constants;
 import com.structure.services.ClassroomService;
+import com.structure.services.LoginService;
 import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -21,41 +23,45 @@ public class ClassroomController {
     private ClassroomService crs;
 
     @Autowired
-    private LoginController loginController;
+    private LoginService ls;
 
     @Autowired
     private Utils utils;
 
+    @Autowired
+    private AccountDetailsRequestBean detailsBean;
+
     @PostMapping(value="/createclassroom")
-    public ResponseEntity<?> createClassroom(HttpServletRequest request, @RequestBody Map<String, String> body){
-        String teacherId = body.get("teacherId");
-        ArrayList<Student> students = utils.gson().fromJson(body.get("students"), utils.getListType(Student.class));
+    public ResponseEntity<?> createClassroom(@RequestBody Map<String, String> body){
+        ArrayList<Student> students = null;
+        try {
+            students = utils.fromJSON(new TypeReference<>() {}, body.get("students"));
+        }catch(Exception e){
+            System.out.println(e.getClass());
+        }
         String className = body.get("className");
-
-        Map<String, String> errors = crs.saveClassroomOrReturnErrors(teacherId, students, className);
+        Map<String, String> errors = crs.saveClassroomOrReturnErrors(detailsBean.getAccountDetails().getTeacherId(), students, className);
         if(errors.size() == 0)
-            return loginController.getTeacher(request);
+            return ls.handleTeacherRehydration();
 
-        return ResponseEntity.status(Constants.HTTP_BAD_REQUEST)
-                .body(Utils.gson().toJson(errors));
+        return ResponseEntity.status(Constants.HTTP_BAD_REQUEST).body(errors);
 
     }
 
     @DeleteMapping(value = "/deleteclassroom")
-    public ResponseEntity<?> deleteClassroom(HttpServletRequest request, String classroomId){
+    public ResponseEntity<?> deleteClassroom(String classroomId){
         crs.deleteClassroom(classroomId);
-        return loginController.getTeacher(request);
+        return ls.handleTeacherRehydration();
     }
 
     @PutMapping(value = "/updateclassroom")
-    public ResponseEntity<?> updateClassroom(HttpServletRequest request, @RequestBody String body){
-        Classroom classroom = utils.gson().fromJson(body, Classroom.class);
-        Map<String, String> errors = crs.updateClassroomOrReturnErrors(classroom);
+    public ResponseEntity<?> updateClassroom(@RequestBody Classroom body){
+        Map<String, String> errors = crs.updateClassroomOrReturnErrors(body);
 
         if(errors.size() == 0)
-            return loginController.getTeacher(request);
-        
-        return ResponseEntity.status(Constants.HTTP_BAD_REQUEST).body(utils.gson().toJson(errors));
+            return ls.handleTeacherRehydration();
+
+        return ResponseEntity.status(Constants.HTTP_BAD_REQUEST).body(errors);
 
     }
 

@@ -14,6 +14,7 @@ const FileChip = ({text, onDelete, onPreview, onDownload, isNewFile, isLoading})
     useEffect(() => {
         if(isLoading && hovered)
             setHovered(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hovered])
 
     return (

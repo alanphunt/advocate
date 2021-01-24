@@ -7,9 +7,9 @@ Props:
     object- the object to concat/remove from the objectArray
     objectArray- used for the length of the array to keep track of the #
  */
-const NumberPicker = (props) => {
-    let num = props.objectArray.length;
-    let limit = props.limit || 100;
+const NumberPicker = ({limit = 100, object, objectArray, updateState}) => {
+    let num = objectArray.length;
+    // let limit = limit || 100;
 
     const change = (num, object, objArr) => {
         // let newObjArr = JSON.parse(JSON.stringify(objArr));
@@ -37,7 +37,7 @@ const NumberPicker = (props) => {
             <div
                 className={`numbersub ${num === 0 ? 'disabled' : ''}`}
                 onClick={()=>{
-                    props.updateState(change(num-1, props.object, props.objectArray));
+                    updateState(change(num-1, object, objectArray));
                 }}
             >
                 <MinusIcon className={"posabs"}/>
@@ -48,14 +48,14 @@ const NumberPicker = (props) => {
                     placeholder={num}
                     value={num}
                     onChange={(e) => {
-                        props.updateState(change(e.currentTarget.value, props.object, props.objectArray));
+                        updateState(change(e.currentTarget.value, object, objectArray));
                     }}
                 />
             </div>
             <div
                 className={`numberadd ${num === limit ? 'disabled' : ''}`}
                 onClick={() => {
-                    props.updateState(change(num+1, props.object, props.objectArray));
+                    updateState(change(num+1, object, objectArray));
                 }}
             >
                 <PlusIcon className={"posabs"}/>

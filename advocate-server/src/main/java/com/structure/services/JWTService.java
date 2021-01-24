@@ -1,6 +1,6 @@
 package com.structure.services;
 
-import com.structure.models.Teacher;
+import com.structure.models.AccountDetails;
 import com.structure.repositories.JwtKeyRepo;
 import com.structure.utilities.Constants;
 import io.jsonwebtoken.Claims;
@@ -31,7 +31,7 @@ public class JWTService {
         return jkr.getById("1").getKey();
     }
 
-    public String extractEmail(String token){
+    public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -52,9 +52,9 @@ public class JWTService {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(Teacher teacher){
+    public String generateToken(String username){
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, teacher.getUsername());
+        return createToken(claims, username);
     }
 
     private String createToken(Map<String, Object> claims, String username){
@@ -74,9 +74,9 @@ public class JWTService {
                    .compact();
     }
 
-    public boolean validateToken(String token, Teacher teacher){
-        final String EMAIL = extractEmail(token);
-        return (EMAIL.equals(teacher.getUsername()) && !isTokenExpired(token));
+    public boolean validateToken(String token, AccountDetails accountDetails){
+        final String USERNAME = extractUsername(token);
+        return (USERNAME.equals(accountDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public void createAndAddJwtToCookie(String JWT, HttpServletResponse res){
@@ -97,7 +97,7 @@ public class JWTService {
     
     public String extractJwtAndEmailFromCookie(HttpServletRequest request){
         String jwt = extractJwtFromCookie(request).orElseThrow().getValue();
-        String email = extractEmail(jwt);
+        String email = extractUsername(jwt);
         return email;
     }
 }

@@ -1,6 +1,7 @@
 package com.structure.controllers;
 
 import com.structure.models.Trial;
+import com.structure.services.LoginService;
 import com.structure.services.TrialService;
 import com.structure.utilities.Constants;
 import com.structure.utilities.Utils;
@@ -11,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +21,13 @@ import java.util.Map;
 public class TrialController {
 
     @Autowired
-    private LoginController LC;
+    private LoginService ls;
 
     @Autowired
     private TrialService trialService;
+
+    @Autowired private Utils utils;
+
 
     @PostMapping(value = "/createtrial")
     public ResponseEntity<?> createTrial(HttpServletRequest req, @RequestParam Map<String, String> body, @RequestParam List<MultipartFile> documents){
@@ -33,17 +36,17 @@ public class TrialController {
         if(!potentialErrors.isEmpty())
             return ResponseEntity.badRequest().body(potentialErrors);
 
-        return LC.getTeacher(req);
+        return ls.handleTeacherRehydration();
     }
 
     @PostMapping(value = "/edittrial")
     public ResponseEntity<?> editTrial(@RequestParam String body, @RequestParam List<MultipartFile> documents, HttpServletRequest req){
-        Trial trial = Utils.gson().fromJson(body, Trial.class);
+        Trial trial = utils.gson().fromJson(body, Trial.class);
         Map<String, String> potentialErrors = trialService.handleTrialEdit(trial, documents, req);
         if(!potentialErrors.isEmpty())
             return ResponseEntity.badRequest().body(potentialErrors);
             
-        return LC.getTeacher(req);
+            return ls.handleTeacherRehydration();
     }
 
 }

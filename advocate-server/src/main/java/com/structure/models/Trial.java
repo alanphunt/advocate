@@ -1,6 +1,8 @@
 package com.structure.models;
 
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.structure.utilities.Constants;
 
 import org.hibernate.annotations.Where;
@@ -8,6 +10,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,47 +20,48 @@ import java.util.List;
 public class Trial {
 
     @Id
-    @Expose
     private String id;
 
-    @Expose
     private String label;
 
-    @Expose
     @Column(name = "trial_number")
     private int trialNumber;
 
-    @Expose
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
     @Column(name = "date_started")
     private Date dateStarted;
 
-    @Expose
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
     @Column(name = "date_completed")
     private Date dateCompleted;
-
-    @Expose
+    
     private String comments;
 
-    @Expose
     @Column(name = "benchmark_id")
     private String benchmarkId;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "benchmark_id", insertable = false, updatable = false)
     private Benchmark benchmark;
 
-    @Expose
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "trial", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("label ASC")
     private List<Tracking> trackings;
 
     
     @OneToMany(mappedBy = "trial", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Expose
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OrderBy("uploadDate ASC")
     private List<Document> documents;
 
-    @Expose
+    @Transient
+    private ArrayList<String> trackingIds = new ArrayList<>();
+
+    @Transient
+    private ArrayList<String> documentIds = new ArrayList<>();
+    
     private int enabled;
 
     public Trial (){}
@@ -79,7 +83,6 @@ public class Trial {
     public void setId(String id) {
         this.id = id;
     }
-
 
     public String getLabel() {
         return this.label;
@@ -161,6 +164,21 @@ public class Trial {
         this.enabled = enabled;
     }
 
+    public ArrayList<String> getTrackingIds() {
+        return trackingIds;
+    }
+
+    public void setTrackingIds(ArrayList<String> trackingIds) {
+        this.trackingIds = trackingIds;
+    }
+
+    public ArrayList<String> getDocumentIds() {
+        return documentIds;
+    }
+
+    public void setDocumentIds(ArrayList<String> documentIds) {
+        this.documentIds = documentIds;
+    }
 
     @Override
     public String toString() {
@@ -175,6 +193,8 @@ public class Trial {
             ", benchmark='" + getBenchmark() + "'" +
             ", trackings='" + getTrackings() + "'" +
             ", documents='" + getDocuments() + "'" +
+            ", documentIds='" + getDocumentIds() + "'" +
+            ", trackingIds='" + getTrackingIds() + "'" +
             ", enabled='" + getEnabled() + "'" +
             "}";
     }

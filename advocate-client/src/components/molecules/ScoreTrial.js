@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import NumberPicker from "components/atoms/NumberPicker";
 import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
-import Table from "./Table";
+import Table from "./table/Table";
 import Section from "components/atoms/Section";
 import Button from "components/atoms/Button";
 import TextArea from "./TextArea";
@@ -56,6 +56,7 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, set
             }
         }
         return () => setTrialFiles([]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -69,6 +70,7 @@ const ScoreTrial = ({goBack, benchmark, studentName, goalName, mutableTrial, set
         }else{
             setDocMetaForNewTrial([...mapFileMetaDataToDocument(trialFiles, docMetaForNewTrial)])
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [trialFiles])
 
     //todo

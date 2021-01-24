@@ -1,5 +1,6 @@
-import { EditorState, convertFromRaw } from 'draft-js';
+import { EditorState } from 'draft-js';
 
+/*
 export const TEACHER_MODEL = {
   id: "",
   dateCreated: "",
@@ -80,6 +81,7 @@ export const TEACHER_MODEL = {
     }
   ]
 }
+*/
 
 export const homepageErrorModel = {
   login: "",
@@ -124,4 +126,14 @@ export const benchmarkModel = {
   description: EditorState.createEmpty(),
   masteryDate: "",
   tracking: ""
+};
+
+export const classroomErrorModel = {
+  className: null,
+  students: null
+};
+
+export const blankClassroomModel = {
+  className: "",
+  students: []
 };

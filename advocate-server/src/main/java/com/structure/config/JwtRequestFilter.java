@@ -1,9 +1,11 @@
 package com.structure.config;
 
-import com.structure.models.Teacher;
+import com.structure.models.AccountDetails;
 import com.structure.services.JWTService;
-import com.structure.services.TeacherDetailsService;
+import com.structure.services.AccountDetailsService;
+import com.structure.utilities.AccountDetailsRequestBean;
 import com.structure.utilities.Constants;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +25,8 @@ import java.util.Optional;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired private JWTService jwtService;
-    @Autowired private TeacherDetailsService TDS;
+    @Autowired private AccountDetailsService ads;
+    @Autowired private AccountDetailsRequestBean detailsBean;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -34,15 +37,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         try {
             if (jwtCookie.isPresent()) {
                 jwt = jwtCookie.get().getValue();
-                username = jwtService.extractEmail(jwt);
+                username = jwtService.extractUsername(jwt);
+
             }
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                Teacher teacher = (Teacher) TDS.loadUserByUsername(username);
-                if (jwtService.validateToken(jwt, teacher)) {
-                    UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(teacher, null, teacher.getAuthorities());
+                AccountDetails accountDetails = (AccountDetails) ads.loadUserByUsername(username);
+                if (jwtService.validateToken(jwt, accountDetails)) {
+                    UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(accountDetails, null, accountDetails.getAuthorities());
                     upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                     SecurityContextHolder.getContext().setAuthentication(upat);
+                    detailsBean.setAccountDetails(accountDetails);
                 }
             }
             filterChain.doFilter(httpServletRequest, httpServletResponse);

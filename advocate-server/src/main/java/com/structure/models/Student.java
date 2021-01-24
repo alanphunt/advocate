@@ -1,9 +1,13 @@
 package com.structure.models;
 
-import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,26 +16,26 @@ import java.util.List;
 public class Student {
 
     @Id
-    @Expose
     private String id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "classroom_id", insertable = false, updatable = false)
     private Classroom classroom;
 
-    @Expose
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Goal> goals;
 
-    @Expose
     private String name, grade, age;
-
-    @Expose
+    
     @Column(name = "classroom_id")
     private String classroomId;
 
-    @Expose
     private int enabled;
+
+    @Transient
+    private ArrayList<String> goalIds = new ArrayList<>();
 
     public Student(){}
 
@@ -108,6 +112,14 @@ public class Student {
         this.goals = goals;
     }
 
+    public ArrayList<String> getGoalIds() {
+        return goalIds;
+    }
+
+    public void setGoalIds(ArrayList<String> goalIds) {
+        this.goalIds = goalIds;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -116,6 +128,7 @@ public class Student {
                 ", age=" + age +
                 ", grade=" + grade +
                 ", classroomId=" + classroomId +
+                ", goalIds" + goalIds +
                 ", enabled=" + enabled +
                 '}';
     }

@@ -1,11 +1,23 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {FaThumbsUp as ThumbIcon} from "react-icons/fa";
 
-const Toaster = ({display, setDisplay, children}) => {
+const Toaster = ({displayed, closeToaster, children}) => {
+    let timer = null;
+    useEffect(() => {
+        if(displayed){
+            timer = setTimeout(closeToaster, 4000);
+        }
+        return timer ? () => clearTimeout(timer) : () => {};
+    }, [displayed]);
+
     return (
-        <div
-            className={`bubble toasterwrapper ${display ? "display fadeInFromBottom" : ""}`}
-            onClick={() => setDisplay(false)}
+        <div className={`bubble toasterwrapper ${displayed ? "display fadeInFromBottom" : ""}`}
+            onClick={() => {
+                    if(timer)
+                        clearTimeout(timer);
+                    closeToaster();
+                }
+            }
         >
             { 
                 children

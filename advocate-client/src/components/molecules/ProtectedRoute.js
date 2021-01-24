@@ -3,10 +3,10 @@ import { Redirect, Route } from "react-router";
 import { useAuth } from "utils/auth/AuthHooks";
 
 const ProtectedRoute = ({children, path}) => {
-    let auth = useAuth();
+    let {teacher} = useAuth();
     return (
         <Route path={path} render={({location}) => 
-                auth.teacher 
+                teacher.teacher
                     ? children
                     : <Redirect to={{
                         pathname: "/",

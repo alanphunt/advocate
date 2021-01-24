@@ -1,6 +1,6 @@
 package com.structure.config;
 
-import com.structure.services.TeacherDetailsService;
+import com.structure.services.AccountDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,13 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private TeacherDetailsService TDS;
+    private AccountDetailsService ads;
 
     @Autowired
-    private JwtRequestFilter JWT_REQ_FILTER;
-
-    //private TeacherDetailsService TDS = new TeacherDetailsService();
-    //private final JwtRequestFilter JWT_REQ_FILTER = new JwtRequestFilter();
+    private JwtRequestFilter jwtRequestFilter;
 
     @Bean
     public PasswordEncoder customPasswordEncoder(){
@@ -43,12 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-        auth.userDetailsService(TDS);
+        auth.userDetailsService(ads);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
-        http.addFilterBefore(JWT_REQ_FILTER, UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
             .csrf().disable()
             .authorizeRequests()
             .antMatchers("/api/authenticate", "/api/createuser", "/api/testing", "/api/logout")
@@ -56,8 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated()
             .and().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        //http.addFilterBefore(JWT_REQ_FILTER, UsernamePasswordAuthenticationFilter.class)
     }
 
     @Override

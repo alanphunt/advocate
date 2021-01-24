@@ -1,45 +1,40 @@
 package com.structure.models;
 
-import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "trackings")
 @Where(clause = "enabled=1")
 public class Tracking {
-    @Expose
+    
     @Id
     private String id;
-
-    @Expose
+    
     private String label;
-
-    @Expose
+    
     @Column(name = "cue_count")
     private int cueCount;
 
-    @Expose
     @Column(name = "permanent_product")
     private String permanentProduct;
 
-    @Expose
     @Column(name = "duration_in_seconds")
     private int durationInSeconds;
 
-    @Expose
     @Column(name = "accuracy_percentage")
     private double accuracyPercentage;
-
-    @Expose
+    
     @Column(name = "trial_id")
     private String trialId;
-
-    @Expose
+    
     private int enabled, correct, frequency;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "trial_id", updatable = false, insertable = false)
     private Trial trial;
 

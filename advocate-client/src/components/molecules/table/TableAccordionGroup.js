@@ -4,26 +4,68 @@ import Table from "./Table";
 
 /*
      props:
-        accordionHeaders: string array- for the headers on each accordion item
-        tableData: array of object arrays- each object array corresponds to the data that will be rendered in the table- should be preformatted
-        tableHeaders: string array- used for the column headers of the table
         allOpen: boolean: optional- to render each accordion item opened or not
         openIndex: number: optional- the specific accordion item to render open
-        accordionIcons: object: optional- adds icons to the accordion item header
-        tableIcons: object: optional-{columnKey: <IconComponent/>}, displays in all columns with the specified key
-        accordionIconCallback: function(key, accordionIndex): optional- 
-        tableSubheaders:  misc array: optional- used for column subheaders 
-        selectedRowCallback: function(object, accordionIndex, rowIndex): optional- 
         children: object array: optional- if you need to use a different kind of table just render them as children
-        conditionalIcons: {columnKey: [array of either icons or null values]} - icons rendered in specified columns
-        based on condtionals in the parent component. also a great way to attach callbacks to icons.
-        includeCountInTableHeader: boolean:optional - includes the row count of the table in the table header
-        includeCountInAccordionHeader: boolean:optional - includes the table count of the accordion group in the accordion header
-        noTable: boolean: optional- hide the table if you're rendering your own as children
+        accordionHeaders: string array- for the headers on each accordion item
+        tableHeaders: string array- used for the column headers of the table
+        tableData: array of object arrays- each object array corresponds to the data that will be rendered in the table- should be preformatted
+        dataKeys: array of strings: optional- specifies which keys of the object you want to render into the table
+        accordionIcons: object: optional- adds icons to the accordion item header
+        selectedCallback: function(object, accordionIndex, rowIndex): optional-
+        tableChildren: object array: optional- in case you need more customization on the table
+        iconClickedCallback: function(key, accordionIndex): optional- when you click on an accordion header icon
      state:
 
 */
 
+const TableAccordionGroup = ({allOpen, openIndex, children, accordionHeaders, tableHeaders, tableData, dataKeys, accordionIcons, selectedCallback, tableChildren, iconClickedCallback}) => {
+     
+    const [selectedRowIndex, setSelectedRowIndex] = useState(-1);
+    const [selectedAccordionIndex, setSelectedAccordionIndex] = useState(-1);
+
+    const callbackWrapper = (object, rowIndex, accordionIndex) => {
+        setSelectedRowIndex(rowIndex);
+        setSelectedAccordionIndex(accordionIndex);
+        selectedCallback(object, rowIndex, accordionIndex);
+    };
+
+    return (
+        <div className="accordion">
+            {
+                children ? (
+                    children
+                ) : (
+                    accordionHeaders.map((header, accordionIndex) => {
+                        return (
+                            <AccordionItem
+                                key={`accordionHeader-${accordionIndex}`}
+                                iconClickedCallback={iconClickedCallback}
+                                preOpened={allOpen || openIndex === accordionIndex}
+                                header={header}
+                                cons={accordionIcons}
+                            >
+                                <Table
+                                    tableData={tableChildren ? null : tableData[accordionIndex]}
+                                    headers={tableHeaders}
+                                    dataKeys={dataKeys}
+                                    selectedCallback={(rowObject, rowIndex) => callbackWrapper(rowObject, rowIndex, accordionIndex)}
+                                    selectedRowIndex={ selectedAccordionIndex === accordionIndex ? selectedRowIndex : -1}
+                                >
+                                    {tableChildren ? tableChildren : null}
+                                </Table>
+                            </AccordionItem>
+                        )
+                    })
+                )
+            }
+        </div>
+    );
+};
+
+export default TableAccordionGroup;
+
+/*
 const TableAccordionGroup = ({
     accordionHeaders,
     tableData,
@@ -86,20 +128,4 @@ const TableAccordionGroup = ({
         </div>
     );
 };
-
-export default TableAccordionGroup;
-
-/*
-                                {
-                                    children 
-                                        ? children[accordionIndex]
-                                        : <Table
-                                            headers={tableHeaders}
-                                            subheaders={tableSubheaders}
-                                            data={tableData[accordionIndex]}
-                                            selectedCallback={selectedRowCallback ? (object, index) => callbackWrapper(object, index, accordionIndex) : null}
-                                            selectedRowIndex={indexes.accordionIndex === accordionIndex ? indexes.rowIndex : 999}
-                                            icons={tableIcons || null}
-                                          />
-                                }
 */

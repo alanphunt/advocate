@@ -16,12 +16,15 @@ const TextAreaForTable = ({focused, setFocused, placeholder, editorState, setEdi
     const [initialState, setInitialState] = useState();
     useEffect(() => {
         try{
-            if(typeof editorState === "string")
+            if(typeof editorState === "string"){
                 setInitialState(EditorState.createWithContent(convertFromRaw(JSON.parse(editorState))));
-            else
+            }
+            else{
                 setInitialState(editorState);
+            }
         }catch(e){console.log("failed to parse in TextAreaForTable");}
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [focused]);
 
     const handleCancel = () => {
         setEditorState(initialState);
@@ -33,7 +36,7 @@ const TextAreaForTable = ({focused, setFocused, placeholder, editorState, setEdi
     return (
         focused ? (
             <div className={`table-textarea`}>
-            <ExitIcon className={"modal-exit"} onClick={handleCancel}/>
+                <ExitIcon className={"modal-exit"} onClick={handleCancel}/>
                 <div className="table-textarea__editor">
                     <TextArea
                         autoFocus

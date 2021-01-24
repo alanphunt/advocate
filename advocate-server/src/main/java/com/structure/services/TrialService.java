@@ -73,7 +73,7 @@ public class TrialService {
     private void setTrackingInfo(List<Tracking> tracks, String trialId){
         for(Tracking t : tracks){
             if(t.getId() == null){
-                t.setId(Utils.generateUniqueId());
+                t.setId(utilService.generateUniqueId());
                 t.setTrialId(trialId);
                 t.setEnabled(1);
             }

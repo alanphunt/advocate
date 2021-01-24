@@ -21,7 +21,7 @@ const Dashboard = () => {
                 setExpanded={setExpanded}
             />
             <div className={"dash-main-wrapper"}>
-            <DashNav/>
+                <DashNav/>
                 <Switch>
                     <Route path="/dashboard/classroom" exact>
                         <Classroom />

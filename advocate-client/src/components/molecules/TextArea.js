@@ -17,6 +17,7 @@ const TextArea = ({editorState, setEditorState, immutable, autoFocus}) => {
     useEffect(() => {
         if(autoFocus)
             innerRef.current.focusEditor();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

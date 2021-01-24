@@ -1,9 +1,15 @@
 package com.structure.models;
 
-import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.structure.utilities.Constants;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,41 +19,38 @@ import java.util.List;
 public class Benchmark {
 
     @Id
-    @Expose
     private String id;
 
-    @Expose
     @Column(name = "goal_id")
     private String goalId;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "goal_id", insertable = false, updatable = false)
     private Goal goal;
 
-    @Expose
     private int enabled, complete;
-
-    @Expose
+    
     private String label;
 
-    @Expose
     private String description;
 
-    @Expose
     private String tracking;
 
-    @Expose
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
     @Column(name = "mastery_date")
     private Date masteryDate;
 
-    @Expose
     @Column(name = "met_date")
     private Date metDate;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "benchmark", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Expose
     @OrderBy("trialNumber ASC")
     private List<Trial> trials;
+
+    @Transient
+    private ArrayList<String> trialIds = new ArrayList<>();
 
     public List<Trial> getTrials() {
         return trials;
@@ -142,6 +145,14 @@ public class Benchmark {
         this.complete = complete;
     }
 
+    public ArrayList<String> getTrialIds() {
+        return trialIds;
+    }
+
+    public void setTrialIds(ArrayList<String> trialIds) {
+        this.trialIds = trialIds;
+    }
+
     @Override
     public String toString() {
         return "Benchmark{" +
@@ -153,6 +164,7 @@ public class Benchmark {
                 ", tracking='" + tracking + '\'' +
                 ", masteryDate=" + masteryDate +
                 ", metDate=" + metDate +
+                ", trialIds=" + trialIds +
                 ", complete=" + complete +
                 '}';
     }

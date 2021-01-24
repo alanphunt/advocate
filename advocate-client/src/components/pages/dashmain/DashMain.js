@@ -4,10 +4,11 @@ import ProfileCard from "components/atoms/ProfileCard";
 import DashWidget from "components/molecules/DashWidget";
 import GoalsToMonitor from "components/molecules/GoalsToMonitor";
 import DashCard from "components/molecules/DashCard";
-import { studentViewObject } from "utils/functions/functions";
-import TableAccordionGroup from "components/molecules/TableAccordionGroup";
+import TableAccordionGroup from "components/molecules/table/TableAccordionGroup";
 import { BASIC_STUDENT_TABLE_HEADERS } from "utils/constants";
 import { useAuth } from "utils/auth/AuthHooks";
+import AccordionItem from "components/atoms/AccordionItem";
+import Table from "components/molecules/table/Table";
 
 const DashMain = () => {
     const {teacher} = useAuth();
@@ -26,22 +27,30 @@ const DashMain = () => {
         <DashCard>
             <div className={"cardwrapperrow"}>
                 <DashWidget flexSize={1}>
-                    <ProfileCard teacher={teacher}/>
+                    <ProfileCard teacher={teacher.teacher}/>
                 </DashWidget>
                 {
                     classrooms.length === 0
                         ? createClass()
-                        : <DashWidget
-                            flexSize={2}
-                            header={"Classrooms"}
-                          >
-                              <TableAccordionGroup
-                                    accordionHeaders={teacher.classrooms.map(cr => cr.className)}
-                                    tableHeaders={BASIC_STUDENT_TABLE_HEADERS}
-                                    tableData={teacher.classrooms.map(cr => cr.students.map(stu => studentViewObject(stu)))}
-                                    openIndex={0}
-                              />
-                          </DashWidget>
+                        : (
+                            <DashWidget flexSize={2} header={"Classrooms"}>
+                                <TableAccordionGroup>
+                                    {
+                                        Object.values(teacher.classrooms).map((classroom, index) => {
+                                            return (
+                                                <AccordionItem header={classroom.className} key={`dashmainClassroom-${classroom.className}`}>
+                                                    <Table
+                                                        tableData={Object.values(teacher.students).filter(stu => stu.classroomId === classroom.id)}
+                                                        headers={BASIC_STUDENT_TABLE_HEADERS}
+                                                        dataKeys={["name", "age", "grade"]}
+                                                    />
+                                                </AccordionItem>
+                                            )
+                                        })
+                                    }
+                                </TableAccordionGroup>
+                            </DashWidget>
+                        )
                 }
             </div>
             <div className={"cardwrapperrow"}>

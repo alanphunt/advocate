@@ -1,11 +1,11 @@
 import {useState, useContext, createContext, useMemo} from "react";
 import {JWT_ERROR, SERVER_ERROR, STORAGE, JSON_HEADER} from "utils/constants";
 import { useHistory, useLocation } from 'react-router';
-
+import {ContextModel} from "utils/classes/ContextModels";
 export const TeacherContext = createContext();
 
 export const useProvideAuth = () => {
-    const [teacher, setTeacher] = useState(null);
+    const [teacher, setTeacher] = useState(new ContextModel());
     const memoizedTeacher = useMemo(() => ({teacher}), [teacher]);
     const history = useHistory();
     const location = useLocation();
@@ -16,7 +16,7 @@ export const useProvideAuth = () => {
         callback && callback();
     };
 
-    const signin = (data, errorHandler, callback) => {
+    const signin = (data, errorHandler, callback, handleServerError) => {
         fetch(`/api/authenticate`, {method: "POST", body: JSON.stringify(data), headers: JSON_HEADER})
         .then(response => Promise.all([response.ok, response.json()]))
         .then(([ok, body]) => {
@@ -26,7 +26,7 @@ export const useProvideAuth = () => {
                 errorHandler(body);
             callback && callback();
         })
-        .catch(() => alert(SERVER_ERROR));
+        .catch(() => {alert(SERVER_ERROR); handleServerError();});
     };
 
     const register = (data, errorHandler, callback) => {

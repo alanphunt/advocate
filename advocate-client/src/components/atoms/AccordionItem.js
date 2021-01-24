@@ -4,16 +4,15 @@ import {FaCaretDown as CaretIcon} from "react-icons/fa";
 /*
      props:
         header: string- used for the header
-        children: object- renders the object inside the accordion item
-        index: number- used for callbacks attached to the icons to indicate which object to perform an action on
         icons: object: optional- {key: <Icon/>}
-        sendIndexUp: function(key, index): optional- 
-        open: boolean: optional- determines if this accordion item should be rendered as open 
+        iconClickedCallback: function(key, index): optional-
+        preOpened: boolean: optional- determines if this accordion item should be rendered as open
+        children: object- renders the object inside the accordion item
      state:
 
 */
 
-const AccordionItem = ({header, icons, index, sendIndexUp, open: preOpened, children}) => {
+const AccordionItem = ({header, icons, iconClickedCallback, preOpened, children}) => {
     const [open, setOpen] = useState(preOpened || false);
     const openClass = `acc-item-main ${open ? "display" : ""}`;
     //this is for when a user is redirected to a page and essentially needs derived state from useLocation.state
@@ -35,11 +34,11 @@ const AccordionItem = ({header, icons, index, sendIndexUp, open: preOpened, chil
                     icons &&
                     <h2>
                         {
-                            Object.keys(icons).map(key => {
-                                return <span key={`iconaction${key}`} onClick={(e) => {
+                            Object.keys(icons).map((key, index) => {
+                                return <span key={`iconaction-${key}-${index}`} onClick={(e) => {
                                     //prevents accordion item from closing
                                     e.stopPropagation();
-                                    sendIndexUp(key, index);
+                                    iconClickedCallback(key, index);
                                 }}>{icons[key]}</span>;
                             })
                         }

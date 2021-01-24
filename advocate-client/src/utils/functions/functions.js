@@ -44,31 +44,15 @@ export const multipartFetch = (path, body, callback, errorCallback, catchCallbac
     });
 };
 
-export const calculateGoalCompletion = (student) => {
-    const goals = student.goals;
+export const calculateGoalCompletion = (goals) => {
     const goalCount = goals.length || 0;
-    const completedGoals = goals.filter(goal => goal.benchmarks.filter(bm => bm.complete === 1).length === goal.benchmarks.length).length;
+    const completedGoals = goals.filter(goal => goal.benchmarks?.filter(bm => bm.complete === 1).length === goal.benchmarks.length).length;
     let percent = Math.round((completedGoals / goalCount) * 100);
     return isNaN(percent) ? 0 : percent;
 };
 
-export const studentGoalMeta = (students) => {
-    return students.map(student => {
-        return {name: student.name, goalCount: student.goals.length, completion: `${calculateGoalCompletion(student)}%`};
-    });
-};
-
-export const isGoalComplete = (goal) => {
-    return checkIncompleteBenchmarks(goal) === 0;
-};
-
-export const checkIncompleteBenchmarks = (goal) => {
-    return goal.benchmarks.filter(bm => bm.complete === 0).length;
-};
-
-export const checkLocalForCreated = (key) => {
-    if (localStorage.getItem(key))
-        localStorage.removeItem(key);
+export const mapStudentGoalMeta = (student, goals) => {
+    return {id: student.id, name: student.name, goalCount: goals.length || "0", completion: `${calculateGoalCompletion(goals)}%`};
 };
 
 export const crudFetch = ({path, method, body, success, error, serverError, headers}) => {
@@ -211,10 +195,12 @@ export const prepareEditorStateForRequest = (text) => {
 
 //takes in an array of student objects (a classroom) to which it'll extract only name, age, and grade properties of the student
 export const formatStudentObject = (studentArray) => {
-    return studentArray.map(student => {
-        const {name, age, grade} = student;
-        return {name, age, grade}
+    let formatted = studentArray.map(student => {
+        const {id, name, age, grade} = student;
+        return {id, name, age, grade}
     })
+    console.log(formatted);
+    return formatted;
 };
 
 export const determineTrialAccuracy = (trackings) => {
@@ -229,4 +215,10 @@ export const determineTrialAccuracy = (trackings) => {
     obj.correctLabels = correct.map(trial => trial.label).join(", ");
     obj.incorrectLabels = trackings.filter(track => track.correct !== 1).map(trial => trial.label).join(", ");
     return obj;
+};
+
+export const arrayToObject = (array) => {
+    let newObject = {};
+    array.forEach((obj, ind) => Object.assign(newObject, {[obj.id]: {...obj[ind]}}));
+    return newObject;
 };

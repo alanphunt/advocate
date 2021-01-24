@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import logo from 'images/logo-sm.png'
-import Modal from 'components/molecules/Modal'
 import {
     FaChartBar as ChartIcon,
     FaNetworkWired as NetIcon,
@@ -15,13 +14,17 @@ import RegisterForm from 'components/molecules/RegisterForm';
 import { homepageErrorModel, loginModel, registrationModel } from 'utils/models';
 import { useAuth } from 'utils/auth/AuthHooks';
 import ModalBody from 'components/molecules/ModalBody';
+import Modal from "components/molecules/Modal";
 
 const Home = ({setIsFetching}) => { 
-    let teacherObject = useAuth();
+    const {signin, register} = useAuth();
     const [loginObject, setLoginObject] = useState(loginModel);
     const [registrationObject, setRegistrationObject] = useState(registrationModel);
-    const [modalContent, setModalContent] = useState("");
     const [errors, setErrors] = useState(homepageErrorModel);
+
+    const [modalBody, setModalBody] = useState(null);
+    const [modalAction, setModalAction] = useState("");
+    const closeModal = () => setModalBody(null);
 
     const resetForms = () => {
         setLoginObject(loginModel);
@@ -29,69 +32,72 @@ const Home = ({setIsFetching}) => {
         setErrors(homepageErrorModel);
     };
 
-    const closeModal = (e) => {
-        if(modalContent !== "") {
-            setModalContent("");
-            if(!!e.target.closest(".headerregister"))
-                setModalContent("register");
-            else if (!!e.target.closest(".headerlogin"))
-                setModalContent("login");
-            resetForms();
+    useEffect(() => {
+        if(modalAction !== ""){
+            setModalBody(                
+                <ModalBody
+                    header={modalAction === "login" ? "Welcome back!" : "Let's get you started."}
+                    hideButtons
+                >
+                    <div className="formcontainer">
+                        <form className={"centeredform"} >
+                            {
+                                modalAction === "login"
+                                ? <LoginForm errors={errors} login={loginObject} updateFormValues={updateFormValues}/>
+                                : modalAction === "register"
+                                    ? <RegisterForm errors={errors} register={registrationObject} updateFormValues={updateFormValues}/>
+                                    : <></>
+                            }
+                            <Button text={modalAction === "login" ? "Login" : "Register"} onClick={handleFormSubmission} type="submit"/>
+                        </form>
+                    </div>
+                </ModalBody>
+            );
         }
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [modalAction, loginObject, registrationObject, errors])
+
+    useEffect(() => {
+        if(!modalBody){
+            resetForms();
+            setModalAction("");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [modalBody])
 
     const handleFormSubmission = (e) => {
         e.preventDefault();
         setIsFetching(true);
-        const isLoginForm = modalContent === "login";
+        const isLoginForm = modalAction === "login";
         const data = isLoginForm ? loginObject : registrationObject;
         isLoginForm 
-            ?  teacherObject.signin(data, setErrors, () => setIsFetching(false))
-            :  teacherObject.register(data, setErrors, () => setIsFetching(false))
+            ?  signin(data, setErrors, () => setIsFetching(false), () => setIsFetching(false))
+            :  register(data, setErrors, () => setIsFetching(false), () => setIsFetching(false))
     };
 
     const divKeyPressEvent = (event, formType) => {
         if(event.key === "Enter")
-            setModalContent(formType);
+            setModalAction(formType);
     };
 
     const updateFormValues = (e, key) => {
-        if(modalContent === "login")
+        if(modalAction === "login")
             setLoginObject({...loginObject, [key]: e.currentTarget.value});
         else
             setRegistrationObject({...registrationObject, [key]: e.currentTarget.value})
     };
 
     return (
-        <div className={"herocontainer"} onClick={closeModal}>
-            <Modal
-                displayed={modalContent !== ""}
-                closeModal={closeModal}
-            >
-                <ModalBody
-                    header={modalContent === "login" ? "Welcome back!" : "Let's get you started."}
-                    hideButtons
-                >
-                    <div className="formcontainer">
-                        <form className={"centeredform"} >
-                            {
-                                modalContent === "login"
-                                ? <LoginForm errors={errors} login={loginObject} updateFormValues={updateFormValues}/>
-                                : modalContent === "register"
-                                    ? <RegisterForm errors={errors} register={registrationObject} updateFormValues={updateFormValues}/>
-                                    : null
-                            }
-                            <Button text={modalContent === "login" ? "Login" : "Register"} onClick={handleFormSubmission} type="submit"/>
-                        </form>
-                    </div>
-                </ModalBody>
+        <div className={"herocontainer"} onClick={() => {if(modalBody) closeModal();}}>
+            <Modal displayed={modalBody} closeModal={closeModal} >
+                { modalBody }
             </Modal>
             <header className={"homeheader"}>
                     <img src={logo} alt={"Advocate logo"}/>
                     <div className={"promptcontainer"}>
                         <div
                             onClick={() => {
-                                setModalContent("login")}
+                                setModalAction("login")}
                             }
                             onKeyPress={event => {divKeyPressEvent(event, "login");}}
                             tabIndex={0}
@@ -101,7 +107,7 @@ const Home = ({setIsFetching}) => {
                         </div>
                         <div
                             onClick={() => {
-                                setModalContent("register")
+                                setModalAction("register")
                             }}
                             onKeyPress={event => {divKeyPressEvent(event, "register");}}
                             tabIndex={0}

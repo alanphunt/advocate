@@ -1,5 +1,8 @@
 package com.structure.utilities;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.structure.models.*;
@@ -14,7 +17,7 @@ import java.util.*;
 @Component
 public class Utils {
 
-    public static boolean acceptableInput(String[] input){
+    public boolean acceptableInput(String[] input){
         for (String s : input) {
             if (!s.replaceAll("[^a-zA-Z0-9-_@.!?*#]", "").equals(s))
                 return true;
@@ -22,11 +25,11 @@ public class Utils {
         return false;
     }
 
-    public static boolean isEmpty( Object object ){
+    public boolean isEmpty( Object object ){
         return object == null;
     }
 
-    public static void paramMap(HttpServletRequest req){
+    public void paramMap(HttpServletRequest req){
         Enumeration<String> params = req.getParameterNames();
         Enumeration<String> headerNames = req.getHeaderNames();
 
@@ -40,18 +43,18 @@ public class Utils {
         }
     }
 
-    public static Gson gson(){
+    public Gson gson(){
         GsonBuilder builder = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .setDateFormat(Constants.DATE_FORMAT);
         return builder.create();
     }
 
-    public static String generateUniqueId() {
+    public String generateUniqueId() {
         return RandomStringUtils.randomAlphanumeric(11);
     }
 
-    public static Type getListType(Class<?> clazz){
+    public Type getListType(Class<?> clazz){
         if(clazz == Classroom.class)
             return new TypeToken<ArrayList<Classroom>>() {}.getType();
         else if(clazz == Student.class)
@@ -72,11 +75,18 @@ public class Utils {
             return new TypeToken<ArrayList<Integer>>() {}.getType();
     }
 
-    public static String escape(String text){
+    public <T> T fromJSON(final TypeReference<T> type, String jsonPacket) throws Exception {
+        T data = null;
+
+            data = new ObjectMapper().readValue(jsonPacket, type);
+        return data;
+    }
+
+    public String escape(String text){
         return StringEscapeUtils.escapeJava(text);
     }
 
-    public static boolean richTextFieldIsEmpty(String text){
+    public boolean richTextFieldIsEmpty(String text){
         return text.contains("\"text\":\"\",\"type\":\"");
     }
 

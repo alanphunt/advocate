@@ -1,58 +1,58 @@
 package com.structure.models;
 
-import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.Where;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.structure.utilities.Constants;
+
 import java.util.*;
 
 @Entity
 @Table(name = "teachers")
 @Where(clause = "enabled=1")
-public class Teacher implements UserDetails {
+public class Teacher {
 
     @Id
-    @Expose
     private String id;
+    
+    private String username;
 
-    @Expose
     private int enabled;
 
-    @Expose
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
     @Column(name = "date_created")
     private Date dateCreated;
 
-    @Expose
     @Column(name = "first_name")
     private String firstName;
 
-    @Expose
     @Column(name = "last_name")
     private String lastName;
-
-    @Expose
-    private String username;
-
-    @Expose(serialize = false)
-    private String password;
-
-    @Expose
+    
     private String description;
 
-    @Expose
+    @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Classroom> classrooms;
+    private List<Classroom> classrooms;
+
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name="username", insertable = false, updatable = false)
+    private AccountDetails accountDetails;
+
+    @Transient
+    private ArrayList<String> classroomIds = new ArrayList<>();
 
     public Teacher(){}
 
-    public Teacher(String firstName, String lastName, String username, String id) {
+    public Teacher(String id, String firstName, String lastName, String username) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
-        this.id = id;
         this.enabled = 1;
         this.dateCreated = new Date();
         this.description = "";
@@ -64,6 +64,14 @@ public class Teacher implements UserDetails {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUsername(){
+        return this.username;
+    }
+
+    public void setUsername(String username){
+        this.username = username;
     }
 
     public int getEnabled() {
@@ -98,10 +106,6 @@ public class Teacher implements UserDetails {
         this.lastName = lastName;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -117,39 +121,21 @@ public class Teacher implements UserDetails {
     public void setClassrooms(List<Classroom> classrooms) {
         this.classrooms = classrooms;
     }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+ 
+    public AccountDetails getAccountDetails(){
+        return this.accountDetails;
     }
 
-    public String getPassword() {
-        return password;
+    public void setAccountDetails(AccountDetails accountDetails){
+        this.accountDetails = accountDetails;
     }
 
-    @Override
-    public String getUsername() {
-        return username;
+    public ArrayList<String> getClassroomIds() {
+        return classroomIds;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return isEnabled();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return isEnabled();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return isEnabled();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return this.enabled == 1;
+    public void setClassroomIds(ArrayList<String> classroomIds) {
+        this.classroomIds = classroomIds;
     }
 
     @Override
@@ -157,11 +143,13 @@ public class Teacher implements UserDetails {
         return "Teacher{" +
                 "id=" + id +
                 ", enabled=" + enabled +
+                ", username=" + username +
                 ", dateCreated=" + dateCreated +
                 ", firstName=" + firstName +
                 ", lastName=" + lastName +
-                ", username=" + username +
                 ", description=" + description +
+                ", accountDetails=" + accountDetails +
+                ", classroomIds=" + classroomIds +
                 ", classrooms=" + Arrays.toString(classrooms.toArray()) +
                 '}';
     }

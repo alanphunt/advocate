@@ -1,6 +1,7 @@
 package com.structure.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +21,10 @@ public class ClassroomService{
     @Autowired
     private ClassroomRepo classroomRepo;
 
-    @Autowired
-    private Utils utility;
+    @Autowired private Utils utils;
 
     public Map<String, String> saveClassroomOrReturnErrors(String teacherId, ArrayList<Student> students, String className){
-        Classroom classroom = new Classroom(utility.generateUniqueId(), className, teacherId);
+        Classroom classroom = new Classroom(utils.generateUniqueId(), className, teacherId);
         Map<String, String> errors = determineClassroomError(students, classroom);
         
         if(errors.size() == 0){
@@ -44,10 +44,14 @@ public class ClassroomService{
     public Map<String, String> updateClassroomOrReturnErrors(Classroom classroom){
         ArrayList<Student> studentArrayList = (ArrayList<Student>) classroom.getStudents();
         Map<String, String> errors = determineClassroomError(studentArrayList, classroom);
+        System.out.println(Arrays.toString(studentArrayList.toArray()));
         if(errors.size() == 0){
             classroom.getStudents().forEach(stu -> {
-                if(stu.getId() == null)
+                if(stu.getClassroomId() == null)
                     fillStudentData(stu, classroom.getId());
+                if(stu.getGoals() == null)
+                    stu.setGoals(new ArrayList<Goal>());
+                
             });
             classroom.setStudents(studentArrayList);
             classroomRepo.save(classroom);
@@ -56,10 +60,9 @@ public class ClassroomService{
     }
 
     private void fillStudentData(Student stu, String classroomId){
-        stu.setId(Utils.generateUniqueId());
+        stu.setId(utils.generateUniqueId());
         stu.setEnabled(1);
         stu.setClassroomId(classroomId);
-        stu.setGoals(new ArrayList<Goal>());
     }
 
     private Map<String, String> determineClassroomError(ArrayList<Student> students, Classroom classroom){
