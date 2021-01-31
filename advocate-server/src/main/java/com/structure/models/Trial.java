@@ -46,15 +46,15 @@ public class Trial {
     private Benchmark benchmark;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "trial", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trial", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @OrderBy("label ASC")
-    private List<Tracking> trackings;
+    private List<Tracking> trackings = new ArrayList<>();
 
     
-    @OneToMany(mappedBy = "trial", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trial", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OrderBy("uploadDate ASC")
-    private List<Document> documents;
+    private List<Document> documents = new ArrayList<>();
 
     @Transient
     private ArrayList<String> trackingIds = new ArrayList<>();
@@ -68,7 +68,6 @@ public class Trial {
 
     public Trial(String id, int trialNumber, Date dateStarted, String comments, String benchmarkId) {
         this.id = id;
-        this.label = "Trial #" + trialNumber + " - " + new SimpleDateFormat(Constants.DATE_FORMAT).format(dateStarted);
         this.trialNumber = trialNumber;
         this.dateStarted = dateStarted;
         this.comments = comments;

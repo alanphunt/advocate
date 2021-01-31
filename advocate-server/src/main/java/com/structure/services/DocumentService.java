@@ -40,20 +40,25 @@ public class DocumentService {
     private DocumentRepo docRepo;
 
     public Document handleDocumentUpload(HttpServletRequest request, MultipartFile file, String trialId, Document existingDoc) throws IOException{
+        System.out.println("generating document meta..");
+
         String filePath = generateUploadPath(request, trialId);
         File newFile = new File(filePath);
-        newFile.mkdir();
+        newFile.mkdirs();
+
         String downloadPath = filePath.split("/", 3)[2] + existingDoc.getName();
         existingDoc.setId(util.generateUniqueId());
         existingDoc.setPath(downloadPath);
         existingDoc.setEnabled(1);
         existingDoc.setFormattedSize(convertFileSize(existingDoc.getSize()));
+        if(existingDoc.getTrialId().isBlank())
+            existingDoc.setTrialId(trialId);
+
         Path path = Paths.get(generateUploadPath(request, trialId) + file.getOriginalFilename());
         Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         Files.createDirectories(path.getParent());
 
         System.out.println("Finalized metadata:");
-        System.out.println(existingDoc.toString());
         return existingDoc;
     }
 
@@ -82,38 +87,17 @@ public class DocumentService {
             }
         }
     }
-/* 
-    public ResponseEntity<?> handleDocumentRetrieval(String docId){
-        Optional<Document> doc = docRepo.findById(docId);
-        Map<String, String> error = new HashMap<String, String>();
-        if(doc.isPresent()){
-            Document document = doc.get();
-            try{
-                ByteArrayResource bytes = new ByteArrayResource(Files.readAllBytes(Paths.get(Constants.DOCUMENT_UPLOAD_PATH + document.getDownloadPath())));
-
-                return ResponseEntity                
-                        .ok()
-                        .contentType(MediaType.parseMediaType(document.getFileType()))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getFilename() + "\"")
-                        .body(bytes);
-            }catch(Exception e){
-                error.put("error", Constants.FAILED_FILE_READ);
-            }
-        }
-        return ResponseEntity.badRequest().body(error);
-    }
- */
 
     private String convertFileSize(long fileSize){
         DecimalFormat df = new DecimalFormat("###.0");
         String size = "";
 		if(fileSize < 1024){
 			size = (fileSize == 0 ? "N/A" : fileSize + " B");
-		}else if(fileSize >= 1024 && fileSize < 1048576){
+		}else if(fileSize < 1048576){
 			size = df.format(fileSize/1024) + " KB";
-		}else if(fileSize >= 1048576 && fileSize < 1073741824){
+		}else if(fileSize < 1073741824){
 			size = df.format(fileSize/1048576) + " MB";
-		}else if(fileSize >= 1073741824) {
+		}else {
 			size = df.format(fileSize / 1073741824) + " GB";
         }
 		return size;
@@ -121,13 +105,9 @@ public class DocumentService {
 
     public ResponseEntity<?> handleDocumentBytesRetrieval(String path, String name, String type){
         Map<String, String> error = new HashMap<String, String>();
-        // Map<String, byte[]> docBytes = new HashMap<String, byte[]>();
-        //String email = jwtService.extractJwtAndEmailFromCookie(request);
         try{
-            //String path = generateDownloadPath(email, trialId, filename);
             String fullPath = Constants.DOCUMENT_UPLOAD_PATH + path;
             byte[] bytes = Files.readAllBytes(Paths.get(fullPath));
-            // docBytes.put(path, bytes);
 
             return ResponseEntity                
                 .ok()

@@ -12,7 +12,7 @@ import TableAccordionGroup from "./table/TableAccordionGroup";
 import { useAuth } from "utils/auth/AuthHooks";
 import ModalBody from "components/molecules/ModalBody";
 import {crudFetch, fetchPost} from "utils/functions/functions";
-import ScoreTrial from "components/molecules/ScoreTrial";
+import BasicScoreTrial from "components/molecules/BasicScoreTrial";
 import CreateTrial from "components/molecules/CreateTrial.js"
 import CompleteBenchmark from "components/molecules/CompleteBenchmark";
 import CreateGoal from "components/pages/creategoal/CreateGoal";
@@ -129,7 +129,7 @@ const GoalDrilldown = ({
                         header={`Edit trial ${mutableTrial?.trialNumber}`}
                         hideButtons
                     >
-                        <ScoreTrial
+                        <BasicScoreTrial
                             setTeacher={setTeacher}
                             benchmark={benchmark}
                             studentName={student?.name}

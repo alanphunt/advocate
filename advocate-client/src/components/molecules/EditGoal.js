@@ -4,7 +4,7 @@ import GoalForm from "components/molecules/GoalForm";
 import {goalFormErrorModel} from "utils/models";
 import {crudFetch, formifyObject, prepareEditorStateForRequest,} from "utils/functions/functions";
 import {FaCheck as CheckIcon} from "react-icons/fa";
-import {SERVER_ERROR} from "utils/constants";
+
 /*
      props:
 
@@ -12,7 +12,7 @@ import {SERVER_ERROR} from "utils/constants";
 
 */
 
-const EditGoal = ({mutableGoal, setMutableGoal, closeModal, completeCrudOp}) => {
+const EditGoal = ({mutableGoal, setMutableGoal, closeModal, completeCrudOp, signout}) => {
     const [editGoalFormErrors, setEditGoalFormErrors] = useState(goalFormErrorModel);
 /* 
     useEffect(() => {
@@ -29,19 +29,21 @@ const EditGoal = ({mutableGoal, setMutableGoal, closeModal, completeCrudOp}) => 
             path: "editgoal",
             method: "POST",
             body: formifyObject({
-                ...mutableGoal, 
-                goal: prepareEditorStateForRequest(mutableGoal?.goal),
-                benchmarks: JSON.stringify(mutableGoal?.benchmarks.map(bm => prepareEditorStateForRequest(bm.description)))
+                ...mutableGoal,
+                goal: prepareEditorStateForRequest(mutableGoal.goal.getCurrentContent()),
+                benchmarks: JSON.stringify(mutableGoal.benchmarks.map(bm => (
+                    {...bm, description: prepareEditorStateForRequest(bm.description.getCurrentContent())}
+                )))
             }),
-            success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated goal {mutableGoal?.goalName}</>),
+            success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated goal {mutableGoal.goalName}</>),
             error: (data, headers, status) => setEditGoalFormErrors(data),
-            serverError: () => alert(SERVER_ERROR)
+            serverError: signout
         });
       };
 
     return (
         <ModalBody
-            header={`Edit goal '${mutableGoal?.goalName}'`}
+            header={`Edit goal '${mutableGoal.goalName}'`}
             cancelCallback={closeModal}
             confirmCallback={editGoal}
         >

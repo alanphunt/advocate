@@ -14,7 +14,7 @@ import ModalBody from "components/molecules/ModalBody";
 import {prepareEditorStateForRequest, formatStudentObject} from "utils/functions/functions";
 import TableAccordionGroup from "components/molecules/table/TableAccordionGroup";
 
-const CreateGoal = ({student, completeCrudOp, classroomIds, classrooms, students, setSelectedStudentId, signout}) => {
+const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId, signout}) => {
     const { id, name } = student;
     const [goal, setGoal] = useState({...goalModel, studentId: id});
     const [formErrors, setFormErrors] = useState(goalFormErrorModel);
@@ -25,9 +25,14 @@ const CreateGoal = ({student, completeCrudOp, classroomIds, classrooms, students
 
         Object.keys(goal).forEach(goalKey => {
             if(goalKey === "benchmarks")
-                fd.append("benchmarks", JSON.stringify(goal.benchmarks.map(bm => ({...bm, description: prepareEditorStateForRequest(bm.description.getCurrentContent())}))))
-            else if (goalKey === "goal")
-                fd.append("goal", prepareEditorStateForRequest(goal.goal.getCurrentContent()));
+                fd.append("benchmarks", JSON.stringify(goal.benchmarks.map(bm => {
+                    let editorState = bm.description.getCurrentContent();
+                    return {...bm, description: editorState.hasText() ? prepareEditorStateForRequest(editorState) : ""}
+                })))
+            else if (goalKey === "goal") {
+                let goalEditorState = goal.goal.getCurrentContent();
+                fd.append("goal", goalEditorState.hasText() ? prepareEditorStateForRequest(goalEditorState) : "");
+            }
             else
                 fd.append(goalKey, goal[goalKey]);
         })
@@ -44,7 +49,6 @@ const CreateGoal = ({student, completeCrudOp, classroomIds, classrooms, students
                     setFormErrors(JSON.parse(data));
                 else if(status === FORBIDDEN_STATUS || status === UNAUTHORIZED_STATUS)
                     signout();
-                
         });
     };
 
@@ -54,7 +58,7 @@ const CreateGoal = ({student, completeCrudOp, classroomIds, classrooms, students
     };
 
     const handleStudentSelect = (student) => {
-        setSelectedStudentId(student.id);
+        setStudentId(student.id);
         setGoal(prev => ({...prev, studentId: student.id}))
         setDisplayTable(false);
     };
@@ -69,7 +73,7 @@ const CreateGoal = ({student, completeCrudOp, classroomIds, classrooms, students
                     <>
                         <Section>
                             <TableAccordionGroup
-                                accordionHeaders={classroomIds.map(crId => classrooms[crId].className)}
+                                accordionHeaders={classrooms.map(cr => cr.className)}
                                 tableData={Object.values(classrooms).map(cr => formatStudentObject(Object.values(students).filter(stu => stu.classroomId === cr.id)))}
                                 tableHeaders={BASIC_STUDENT_TABLE_HEADERS}
                                 allOpen

@@ -22,7 +22,6 @@ public class Goal {
     private String id;
 
     private String goal;
-
     
     @Column(name = "goal_name")
     private String goalName;
@@ -53,9 +52,9 @@ public class Goal {
     private Student student;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "goal", cascade = {CascadeType.ALL})
     @OrderBy("label ASC")
-    private List<Benchmark> benchmarks;
+    private List<Benchmark> benchmarks = new ArrayList<>();
 
     @Transient
     private ArrayList<String> benchmarkIds = new ArrayList<>();

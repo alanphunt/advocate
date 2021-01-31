@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Button from "components/atoms/Button";
 import {
     FaCheck as CheckIcon,
@@ -12,31 +12,43 @@ import {determineTrialAverage} from "utils/functions/functions";
 import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
 
-const BenchmarkDrilldown = ({student, teacher, benchmark, setSelectedTrial, setModalAction}) => {
-    const goals = student?.goalIds.map(id => teacher.goals[id]);
-
+const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setTrialId, setMutableTrial, setModalAction}) => {
     const [trialIndex, setTrialIndex] = useState(-1);
 
-    const trials = benchmark?.trialIds.map(id => teacher.trials[id]);
+
+    useEffect(() => {
+        setTrialIndex(-1);
+    }, [benchmark])
 
     const renderTableData = () => {
         return trials.map(trial => {
             return (
-                <span className={"flex-center-between"}>
-                    {trial.label}
-                    <span>
-                        <EditIcon className={"i-right hover-color selectable"} onClick={(e) => handleTrialIconAction(e, "editTrial", trial)}/>
-                        <TrashIcon className={"hover-color selectable"} onClick={(e) => handleTrialIconAction(e, "deleteTrial", trial)}/>
-                    </span>
-                </span>
+                {
+                    "id": trial.id,
+                     "":
+                         <span className={"flex-center-between width-100"}>
+                            {trial.label}
+                            <span>
+                                <EditIcon className={"i-right hover-color selectable"}
+                                          onClick={(e) => handleTrialIconAction(e, "editTrial", trial)}/>
+                                <TrashIcon className={"hover-color selectable"}
+                                           onClick={(e) => handleTrialIconAction(e, "deleteTrial", trial)}/>
+                            </span>
+                        </span>
+                }
             )
         })
     };
 
     const handleTrialIconAction = (e, iconKey, trial) => {
         e.stopPropagation();
-        setSelectedTrial(trial);
+        setMutableTrial({...trial, documents: trial.documentIds.map(id => allDocuments[id]), trackings: trial.trackingIds.map(id => allTrackings[id])});
         setModalAction(iconKey);
+    };
+
+    const handleTrialSelect = (trialId, trialIndex) => {
+        setTrialIndex(trialIndex);
+        setTrialId(trialId);
     };
 
     return (
@@ -51,7 +63,7 @@ const BenchmarkDrilldown = ({student, teacher, benchmark, setSelectedTrial, setM
                 />
             </div>
             {
-                goals?.length && benchmark ? (
+                benchmark ? (
                     <>
                         <Section>
                             <p><strong>Description: </strong></p>
@@ -63,11 +75,11 @@ const BenchmarkDrilldown = ({student, teacher, benchmark, setSelectedTrial, setM
                         </Section>
                         <Section>
                             {
-                                trials.length
+                                benchmark && trials.length
                                     ? <Table
                                         headers={[`Trials (${trials.length})`]}
-                                        data={renderTableData()}
-                                        selectedCallback={(trial, trialIndex) => setTrialIndex(trialIndex)}
+                                        tableData={renderTableData()}
+                                        selectedCallback={(trial, trialIndex) => handleTrialSelect(trial.id, trialIndex)}
                                         selectedRowIndex={trialIndex}
                                     />
                                     : <Box text="No trials"/>
@@ -75,9 +87,9 @@ const BenchmarkDrilldown = ({student, teacher, benchmark, setSelectedTrial, setM
                         </Section>
                         <div className={"flex-column"}>
                             <Button
-                                onClick={() => setModalAction("completeBenchmark")}
+                                onClick={() => setModalAction("masterBenchmark")}
                                 icon={<CheckIcon className={"i-right"}/>}
-                                text={`${benchmark.complete === 0 ? "Master" : "Unmaster"} benchmark`}
+                                text={`${benchmark.complete ? "Unmaster" : "Master"} benchmark`}
                             />
                         </div>
                     </>

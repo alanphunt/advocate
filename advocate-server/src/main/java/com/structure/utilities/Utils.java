@@ -1,17 +1,13 @@
 package com.structure.utilities;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import com.structure.models.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Type;
 import java.util.*;
 
 @Component
@@ -54,32 +50,9 @@ public class Utils {
         return RandomStringUtils.randomAlphanumeric(11);
     }
 
-    public Type getListType(Class<?> clazz){
-        if(clazz == Classroom.class)
-            return new TypeToken<ArrayList<Classroom>>() {}.getType();
-        else if(clazz == Student.class)
-            return new TypeToken<ArrayList<Student>>() {}.getType();
-        else if(clazz == Goal.class)
-            return new TypeToken<ArrayList<Goal>>() {}.getType();
-        else if(clazz == Benchmark.class)
-            return new TypeToken<ArrayList<Benchmark>>() {}.getType();
-        else if(clazz == Trial.class)
-            return new TypeToken<ArrayList<Trial>>() {}.getType();
-        else if(clazz == Tracking.class)
-            return new TypeToken<ArrayList<Tracking>>() {}.getType();
-        else if(clazz == Document.class)
-            return new TypeToken<ArrayList<Document>>() {}.getType();
-        else if(clazz == String.class)
-            return new TypeToken<ArrayList<String>>() {}.getType();
-        else 
-            return new TypeToken<ArrayList<Integer>>() {}.getType();
-    }
 
     public <T> T fromJSON(final TypeReference<T> type, String jsonPacket) throws Exception {
-        T data = null;
-
-            data = new ObjectMapper().readValue(jsonPacket, type);
-        return data;
+        return new ObjectMapper().readValue(jsonPacket, type);
     }
 
     public String escape(String text){

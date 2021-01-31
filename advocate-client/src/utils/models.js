@@ -137,3 +137,8 @@ export const blankClassroomModel = {
   className: "",
   students: []
 };
+
+export const basicScoreTrialErrorsModel = {
+  dateStarted: "",
+  label: ""
+};

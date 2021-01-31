@@ -45,6 +45,7 @@ public class LoginService {
         try {
             return ResponseEntity.ok(mapTeacherToTeacherDTO(teacherService.findTeacherByUsername(detailsBean.getAccountDetails().getUsername())));
         } catch (Exception npe) {
+            System.out.println(npe.getMessage());
             Map<String, String> errors = new HashMap<>();
             errors.put("error", Constants.SERVER_ERROR);
             return ResponseEntity.status(Constants.HTTP_UNAUTHORIZED).body(errors);
@@ -83,6 +84,7 @@ public class LoginService {
 
     private TeacherDTO mapTeacherToTeacherDTO(Teacher teacher) {
         TeacherDTO dto = new TeacherDTO();
+        System.out.println(teacher.toString());
         dto.setTeacher(teacher);
         dto.getTeacher().setClassroomIds(new ArrayList<>());
 

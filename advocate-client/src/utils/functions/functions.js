@@ -1,5 +1,5 @@
 import React from "react";
-import {SERVER_ERROR, FORBIDDEN_STATUS, JSON_HEADER} from "utils/constants";
+import {SERVER_ERROR, FORBIDDEN_STATUS, JSON_HEADER, UNAUTHORIZED_STATUS, BAD_REQUEST_STATUS} from "utils/constants";
 import {FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon} from "react-icons/fa";
 import { convertToRaw } from 'draft-js';
 
@@ -67,14 +67,14 @@ export const crudFetch = ({path, method, body, success, error, serverError, head
         .then(([ok, body, status]) => {
             if(ok)
                 success(body);
-            else if(status !== FORBIDDEN_STATUS)
+            else if(status === BAD_REQUEST_STATUS)
                 error(body);
             else
                 serverError();
         });
 };
 
-export const fileFetch = (apiPath, {path, name, type}, action, callback, handleError, handleServerError) => {
+export const fileFetch = (apiPath, {path, name, type}, action, handleError, handleServerError, callback) => {
     fetch(apiPath, {body: JSON.stringify({path, name, type}), method: "POST", headers: JSON_HEADER})
     .then(res =>  Promise.all([res.ok, res.ok ? res.blob() : res.json(), res.status]))
     .then(([ok, body, status]) => {     
@@ -88,6 +88,7 @@ export const fileFetch = (apiPath, {path, name, type}, action, callback, handleE
         callback && callback();
     });
 };
+
 //Pass in an object and it'll split camelCaseKeys into ["Camel Case Keys"]
 export const splitAndCapitalizeObjectKeys = (object) => {
     let newArray = [];
@@ -165,18 +166,12 @@ export const formifyObject = (object) => {
     let fd = new FormData();
     Object.keys(object).forEach(key => {
         let val = object[key];
-        if(typeof val === "object" && val.length){
-            for(let i = 0; i < val.length; i++){
-                fd.append(key, val[i]);
-            }
-        }
-        else
             fd.append(key, val);
     })
     return fd;
 };
 
-//returns array of updated document metadata
+//returns array of updated document metadata according to an array of Files
 export const mapFileMetaDataToDocument = (fileArray, docArray, trialId) => {
     let fileMeta = [...docArray]
     fileArray.forEach(file => {
@@ -185,10 +180,12 @@ export const mapFileMetaDataToDocument = (fileArray, docArray, trialId) => {
     return fileMeta
 };
 
+//takes in a contentstate and converts to json if there is text or simply returns a blank string
 export const prepareEditorStateForRequest = (text) => {
     try{ 
         return JSON.stringify(convertToRaw(text))
     }catch(e){
+        console.log(e)
         return text
     }
 };

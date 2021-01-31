@@ -25,7 +25,7 @@ const FileChip = ({text, onDelete, onPreview, onDownload, isNewFile, isLoading})
                     ? <LoadingIcon/> 
                     : 
                     <div className={`filechip__icons ${hovered ? ' display-centered' : ''}${isLoading ? '' : ''}`}>
-                        <TrashIcon onClick={onDelete} className="marg-right"/>
+                        {onDelete ? <TrashIcon onClick={onDelete} className="marg-right"/> : <></>}
                         <PreviewIcon onClick={onPreview} className="marg-right"/>
                         <DownloadIcon onClick={onDownload}/>
                     </div>

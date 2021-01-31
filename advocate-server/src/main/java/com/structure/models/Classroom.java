@@ -26,8 +26,8 @@ public class Classroom {
     private String teacherId;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Student> students;
+    @OneToMany(mappedBy = "classroom", cascade = {CascadeType.ALL})
+    private List<Student> students = new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne

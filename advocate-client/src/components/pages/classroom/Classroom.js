@@ -133,7 +133,7 @@ const Classroom = () => {
     };
 
     const handleCrudError = (body) => {
-        setFormErrors(JSON.parse(body));
+        setFormErrors(body);
     };
 
     const handleIconClick = (action, classroom) => {

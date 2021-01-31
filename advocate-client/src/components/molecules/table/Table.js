@@ -26,17 +26,16 @@ const Table = ({
     selectedRowIndex,
     children
 }) => {
-
     return(
         <div className={"table"}>
             <TableHeaderRow>  { headers.map((header, index) => <TableHeaderCell key={`tableHeaderCell-${index}`}>{header}</TableHeaderCell>) } </TableHeaderRow>
             <div className={"tbody"}>
                 {
                     children ? children :
-                    tableData.map((rowObject, ind) =>
-                        <TableRow key={`tableRow-${ind}`} isSelected={selectedRowIndex === ind} selectedCallback={selectedCallback ? () => selectedCallback(rowObject, ind) : null}>
+                    tableData.map((rowObject, rowIndex) =>
+                        <TableRow key={`tableRow-${rowIndex}`} isSelected={selectedRowIndex === rowIndex} selectedCallback={selectedCallback ? () => selectedCallback(rowObject, rowIndex) : null}>
                             {
-                                (dataKeys ? dataKeys : Object.keys(rowObject)).filter(key => key !== "id").map((key, ind) => <TableCell key={`tableCell-${ind}-${rowObject[key]}`}>{rowObject[key]}</TableCell>)
+                                (dataKeys ? dataKeys : Object.keys(rowObject)).filter(key => key !== "id").map((key, ind) => <TableCell key={`tableCell-${ind}-${rowIndex}`}>{rowObject[key]}</TableCell>)
                             }
                         </TableRow>
                     )

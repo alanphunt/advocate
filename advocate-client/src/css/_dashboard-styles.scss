@@ -85,18 +85,14 @@ a.active.active-border:hover{
 
 .dash-nav{
   border-bottom: 1px solid $lig-gra;
-  padding: 8px 1rem;
+  padding: 0 1rem;
   height: 4%;
-  font-weight: 500;
+  font-size: 1.1em;
   @include flex($ali-ite: center, $jus-con: space-between);
 }
 
 .dash-nav__breadcrumb{
   text-transform: uppercase;
-}
-
-.dash-nav__profile{
-  font-size: 24px;
 }
 
 .itemmaininner{
@@ -358,7 +354,6 @@ a.active.active-border:hover{
 
 .tcols h3{
   font-weight: bold;
-  margin-bottom: 8px;
 }
 
 .getstarted{
@@ -378,10 +373,6 @@ a.active.active-border:hover{
 .row-wrapper{
   @include flex($fle-flo: column, $jus-con: space-between);
 }
-
-/* .goalcenterrowmarg:not(:last-child){
-  margin-bottom: 2%;
-} */
 
 .getstarted:hover{
   color: $primary;
@@ -612,7 +603,7 @@ a.active.active-border:hover{
 }
 
 .card-uploader-column{
-  width: 45%;
+  width: 90%;
   margin-left: auto;
 }
 

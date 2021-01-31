@@ -1,17 +1,12 @@
 import React from "react";
 import {FaChartPie as PieIcon} from "react-icons/fa";
 
-const ItemCards = ({trackingType, selectedTemplate}) => {
-
-    const handleSelected = (template) => {
-        selectedTemplate(template);
-    };
+const ItemCards = ({trackingType, setTrialTemplate}) => {
 
     const items = (type) => {
         const item = (t, d, k) => {
             return {title: t, desc: d, key: k};
         };
-
         return {
             "score" : [
                 item("Score Keeping",
@@ -25,6 +20,9 @@ const ItemCards = ({trackingType, selectedTemplate}) => {
                     "timer!", "wpm")
             ],
             "trial" : [{title: "No Templates", desc: "More templates coming soon!"}],
+            "accuracy" : [{title: "No Templates", desc: "More templates coming soon!"}],
+            "frequency" : [{title: "No Templates", desc: "More templates coming soon!"}],
+            "other" : [{title: "No Templates", desc: "More templates coming soon!"}],
             "duration" : [{title: "No Templates", desc: "More templates coming soon!"}]
         }[type]
     }
@@ -35,7 +33,7 @@ const ItemCards = ({trackingType, selectedTemplate}) => {
                 {
                     items(trackingType).map((item, index) => {
                         return (
-                            <div key={`itemcard${index}`} className={"itemcard"} onClick={() => {handleSelected(item.key)}}>
+                            <div key={`itemcard-${index}`} className={"itemcard"} onClick={() => setTrialTemplate(item.key)}>
                                 <div className={"itemcardhead"}>
                                     <h2>
                                         <PieIcon className="itemcard-i"/>

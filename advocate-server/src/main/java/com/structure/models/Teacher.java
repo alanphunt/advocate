@@ -35,11 +35,11 @@ public class Teacher {
     private String description;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Classroom> classrooms;
+    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.ALL})
+    private List<Classroom> classrooms = new ArrayList<>();
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name="username", insertable = false, updatable = false)
     private AccountDetails accountDetails;
 

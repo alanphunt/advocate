@@ -10,7 +10,7 @@ import React from "react";
 const TableHeaderCell = ({children}) => {
     return(
         <div className={`th`}>
-            {children}
+            <h3>{children}</h3>
         </div>
     );
 };

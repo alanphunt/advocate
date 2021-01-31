@@ -4,20 +4,20 @@ import Section from "components/atoms/Section";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import ModalBody from "components/molecules/ModalBody";
 
-const CompleteBenchmark = ({benchmark, completeCrudOp, closeModal, benchmarkParentGoal: goal}) => {
+const CompleteBenchmark = ({benchmark, goalBenchmarks, completeCrudOp, closeModal, goalId}) => {
     //if the BM isn't complete then we're updating it as complete and vice versa
     const currentStatus = benchmark.complete;
     const updatedStatus = currentStatus ? 0 : 1;
-    const isLastIncompleteBenchmark = goal.benchmarks.filter(bm => bm.complete === 0).length === 1;
-    const allBenchmarksComplete = goal.benchmarks.filter(bm => !bm.complete).length === 0;
+    const isLastIncompleteBenchmark = goalBenchmarks.filter(bm => bm.complete === 0).length === 1;
+    const allBenchmarksComplete = goalBenchmarks.filter(bm => !bm.complete).length === 0;
 
     const markBenchmarkAsComplete = (benchmarkId, updatedStatus, goalId) => {
         let formData = new FormData();
         formData.append("benchmarkId", benchmarkId);
         formData.append("complete", updatedStatus);
-        formData.append("goalId", goalId || "");
+        formData.append("goalId", goalId);
 
-        fetch("/api/completeBenchmark",
+        fetch("/api/completebenchmark",
             {
                 method: "POST",
                 body: formData
@@ -47,7 +47,7 @@ const CompleteBenchmark = ({benchmark, completeCrudOp, closeModal, benchmarkPare
                     markBenchmarkAsComplete(
                         benchmark.id,
                         updatedStatus,
-                        ((isLastIncompleteBenchmark || allBenchmarksComplete) ? goal.id : "")
+                        ((isLastIncompleteBenchmark || allBenchmarksComplete) ? goalId : "")
                     );
                 }}
                 cancelCallback={closeModal}/>

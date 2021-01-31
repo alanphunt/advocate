@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import TableAccordionGroup from "./table/TableAccordionGroup";
-import AccordionItem from "../atoms/AccordionItem";
+import AccordionItem from "components/atoms/AccordionItem";
 import Table from "./table/Table";
-import {mapStudentGoalMeta} from "../../utils/functions/functions";
-import Box from "../atoms/Box";
+import {mapStudentGoalMeta} from "utils/functions/functions";
+import Box from "components/atoms/Box";
 
-const GoalCenterTableRow = ({teacher, setSelectedStudentId}) => {
+const GoalCenterTableRow = ({teacher, setStudentId}) => {
 
     const hasClassroomsWithStudents = !!Object.keys(teacher.students);
     const tableHeaders = ["Name", "Goal Count", "Goal Completion %"];
@@ -15,7 +15,7 @@ const GoalCenterTableRow = ({teacher, setSelectedStudentId}) => {
     const handleSelectedStudent = (student, studentIndex, classroomIndex) => {
         setSelectedClassroomIndex(classroomIndex);
         setStudentIndex(studentIndex);
-        setSelectedStudentId(student.id);
+        setStudentId(student.id);
     };
 
     return (

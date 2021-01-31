@@ -42,12 +42,13 @@ public class Benchmark {
     private Date masteryDate;
 
     @Column(name = "met_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
     private Date metDate;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "benchmark", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "benchmark", cascade = {CascadeType.ALL})
     @OrderBy("trialNumber ASC")
-    private List<Trial> trials;
+    private List<Trial> trials = new ArrayList<>();
 
     @Transient
     private ArrayList<String> trialIds = new ArrayList<>();

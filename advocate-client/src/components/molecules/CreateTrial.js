@@ -1,39 +1,39 @@
-import React from "react";
-import ScoreTrial from "components/molecules/ScoreTrial";
+import React, {useEffect, useState} from "react";
 import TrialTemplateSelector from "components/molecules/TrialTemplateSelector";
+import CreateScoreTrial from "./CreateScoreTrial";
 
-const CreateTrial = ({benchmark, template, setTemplate, student, completeCrudOp}) => {
+const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName}) => {
+    const [trialTemplate, setTrialTemplate] = useState("");
 
-    const goBack = () => {
-        setTemplate("");
-    };
+    const goBack = () => setTrialTemplate("");
 
-    const trialOptions = (type) => {
+    useEffect(() => {
+        return () => setTrialTemplate("");
+    }, [])
+
+    const trialOptions = () => {
         return {
-            "": <TrialTemplateSelector trackingType={benchmark.tracking} setTemplate={setTemplate}/>,
-            "score": <ScoreTrial goBack={goBack} benchmark={benchmark} student={student} completeCrudOp={completeCrudOp}/>,
+            "": <TrialTemplateSelector trackingType={benchmark.tracking} setTrialTemplate={setTrialTemplate}/>,
+            "score": <CreateScoreTrial goBack={goBack} benchmark={benchmark} studentName={studentName} goalName={goalName} completeCrudOp={completeCrudOp}/>,
             "cue": cueTrial(goBack),
             "wpm": wpmTrial(goBack)
-        }[type];
+        }[trialTemplate];
+    };
+
+    const cueTrial = (goBack) => {
+        return <div onClick={goBack}>cue</div>;
+    };
+
+    const wpmTrial = (goBack) => {
+        return <div onClick={goBack}>wpmtrial</div>;
     };
 
     return (
         <div className={"createtrialwrapper"}>
-            {
-                benchmark
-                ? trialOptions(template)
-                : <p>No benchmark selected!</p>
-            }
+            {trialOptions()}
         </div>
     )
 };
 
-const cueTrial = (goBack) => {
-    return <div onClick={goBack}>cue</div>;
-};
-
-const wpmTrial = (goBack) => {
-    return <div onClick={goBack}>wpmtrial</div>;
-};
 
 export default CreateTrial;

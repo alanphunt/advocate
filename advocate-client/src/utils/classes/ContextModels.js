@@ -89,9 +89,21 @@ export class Benchmark {
 }
 
 export class Trial {
-    documentIds = Array.of("");
-    trackingIds = Array.of("");
-    constructor (id, label, trialNumber, dateStarted, dateCompleted, comments, benchmarkId, enabled, documentIds, trackingIds) {
+
+    constructor() {
+        this.documentIds = [];
+        this.trackingIds = [];
+        this.label = "";
+        this.id = "";
+        this.enabled = 0;
+        this.trialNumber = -1;
+        this.dateStarted = "";
+        this.dateCompleted = "";
+        this.comments = "";
+        this.benchmarkId = "";
+    }
+
+/*    constructor (id, label, trialNumber, dateStarted, dateCompleted, comments, benchmarkId, enabled, documentIds, trackingIds) {
         this.id = id;
         this.enabled = enabled;
         this.label = label;
@@ -102,7 +114,7 @@ export class Trial {
         this.benchmarkId = benchmarkId;
         this.documentIds = documentIds;
         this.trackingIds = trackingIds;
-    }
+    }*/
 }
 
 export class Tracking {

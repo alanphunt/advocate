@@ -21,7 +21,8 @@ public class ClassroomService{
     @Autowired
     private ClassroomRepo classroomRepo;
 
-    @Autowired private Utils utils;
+    @Autowired
+    private Utils utils;
 
     public Map<String, String> saveClassroomOrReturnErrors(String teacherId, ArrayList<Student> students, String className){
         Classroom classroom = new Classroom(utils.generateUniqueId(), className, teacherId);
@@ -44,14 +45,14 @@ public class ClassroomService{
     public Map<String, String> updateClassroomOrReturnErrors(Classroom classroom){
         ArrayList<Student> studentArrayList = (ArrayList<Student>) classroom.getStudents();
         Map<String, String> errors = determineClassroomError(studentArrayList, classroom);
-        System.out.println(Arrays.toString(studentArrayList.toArray()));
+
         if(errors.size() == 0){
             classroom.getStudents().forEach(stu -> {
+                if(stu.getGoalIds().isEmpty())
+                    stu.setGoals(new ArrayList<>());
                 if(stu.getClassroomId() == null)
                     fillStudentData(stu, classroom.getId());
-                if(stu.getGoals() == null)
-                    stu.setGoals(new ArrayList<Goal>());
-                
+
             });
             classroom.setStudents(studentArrayList);
             classroomRepo.save(classroom);

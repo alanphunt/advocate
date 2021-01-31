@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GoalService {
     @Autowired
-    GoalRepo goalRepo;
+    private GoalRepo goalRepo;
 
     @Autowired
     private Utils utilService;
@@ -50,7 +50,7 @@ public class GoalService {
                     goalString.get("studentId"),
                     potentialStartDate,
                     potentialMasteryDate,
-                    (goalString.get("monitor").equals("true") ? 1 : 0)
+                    Integer.parseInt(goalString.get("monitor"))
             );
 
             assert benchmarks != null;
@@ -64,7 +64,6 @@ public class GoalService {
         return ResponseEntity.badRequest().body(errors);
 
     }
-
 
     public ResponseEntity<?> handleGoalUpdate(Map<String, String> body){
         return handleGoalCreation(body);
@@ -99,7 +98,7 @@ public class GoalService {
     private void determineGoalCreationErrors(Map<String, String> errors, ArrayList<Benchmark> benchmarks, Map<String, String> goalString){
         try {
             for (Benchmark bm : benchmarks) {
-                if(utilService.richTextFieldIsEmpty(bm.getDescription())
+                if(bm.getDescription().isBlank()
                         || bm.getTracking().isBlank()
                         || bm.getMasteryDate() == null
                 ) {
@@ -116,9 +115,9 @@ public class GoalService {
             String val = goalString.get(key);
             if(key.equals("masteryDate") && !val.matches(Constants.DATE_REGEX))
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
-            else if(key.equals("startDate") && (!val.isBlank() && !val.matches(Constants.DATE_REGEX)))
+            else if(key.equals("startDate") && (!val.equals("null") && !val.isBlank() && !val.matches(Constants.DATE_REGEX))) {
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
-            else if(val.isBlank() && !key.equals("process") && !key.equals("benchmarks") && !key.equals("startDate"))
+            }else if(val.isBlank() && !key.equals("process") && !key.equals("benchmarks") && !key.equals("startDate"))
                 errors.put(key, Constants.EMPTY_FIELD_RESPONSE);
         }
     }
@@ -127,6 +126,7 @@ public class GoalService {
         try{
             return utilService.fromJSON(new TypeReference<>() {}, benchmarkString);
         }catch(Exception e){
+            System.out.println(e.getMessage());
             errors.put("benchmarks", Constants.BENCHMARKS_EMPTY_RESPONSE);
             return null;
         }

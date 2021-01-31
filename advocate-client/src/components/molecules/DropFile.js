@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import FormElement from "components/atoms/FormElement";
 import FileChip from "components/atoms/FileChip";
 import { convertFileSize, generateFilePreview, fileFetch } from "utils/functions/functions";
 import {FaPlus as PlusIcon} from "react-icons/fa";
 import {FILE_UPLOAD_LIMIT, SERVER_ERROR} from "utils/constants";
+import ErrorLabel from "components/atoms/ErrorLabel";
 
 /*
      props:
@@ -14,30 +15,38 @@ import {FILE_UPLOAD_LIMIT, SERVER_ERROR} from "utils/constants";
 
 const DropFile = ({files, fileMetaData, setFiles, apiPath}) => {
         
-    const [totalFileSize, setTotalFileSize] = useState(0);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(-1);
 
-    useEffect(() => {
-        if(files.length){
-            let accumulator = 0;
-            accumulator += files.map(f => f.size).reduce((acc, file) => acc + file)
-            setTotalFileSize(formatFile(accumulator))
-        }
-    }, [files]);
+    const totalFileSize = () => {
+        let accumulator = 0;
+        accumulator += files.map(f => f.size).reduce((acc, file) => acc + file)
+        if(accumulator > FILE_UPLOAD_LIMIT)
+
+            return formatFile(accumulator)
+    };
 
     const handleFilesUpload = (event) => {
         if(error)
             setError("");  
         let uploadedFiles = event.target.files;
         let fileList = [...files];
+        let totalSize = 0;
+
         for(let i = 0; i < uploadedFiles.length; i++){
-            if(fileMetaData.map(f => f.name).includes(uploadedFiles.item(i).name)
+            if(fileMetaData.map(f => {
+                totalSize += f.size;
+                return f.name
+                }).includes(uploadedFiles.item(i).name)
             || files.map(f => f.name).includes(uploadedFiles.item(i).name)){
                 setError("Cannot upload files with duplicate names.")
             }else{
-                fileList.push(uploadedFiles.item(i));
-
+                let file = uploadedFiles.item(i);
+                totalSize += file.size;
+                if(totalSize/1024/1000 < FILE_UPLOAD_LIMIT)
+                    fileList.push(file);
+                else
+                    setError("Maximum upload limit of 15 MB exceeded.")
             }
         }
 
@@ -56,7 +65,7 @@ const DropFile = ({files, fileMetaData, setFiles, apiPath}) => {
     };
 
     const formatFile = (bytes) => {
-        return `${(bytes/1024/1000).toFixed(2)} MB`;
+        return (bytes/1024/1000).toFixed(2);
     };
 
     const removeFile = (index, type) => {
@@ -82,40 +91,44 @@ const DropFile = ({files, fileMetaData, setFiles, apiPath}) => {
                     <div className="dropfile__text"><p>Click here to attach a document</p><p><PlusIcon/></p></div>
                 </label>
                 {
-                    files.length || fileMetaData.length ?
+                    files.length || fileMetaData.length || error ?
                     <div className="dropfile__inner__filechip">
                         <div className="filechip-size">
-                            {files.length ? <p>{totalFileSize} / {FILE_UPLOAD_LIMIT} MB Upload Limit</p> : <></>}
+                            {files.length ? <p>{totalFileSize()} MB / {FILE_UPLOAD_LIMIT} MB Upload Limit</p> : <></>}
                             
-                            {error ? <p className="incomp-color">{error}</p> : <></>}
+                            {error ? <ErrorLabel text={error}/> : <></>}
                         </div>
-                        <div className="filechip-wrapper">
-                            {
-                                fileMetaData.filter(meta => meta.id).map((fileMeta, index) => {
-                                    return <FileChip 
-                                        key={`filechip-${fileMeta.name}`}
-                                        text={`${fileMeta.name} - ${convertFileSize(fileMeta.size)}`}
-                                        onDelete={() => removeFile(index, "metaData")}
-                                        onPreview={() => handleFileAsyncRetrieval(fileMeta, "preview", index)}
-                                        onDownload={() => handleFileAsyncRetrieval(fileMeta, "download", index)}
-                                        isLoading={isLoading === index}
-                                        />
-                                })
-                            }
-                            {
-                                files.map((file, index) => {
-                                    return <FileChip 
-                                        isNewFile={true}
-                                        key={`filechipnew-${file.name}`}
-                                        text={`${file.name} - ${convertFileSize(file.size)}`}
-                                        onDelete={() => removeFile(index, "file")}
-                                        onPreview={() => handleUploadedFileAction(files[index], "preview", index)}
-                                        onDownload={() => handleUploadedFileAction(files[index], "download", index)}
-                                        isLoading={isLoading === index}
-                                        />
-                                })
-                            }
-                        </div>
+                        {
+                            fileMetaData.length ? (
+                                <div className="filechip-wrapper">
+                                    {
+                                        fileMetaData.filter(meta => meta.id).map((fileMeta, index) => {
+                                            return <FileChip
+                                                key={`filechip-${fileMeta.name}`}
+                                                text={`${fileMeta.name} - ${convertFileSize(fileMeta.size)}`}
+                                                onDelete={() => removeFile(index, "metaData")}
+                                                onPreview={() => handleFileAsyncRetrieval(fileMeta, "preview", index)}
+                                                onDownload={() => handleFileAsyncRetrieval(fileMeta, "download", index)}
+                                                isLoading={isLoading === index}
+                                            />
+                                        })
+                                    }
+                                    {
+                                        files.map((file, index) => {
+                                            return <FileChip
+                                                isNewFile={true}
+                                                key={`filechipnew-${file.name}`}
+                                                text={`${file.name} - ${convertFileSize(file.size)}`}
+                                                onDelete={() => removeFile(index, "file")}
+                                                onPreview={() => handleUploadedFileAction(files[index], "preview", index)}
+                                                onDownload={() => handleUploadedFileAction(files[index], "download", index)}
+                                                isLoading={isLoading === index}
+                                            />
+                                        })
+                                    }
+                                </div>
+                            ) : <></>
+                        }
                     </div>
                     : <></>
                 }

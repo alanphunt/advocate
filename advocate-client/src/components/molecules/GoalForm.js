@@ -20,14 +20,12 @@ import { convertFromRaw, EditorState } from 'draft-js';
 
 const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
     useEffect(() => {
-        // if(goal.goal.getCurrentContent().hasText()){
-            try{
-                let parsedBenchmarks = mutableGoal.benchmarks.map(bm =>{
-                    return {...bm, description: EditorState.createWithContent(convertFromRaw(JSON.parse(bm.description)))}
-                });
-                setMutableGoal({...mutableGoal, goal: EditorState.createWithContent(convertFromRaw(JSON.parse(mutableGoal.goal))), benchmarks: parsedBenchmarks});
-            }catch(e){console.log("couldn't parse editorstate")}
-        // }
+        try{
+            let parsedBenchmarks = mutableGoal.benchmarks.map(bm =>{
+                return {...bm, description: EditorState.createWithContent(convertFromRaw(JSON.parse(bm.description)))}
+            });
+            setMutableGoal({...mutableGoal, goal: EditorState.createWithContent(convertFromRaw(JSON.parse(mutableGoal.goal))), benchmarks: parsedBenchmarks});
+        }catch(e){console.log("couldn't parse editorstate")}
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -95,7 +93,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
             
             <Section>
                 <h3 className={"marg-bot"}><RequiredField/>Goal</h3>
-                {        
+                {
                     typeof mutableGoal.goal === "string"
                     ? <></>
                     :   <TextArea
@@ -111,7 +109,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                     label={"Start Date"}
                     icon={<CalPlusIcon/>}
                     placeholder={"MM/DD/YY"}
-                    value={mutableGoal.startDate}
+                    value={mutableGoal.startDate || ""}
                     onChange={(e) => {updateGoalLogic(e, "startDate")}}
                     errorMessage={formErrors?.startDate}
                 />
@@ -169,7 +167,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                 </Section>
                 <Table headers={[<span><RequiredField/>Label</span>, <span><RequiredField/>Benchmark</span>, <span><RequiredField/>Mastery Date</span>, <span><RequiredField/>Tracking Type</span>]}>
                     {
-                        mutableGoal?.benchmarks?.map((benchmark, ind) => {
+                        mutableGoal.benchmarks?.map((benchmark, ind) => {
                                 return (
                                     <div key={"benchmark"+ind} className={"tr"}>
                                         <div className="td">
@@ -230,7 +228,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
 
             {
                 mutableGoal && warning !== ""
-                    ? <p className={"incomp-color"}>{warning}</p>
+                    ? <ErrorLabel text={warning}/>
                     : <></>
             }
         </div>

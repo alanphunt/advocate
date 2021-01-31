@@ -35,7 +35,7 @@ public class AccountDetails implements UserDetails{
     private String teacherId;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "accountDetails", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "accountDetails", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Collection<Authorities> authorities;
 
     @JsonIgnore
