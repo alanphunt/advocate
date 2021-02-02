@@ -11,6 +11,7 @@ import TableAccordionGroup from "components/molecules/table/TableAccordionGroup"
 import AccordionItem from "components/atoms/AccordionItem";
 import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import Table from "components/molecules/table/Table";
+import Box from "../../atoms/Box";
 
 const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchmarkId, setMutableGoal, setModalAction}) => {
     const [benchmarkIndex, setBenchmarkIndex] = useState(-1);
@@ -19,7 +20,7 @@ const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchma
     useEffect(() => {
         setBenchmarkIndex(-1);
         setSelectedGoalIndex(-1);
-    }, [studentName]);
+    }, [studentName, allBenchmarks]);
 
     const selectedBenchmarkCallback = (benchmark, benchmarkIndex, goal, goalIndex) => {
         setBenchmarkIndex(benchmarkIndex);
@@ -52,14 +53,22 @@ const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchma
                             <p><strong>Actual mastery date: </strong>{goal.complete ? goal.completionDate : "N/A"}</p>
                             <p className={"marg-bot"}><strong>Monitor after mastery: </strong>{goal.monitor === 0 ? "No" : "Yes"}</p>
                         </div>
-                        <Table
-                            tableData={goal.benchmarkIds.map(bmId => allBenchmarks[bmId]).map(bm => {
-                                return {id: bm.id, label: <span className={"flex-center-between width-100"}>{bm.label}{bm.complete ? <CheckIcon className={"success"}/> : <></>}</span>}
-                            })}
-                            headers={["Benchmarks"]}
-                            selectedCallback = {(benchmark, bmIndex) => selectedBenchmarkCallback(benchmark, bmIndex, goal, goalIndex)}
-                            selectedRowIndex={selectedGoalIndex === goalIndex ? benchmarkIndex : -1}
-                        />
+                        {
+                            //a goal can have no benchmarks if it was copied from another student
+                            goal.benchmarkIds.length ? (
+                                <Table
+                                    tableData={goal.benchmarkIds.map(bmId => allBenchmarks[bmId]).map(bm => {
+                                        return {id: bm.id, label: <span className={"flex-center-between width-100"}>{bm.label}{bm.complete ? <CheckIcon className={"success"}/> : <></>}</span>}
+                                    })}
+                                    headers={["Benchmarks"]}
+                                    selectedCallback = {(benchmark, bmIndex) => selectedBenchmarkCallback(benchmark, bmIndex, goal, goalIndex)}
+                                    selectedRowIndex={selectedGoalIndex === goalIndex ? benchmarkIndex : -1}
+                                />
+                            ) : (
+                                <Box text={"Edit goal to add benchmarks."}/>
+                            )
+                        }
+
                     </AccordionItem>
                 )
             }

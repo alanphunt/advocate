@@ -16,7 +16,8 @@ import CreateTrial from "components/molecules/CreateTrial";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import {Goal, Trial} from "utils/classes/ContextModels";
-import EditScoreTrial from "../../molecules/EditScoreTrial";
+import EditScoreTrial from "components/molecules/EditScoreTrial";
+import CopyGoal from "components/molecules/CopyGoal";
 
 /*
     notes:
@@ -50,7 +51,7 @@ const GoalCenter = () =>{
     const [mutableGoal, setMutableGoal] = useState(new Goal());
     const [mutableTrial, setMutableTrial] = useState(new Trial());
 
-    const modalLarge = modalAction.includes("edit") || modalAction.includes("create") || modalAction.includes("complete");
+    const modalLarge = modalAction.includes("copy") || modalAction.includes("edit") || modalAction.includes("create") || modalAction.includes("complete");
 
     useEffect(() => {
         if(!modalAction && (mutableTrial?.id || mutableGoal?.id)){
@@ -131,11 +132,17 @@ const GoalCenter = () =>{
             case "copyGoal":
                 return (
                     <ModalBody
-                        header={`Copy goal ${mutableGoal?.goalName} to which students?`}
-                        cancelCallback={closeModal}
-                        confirmCallback={() => {}}
+                        header={`Copy goal ${mutableGoal?.goalName} to which student?`}
+                        hideButtons
                     >
-                        <p>Copy goal to selected students, option to copy benchmarks as well.</p>
+                        <CopyGoal
+                            goal={mutableGoal}
+                            classrooms={Object.values(teacher.classrooms)}
+                            students={teacher.students}
+                            completeCrudOp={completeCrudOp}
+                            closeModal={closeModal}
+                            signout={signout}
+                        />
                     </ModalBody>
                 );
             case "createBaseline":
@@ -216,8 +223,8 @@ const GoalCenter = () =>{
             <Modal displayed={modalAction} largeModal={modalLarge} closeModal={closeModal}>
                 {determineModalChild(modalAction)}
             </Modal>
-            <GoalCenterTableRow teacher={teacher} setStudentId={setStudentId}/>
-            <div className={"goalcenterrow goalcenterrowmarg"}>
+            <GoalCenterTableRow teacher={teacher} student={student} setStudentId={setStudentId}/>
+            <div className={"goalcenter-row goalcenter-row-bottom"}>
                 <div className={"drilldownwrapper"}>
                     <div className={"drilldown"}>
                         <GoalDrilldown

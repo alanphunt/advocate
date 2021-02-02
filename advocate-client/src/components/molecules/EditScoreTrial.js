@@ -39,7 +39,7 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
             documents: [],
             trackingIds: [],
             documentIds: [],
-            comments: prepareEditorStateForRequest(mutableTrial.comments)
+            comments: prepareEditorStateForRequest(mutableTrial.comments.getCurrentContent())
         }));
         fd.append("trackings", JSON.stringify(mutableTrial.trackings));
         fd.append("documentMeta", JSON.stringify(mutableTrial.documents));
@@ -57,7 +57,7 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
                         errors={requestErrors}
                         comments={mutableTrial.comments}
                         updateTracks={(newTracks) => setMutableTrial(prev => ({...prev, trackings: newTracks}))}
-                        handleComments={(newComments) => setMutableTrial(prev => ({...prev, comments: newComments.getCurrentContent()}))}
+                        handleComments={(newComments) => setMutableTrial(prev => ({...prev, comments: newComments}))}
                     />
                 </Column50>
                 <Column50>
@@ -69,8 +69,9 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
                             "Benchmark Description": <ImmutableTextArea rawData={benchmark.description}/>
                         }}
                         files={trialFiles}
-                        fileMetaData={mapFileMetaDataToDocument(trialFiles, [])}
                         setFiles={setTrialFiles}
+                        fileMetaData={mapFileMetaDataToDocument(trialFiles, mutableTrial.documents)}
+                        updateFileMetaData={updatedMeta => setMutableTrial(prev => ({...prev, documents: [...updatedMeta]}))}
                         apiPath={"/api/retrievedocument"}
                     />
                 </Column50>

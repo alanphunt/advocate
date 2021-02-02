@@ -53,8 +53,8 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
     };
 
     const createNewGoalForNewStudent = () => {
-        setDisplayTable(true);
         setGoal({...goalModel});
+        setDisplayTable(true);
     };
 
     const handleStudentSelect = (student) => {
@@ -63,9 +63,11 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
         setDisplayTable(false);
     };
 
+    const modalHeader = goal.studentId && displayTable ? `Copy goal to ...` : goal.studentId && !displayTable ? `Create goal for ${name}` : `Create goal for ...`;
+
     return (
         <ModalBody
-            header={`Create goal for ${ displayTable ? '...' :  name}`}
+            header={modalHeader}
             hideButtons
         >
             {
@@ -73,7 +75,7 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
                     <>
                         <Section>
                             <TableAccordionGroup
-                                accordionHeaders={classrooms.map(cr => cr.className)}
+                                accordionHeaders={Object.values(classrooms).map(cr => cr.className)}
                                 tableData={Object.values(classrooms).map(cr => formatStudentObject(Object.values(students).filter(stu => stu.classroomId === cr.id)))}
                                 tableHeaders={BASIC_STUDENT_TABLE_HEADERS}
                                 allOpen
@@ -88,7 +90,7 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
                             <div className="creategoalbuttons width-50">
                                 <Button className={"marg-bot"} text={"Confirm and Return to Goal center"} icon={<RedirectIcon className={"i-right"}/>} onClick={() => createGoal(null)}/>
                                 <Button className={"marg-bot"} text={"Confirm and Apply Goal to New Student"} icon={<CopyIcon className={"i-right"}/>} onClick={() => createGoal(() => setDisplayTable(true))}/>
-                                <Button text={"Confirm and Create New Goal for New Student"} icon={<NewGoalIcon className={"i-right"}/>} onClick={() => createNewGoalForNewStudent(createNewGoalForNewStudent)}/>
+                                <Button text={"Confirm and Create New Goal for New Student"} icon={<NewGoalIcon className={"i-right"}/>} onClick={() => createGoal(createNewGoalForNewStudent)}/>
                             </div>
                         </div>
                     </>

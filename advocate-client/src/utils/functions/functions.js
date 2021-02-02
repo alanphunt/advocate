@@ -1,7 +1,7 @@
 import React from "react";
-import {SERVER_ERROR, FORBIDDEN_STATUS, JSON_HEADER, UNAUTHORIZED_STATUS, BAD_REQUEST_STATUS} from "utils/constants";
-import {FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon} from "react-icons/fa";
-import { convertToRaw } from 'draft-js';
+import {BAD_REQUEST_STATUS, FORBIDDEN_STATUS, JSON_HEADER, SERVER_ERROR} from "utils/constants";
+import {FaRegEdit as EditIcon, FaRegTrashAlt as TrashIcon} from "react-icons/fa";
+import {convertToRaw} from 'draft-js';
 
 export const fetchPost = (path, body, callback, errorCallback, catchCallback) => {
     const formData = new FormData();
@@ -46,7 +46,7 @@ export const multipartFetch = (path, body, callback, errorCallback, catchCallbac
 
 export const calculateGoalCompletion = (goals) => {
     const goalCount = goals.length || 0;
-    const completedGoals = goals.filter(goal => goal.benchmarks?.filter(bm => bm.complete === 1).length === goal.benchmarks.length).length;
+    const completedGoals = goals.filter(goal => (goal.benchmarks?.filter(bm => bm.complete === 1).length || -1) === goal.benchmarks.length).length;
     let percent = Math.round((completedGoals / goalCount) * 100);
     return isNaN(percent) ? 0 : percent;
 };
@@ -171,7 +171,7 @@ export const formifyObject = (object) => {
     return fd;
 };
 
-//returns array of updated document metadata according to an array of Files
+//returns array of updated document metadata according to an array of new Files
 export const mapFileMetaDataToDocument = (fileArray, docArray, trialId) => {
     let fileMeta = [...docArray]
     fileArray.forEach(file => {
@@ -192,12 +192,10 @@ export const prepareEditorStateForRequest = (text) => {
 
 //takes in an array of student objects (a classroom) to which it'll extract only name, age, and grade properties of the student
 export const formatStudentObject = (studentArray) => {
-    let formatted = studentArray.map(student => {
+    return studentArray.map(student => {
         const {id, name, age, grade} = student;
         return {id, name, age, grade}
-    })
-    console.log(formatted);
-    return formatted;
+    });
 };
 
 export const determineTrialAccuracy = (trackings) => {

@@ -95,9 +95,35 @@ public class GoalService {
         return ResponseEntity.badRequest().body(errors);*/
     }
 
+    public ResponseEntity<?> handleGoalCopy(String goalId, String studentId){
+        Optional<Goal> goal = goalRepo.findById(goalId);
+
+        goal.ifPresent(goal1 -> {
+            Goal newGoal = new Goal();
+            newGoal.setId(utilService.generateUniqueId());
+            newGoal.setStudentId(studentId);
+            newGoal.setGoal(goal1.getGoal());
+            newGoal.setMonitor(goal1.getMonitor());
+            newGoal.setGoalName(goal1.getGoalName());
+            newGoal.setStartDate(goal1.getStartDate());
+            newGoal.setMasteryDate(goal1.getMasteryDate());
+            newGoal.setEnabled(1);
+            goalRepo.save(newGoal);
+        });
+
+
+        return ls.handleTeacherRehydration();
+    }
+
+    public ResponseEntity<?> handleGoalDeletion(String goalId){
+        goalRepo.deleteById(goalId);
+        return ls.handleTeacherRehydration();
+    }
+
     private void determineGoalCreationErrors(Map<String, String> errors, ArrayList<Benchmark> benchmarks, Map<String, String> goalString){
         try {
             for (Benchmark bm : benchmarks) {
+                System.out.println(bm.toString());
                 if(bm.getDescription().isBlank()
                         || bm.getTracking().isBlank()
                         || bm.getMasteryDate() == null
@@ -117,7 +143,7 @@ public class GoalService {
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
             else if(key.equals("startDate") && (!val.equals("null") && !val.isBlank() && !val.matches(Constants.DATE_REGEX))) {
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
-            }else if(val.isBlank() && !key.equals("process") && !key.equals("benchmarks") && !key.equals("startDate"))
+            }else if(val.isBlank() && !key.equals("benchmarkIds") && !key.equals("process") && !key.equals("benchmarks") && !key.equals("startDate"))
                 errors.put(key, Constants.EMPTY_FIELD_RESPONSE);
         }
     }
@@ -134,7 +160,7 @@ public class GoalService {
 
     private void populateBenchmarkAttributes(ArrayList<Benchmark> benchmarks, String goalId){
         for(Benchmark bm : benchmarks){
-            if(bm.getId() == null) {
+            if(bm.getId() == null || bm.getId().isBlank()) {
                 bm.setId(utilService.generateUniqueId());
                 bm.setGoalId(goalId);
                 bm.setEnabled(1);

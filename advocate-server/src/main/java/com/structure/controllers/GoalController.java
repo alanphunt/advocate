@@ -1,8 +1,6 @@
 package com.structure.controllers;
 
-import com.structure.repositories.GoalRepo;
 import com.structure.services.GoalService;
-import com.structure.services.LoginService;
 import com.structure.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +12,8 @@ import java.text.ParseException;
 import java.util.*;
 
 @RestController
-@RequestMapping(path=Constants.API_PATH, method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
+@RequestMapping(path=Constants.API_PATH, method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
 public class GoalController {
-
-    @Autowired
-    private GoalRepo gr;
-
-    @Autowired
-    private LoginService ls;
 
     @Autowired
     private GoalService goalService;
@@ -54,24 +46,18 @@ public class GoalController {
         }*/
 
         //hard deletion, removes all orphans
-        gr.deleteById(goalId);
-        return ls.handleTeacherRehydration();
+        return goalService.handleGoalDeletion(goalId);
+
     }
 
     @PostMapping(value = "/editgoal")
     public ResponseEntity<?> editGoal(@RequestParam Map<String, String> body){
         return goalService.handleGoalUpdate(body);
-/*        Goal goal = utils.gson().fromJson(body.get("body"), Goal.class);
-        for(Benchmark bm : goal.getBenchmarks()){
-            if(bm.getId() == null) {
-                bm.setId(utils.generateUniqueId());
-                bm.setGoalId(goal.getId());
-                bm.setEnabled(1);
-                bm.setTrials(new ArrayList<>());
-            }
-        }
-        gr.save(goal);
-        return ls.handleTeacherRehydration();*/
+    }
+
+    @GetMapping(value = "/copygoal")
+    public ResponseEntity<?> copyGoal(String goalId, String studentId){
+        return goalService.handleGoalCopy(goalId, studentId);
     }
 
 }

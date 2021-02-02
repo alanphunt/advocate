@@ -13,7 +13,7 @@ import ErrorLabel from "components/atoms/ErrorLabel";
 
 */
 
-const DropFile = ({files, fileMetaData, setFiles, apiPath}) => {
+const DropFile = ({files, setFiles, fileMetaData, updateFileMetaData, apiPath}) => {
         
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(-1);
@@ -55,7 +55,7 @@ const DropFile = ({files, fileMetaData, setFiles, apiPath}) => {
 
     const handleFileAsyncRetrieval = ({path, name, type}, action, index) => {        
         setIsLoading(index);
-        fileFetch(apiPath, {path, name, type}, action, () => setIsLoading(-1), (res) => setError(res.error), () => {alert(SERVER_ERROR);setIsLoading(-1)});
+        fileFetch(apiPath, {path, name, type}, action, () => setIsLoading(-1), (res) => setError(res.error), () => setIsLoading(-1));
     };
 
     const handleUploadedFileAction = (file, action, index) => {
@@ -71,7 +71,10 @@ const DropFile = ({files, fileMetaData, setFiles, apiPath}) => {
     const removeFile = (index, type) => {
         let arr = (type === "file" ? [...files] : [...fileMetaData]);
         arr.splice(index, 1);
-        setFiles(arr, type);
+        if(type === "file")
+            setFiles(arr, type);
+        else
+            updateFileMetaData(arr);
         if(error)
             setError("");  
     };

@@ -2,7 +2,7 @@ import Section from "components/atoms/Section";
 import React from "react";
 import DropFile from "components/molecules/DropFile";
 
-const CardAndUploadColumn = ({object, header, hideFileUpload, files, setFiles, fileMetaData, apiPath}) => {
+const CardAndUploadColumn = ({object, header, hideFileUpload, files, setFiles, fileMetaData, updateFileMetaData, apiPath}) => {
 
     return (
         <div className="card-uploader-column">
@@ -24,7 +24,7 @@ const CardAndUploadColumn = ({object, header, hideFileUpload, files, setFiles, f
                 hideFileUpload ? (
                     <></>
                 ) : (
-                    <DropFile files={files} setFiles={setFiles} fileMetaData={fileMetaData} apiPath={apiPath}/>
+                    <DropFile files={files} setFiles={setFiles} fileMetaData={fileMetaData} apiPath={apiPath} updateFileMetaData={updateFileMetaData}/>
                 )
             }
         </div>

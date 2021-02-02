@@ -168,15 +168,16 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                 <Table headers={[<span><RequiredField/>Label</span>, <span><RequiredField/>Benchmark</span>, <span><RequiredField/>Mastery Date</span>, <span><RequiredField/>Tracking Type</span>]}>
                     {
                         mutableGoal.benchmarks?.map((benchmark, ind) => {
+                            let label = `Benchmark ${alphabet[ind]}`;
                                 return (
                                     <div key={"benchmark"+ind} className={"tr"}>
                                         <div className="td">
-                                            <strong>Benchmark {alphabet[ind]}.</strong>
+                                            <strong>{label}</strong>
                                             <div>
                                                 <CopyIcon
                                                     className={"selectable hover-color i-right"}
                                                     onClick={() => {
-                                                        copySpecificBenchmark(benchmark);
+                                                        copySpecificBenchmark({...benchmark, label: `Benchmark ${alphabet[mutableGoal.benchmarks.length]}`, id: "", metDate: "", complete: 0});
                                                     }}/>
                                                 <TrashIcon
                                                     className={"selectable hover-color"}
@@ -209,7 +210,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                                                 }}
                                                 value={benchmark.tracking}
                                             >
-                                                <option>Select a type..</option>
+                                                <option value={""}>Select a type..</option>
                                                 <option value={"score"}>Score</option>
                                                 <option value={"accuracy"}>Accuracy</option>
                                                 <option value={"trial"}>Trial</option>
