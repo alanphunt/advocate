@@ -17,7 +17,11 @@ const Button = ({text, icon, onClick, onKeyPress, className, type}) => {
         <button 
             className={className}
             onClick={onClick}
-            onKeyPress={onKeyPress || null}
+            onKeyPress={e => {
+                e.preventDefault();
+                if(onKeyPress)
+                    onKeyPress(e);
+            }}
             tabIndex={0}
             type={type ? type : "button"}
         >

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {FaCheck as CheckIcon, FaRegHandPointRight as RedirectIcon, FaRegCopy as CopyIcon, FaUndo as NewGoalIcon} from "react-icons/fa";
+import {FaCheck as CheckIcon, FaRegHandPointRight as RedirectIcon, FaRegCopy as CopyIcon, FaUndo as NewGoalIcon, FaTimes as XIcon} from "react-icons/fa";
 import GoalForm from "components/molecules/GoalForm";
 import {
     BAD_REQUEST_STATUS,
@@ -14,12 +14,11 @@ import ModalBody from "components/molecules/ModalBody";
 import {prepareEditorStateForRequest, formatStudentObject} from "utils/functions/functions";
 import TableAccordionGroup from "components/molecules/table/TableAccordionGroup";
 
-const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId, signout}) => {
+const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId, signout, closeModal}) => {
     const { id, name } = student;
     const [goal, setGoal] = useState({...goalModel, studentId: id});
     const [formErrors, setFormErrors] = useState(goalFormErrorModel);
     const [displayTable, setDisplayTable] = useState(false);
-
     const createGoal = (callback) => {
         let fd = new FormData();
 
@@ -88,9 +87,10 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
                         <div>
                             <GoalForm mutableGoal={goal} setMutableGoal={setGoal} formErrors={formErrors} studentId={id}/>
                             <div className="creategoalbuttons width-50">
-                                <Button className={"marg-bot"} text={"Confirm and Return to Goal center"} icon={<RedirectIcon className={"i-right"}/>} onClick={() => createGoal(null)}/>
-                                <Button className={"marg-bot"} text={"Confirm and Apply Goal to New Student"} icon={<CopyIcon className={"i-right"}/>} onClick={() => createGoal(() => setDisplayTable(true))}/>
-                                <Button text={"Confirm and Create New Goal for New Student"} icon={<NewGoalIcon className={"i-right"}/>} onClick={() => createGoal(createNewGoalForNewStudent)}/>
+                                <Button className={"marg-bot"} text={"Confirm and Return to Goal center"} icon={<RedirectIcon/>} onClick={() => createGoal(null)}/>
+                                <Button className={"marg-bot"} text={"Confirm and Apply Goal to New Student"} icon={<CopyIcon/>} onClick={() => createGoal(() => setDisplayTable(true))}/>
+                                <Button className={"marg-bot"} text={"Confirm and Create New Goal for New Student"} icon={<NewGoalIcon/>} onClick={() => createGoal(createNewGoalForNewStudent)}/>
+                                <Button className={"cancelButton"} text={"Cancel"} icon={<XIcon/>} onClick={closeModal}/>
                             </div>
                         </div>
                     </>

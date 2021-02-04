@@ -71,7 +71,7 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setT
                             <p><strong>Projected mastery date: </strong>{benchmark.masteryDate}</p>
                             <p><strong>Actual mastery date: </strong>{benchmark.complete === 1 ? benchmark.metDate : "N/A"}</p>
                             <p><strong>Tracking type: </strong>{benchmark.tracking}</p>
-                            <p><strong>Trial Average: </strong>{benchmark ? `${determineTrialAverage(benchmark)}%` : "..."}</p>
+                            <p><strong>Trial Average: </strong>{benchmark ? `${determineTrialAverage(trials, allTrackings)}%` : "..."}</p>
                         </Section>
                         <Section>
                             {
@@ -82,7 +82,7 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setT
                                         selectedCallback={(trial, trialIndex) => handleTrialSelect(trial.id, trialIndex)}
                                         selectedRowIndex={trialIndex}
                                     />
-                                    : <Box text="No trials"/>
+                                    : <Box text={`No trials! Click create trial to add trial to ${benchmark.label}`}/>
                             }
                         </Section>
                         <div className={"flex-column"}>

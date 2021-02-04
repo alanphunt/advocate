@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
 /*
 Props:
@@ -9,23 +9,23 @@ Props:
  */
 const NumberPicker = ({limit = 100, object, objectArray, updateState}) => {
     let num = objectArray.length;
-    // let limit = limit || 100;
+
+    const [amount, setAmount] = useState(num);
 
     const change = (num, object, objArr) => {
-        // let newObjArr = JSON.parse(JSON.stringify(objArr));
+        setAmount(num);
         let newObjArr = [...objArr];
         let x = parseInt(num) || 0;
         x = (x > limit ? limit : x);
 
         let cur = newObjArr.length;
         if (x > cur) {
-            while(cur !== x){
+            while (cur !== x) {
                 newObjArr.push(object);
                 cur++;
             }
-        }
-        else if (x < cur)
-            while(cur !== x){
+        } else if (x < cur)
+            while (cur !== x) {
                 newObjArr.pop();
                 cur--;
             }
@@ -35,9 +35,9 @@ const NumberPicker = ({limit = 100, object, objectArray, updateState}) => {
     return (
         <div className={"numberpickerwrapper"}>
             <div
-                className={`numbersub ${num === 0 ? 'disabled' : ''}`}
+                className={`numbersub ${amount === 0 ? 'disabled' : ''}`}
                 onClick={()=>{
-                    updateState(change(num-1, object, objectArray));
+                    updateState(change(amount-1, object, objectArray));
                 }}
             >
                 <MinusIcon className={"posabs"}/>
@@ -45,17 +45,19 @@ const NumberPicker = ({limit = 100, object, objectArray, updateState}) => {
             <div className={"numberinput"}>
                 <input
                     type={"text"}
-                    placeholder={num}
-                    value={num}
-                    onChange={(e) => {
-                        updateState(change(e.currentTarget.value, object, objectArray));
+                    placeholder={amount}
+                    value={amount}
+                    onChange={e => setAmount(parseInt(e.currentTarget.value) || 0)}
+                    onKeyPress={(e) => {
+                        if(e.key === "Enter")
+                            updateState(change(amount, object, objectArray));
                     }}
                 />
             </div>
             <div
-                className={`numberadd ${num === limit ? 'disabled' : ''}`}
+                className={`numberadd ${amount === limit ? 'disabled' : ''}`}
                 onClick={() => {
-                    updateState(change(num+1, object, objectArray));
+                    updateState(change(amount+1, object, objectArray));
                 }}
             >
                 <PlusIcon className={"posabs"}/>

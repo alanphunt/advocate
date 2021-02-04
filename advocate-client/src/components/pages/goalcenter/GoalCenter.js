@@ -112,6 +112,7 @@ const GoalCenter = () =>{
                         classrooms={teacher.classrooms}
                         students={teacher.students}
                         signout={signout}
+                        closeModal={closeModal}
                     />
                 );
             case "editGoal":

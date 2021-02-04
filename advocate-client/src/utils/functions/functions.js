@@ -107,14 +107,12 @@ export const editDeleteIcons = (specificObject) => {
     return {[editKey]: <EditIcon className={"i-right hover-color selectable"}/>, [deleteKey]: <TrashIcon className={"hover-color selectable"}/>};
 };
 
-export const determineTrialAverage = (benchmark) => {
-    const bmCount = benchmark.trials?.length;
-    if(bmCount){
-        let trialTotal = 0;
-        benchmark.trials.forEach(trial => {
-            trialTotal += trial.trackings.filter(track => track.correct).length / trial.trackings.length;
-        });
-        let total =  trialTotal / bmCount * 100;
+export const determineTrialAverage = (trials, trackings) => {
+    let releventTrackings = [];
+    trials.forEach(trial => trial.trackingIds.forEach(id => releventTrackings.push(trackings[id])));
+    let correctTracks = releventTrackings.filter(track => track.correct).length;
+    if(releventTrackings){
+        let total =  correctTracks / releventTrackings.length * 100;
         return total ? total.toFixed(1) : 0;
     }
     return 0;

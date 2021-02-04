@@ -14,6 +14,7 @@ public class Constants {
     public static final String SERVER_ERROR = "Authentication failed, please log back in to continue.";
     public static final String CLASSNAME_EMPTY_RESPONSE = "Ensure class name is filled out properly.";
     public static final String STUDENTS_EMPTY_RESPONSE = "Ensure all student fields are filled out properly.";
+    public static final String NO_STUDENTS_RESPONSE = "Classrooms must have at least one student.";
     public static final String BENCHMARKS_EMPTY_RESPONSE = "Ensure all benchmark fields are filled out properly and dates are formatted as MM/dd/yy.";
     public static final String NO_BENCHMARKS_RESPONSE = "Goal must contain at least one benchmark.";
     public static final String INSECURE_PASSWORD_RESPONSE = "Password must contain a special character, a number, an upper and lower case letter, and must be 8+ characters long.";

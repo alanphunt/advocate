@@ -41,7 +41,7 @@ public class RegistrationService {
             //teacher.setAccountDetails(accountDetails);
             teacherService.saveTeacher(teacher);
             jwtService.createAndAddJwtToCookie(jwtService.generateToken(username), response);
-            return ResponseEntity.ok(teacher);
+            return ResponseEntity.ok(utils.mapTeacherToTeacherDTO(teacher));
         }
         return ResponseEntity.status(Constants.HTTP_BAD_REQUEST).body(utils.gson().toJson(errors));
 

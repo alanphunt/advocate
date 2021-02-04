@@ -22,6 +22,7 @@ import com.structure.models.Trial;
 import com.structure.utilities.AccountDetailsRequestBean;
 import com.structure.utilities.Constants;
 
+import com.structure.utilities.Utils;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +41,12 @@ public class LoginService {
     private AccountDetailsRequestBean detailsBean;
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private Utils utilService;
 
     public ResponseEntity<?> handleTeacherRehydration(){
         try {
-            return ResponseEntity.ok(mapTeacherToTeacherDTO(teacherService.findTeacherByUsername(detailsBean.getAccountDetails().getUsername())));
+            return ResponseEntity.ok(utilService.mapTeacherToTeacherDTO(teacherService.findTeacherByUsername(detailsBean.getAccountDetails().getUsername())));
         } catch (Exception npe) {
             System.out.println(npe.getMessage());
             Map<String, String> errors = new HashMap<>();
@@ -63,7 +66,7 @@ public class LoginService {
         // AccountDetails details = (AccountDetails) auth.getPrincipal();
         Teacher teacher = teacherService.findTeacherByUsername(auth.getName());
         jwtUtil.createAndAddJwtToCookie(jwtUtil.generateToken(auth.getName()), resp);
-        return ResponseEntity.ok(mapTeacherToTeacherDTO(teacher));
+        return ResponseEntity.ok(utilService.mapTeacherToTeacherDTO(teacher));
     }
 
     public void handleLogout(HttpServletRequest req, HttpServletResponse res){
@@ -82,55 +85,5 @@ public class LoginService {
         return errors;
     }
 
-    private TeacherDTO mapTeacherToTeacherDTO(Teacher teacher) {
-        TeacherDTO dto = new TeacherDTO();
-        System.out.println(teacher.toString());
-        dto.setTeacher(teacher);
-        dto.getTeacher().setClassroomIds(new ArrayList<>());
 
-        Map<String, Classroom> classrooms = new HashMap<>();
-        Map<String, Student> students = new HashMap<>();
-        Map<String, Goal> goals = new HashMap<>();
-        Map<String, Benchmark> benchmarks = new HashMap<>();
-        Map<String, Trial> trials = new HashMap<>();
-        Map<String, Tracking> trackings = new HashMap<>();
-        Map<String, Document> documents = new HashMap<>();
-        for(Classroom c : teacher.getClassrooms()){
-            classrooms.put(c.getId(), c);
-            dto.getTeacher().getClassroomIds().add(c.getId());
-            for(Student s : c.getStudents()){
-                c.getStudentIds().add(s.getId());
-                students.put(s.getId(), s);
-                for(Goal g : s.getGoals()){
-                    s.getGoalIds().add(g.getId());
-                    goals.put(g.getId(), g);
-                    for(Benchmark b : g.getBenchmarks()){
-                        g.getBenchmarkIds().add(b.getId());
-                        benchmarks.put(b.getId(), b);
-                        for(Trial t : b.getTrials()){
-                            b.getTrialIds().add(t.getId());
-                            trials.put(t.getId(), t);
-                            for(Tracking tr : t.getTrackings()){
-                                t.getTrackingIds().add(tr.getId());
-                                trackings.put(tr.getId(), tr);
-                            }
-                            for(Document d : t.getDocuments()){
-                                t.getDocumentIds().add(d.getId());
-                                documents.put(d.getId(), d);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        dto.setClassrooms(classrooms);
-        dto.setStudents(students);
-        dto.setGoals(goals);
-        dto.setBenchmarks(benchmarks);
-        dto.setTrials(trials);
-        dto.setTrackings(trackings);
-        dto.setDocuments(documents);
-        return dto;
-    } 
 }

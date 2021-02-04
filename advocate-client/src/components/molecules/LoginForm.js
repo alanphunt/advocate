@@ -32,7 +32,7 @@ const LoginForm = ({login, errors, updateFormValues}) => {
                     label="Password"
                     value={login.password}
                     icon={<PassIcon/>}
-                    /*type={"password"}*/
+                    type={"password"}
                     placeholder={"Password"}
                     name={"password"}
                     onChange={(e) => updateFormValues(e, "password")}

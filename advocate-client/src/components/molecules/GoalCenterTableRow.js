@@ -7,7 +7,7 @@ import Box from "components/atoms/Box";
 
 const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
 
-    const hasClassroomsWithStudents = !!Object.keys(teacher.students);
+    const hasClassroomsWithStudents = !!Object.keys(teacher.students).length;
     const tableHeaders = ["Name", "Goal Count", "Goal Completion %"];
     const [studentIndex, setStudentIndex] = useState(-1);
     const [selectedClassroomIndex, setSelectedClassroomIndex] = useState(-1);
@@ -42,6 +42,7 @@ const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
 
     return (
         <div className={"goalcenter-row goalcenter-row-top"}>
+            <h2 className={"marg-bot"}>Select a student to begin</h2>
             {
                 hasClassroomsWithStudents
                     ? (
@@ -49,7 +50,7 @@ const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
                             {
                                 Object.values(teacher.classrooms).map((classroom, classroomIndex) => {
                                     return (
-                                        <AccordionItem header={classroom.className} preOpened key={`accItem-${classroom.className}`}>
+                                        <AccordionItem header={`${classroom.className} - (${classroom.studentIds.length})`} preOpened key={`accItem-${classroom.className}`}>
                                             <Table
                                                 headers={tableHeaders}
                                                 tableData={

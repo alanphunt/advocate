@@ -11,7 +11,7 @@ import TableAccordionGroup from "components/molecules/table/TableAccordionGroup"
 import AccordionItem from "components/atoms/AccordionItem";
 import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import Table from "components/molecules/table/Table";
-import Box from "../../atoms/Box";
+import Box from "components/atoms/Box";
 
 const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchmarkId, setMutableGoal, setModalAction}) => {
     const [benchmarkIndex, setBenchmarkIndex] = useState(-1);
@@ -95,11 +95,13 @@ const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchma
                 </div>
             </div>
             {
-                goals?.length
+                goals?.length && studentName
                     ? <TableAccordionGroup>
                         { renderAccordionGroupBody() }
                     </TableAccordionGroup>
-                    : <></>
+                    : !goals?.length && studentName
+                        ? <Box text={"No goals! Click create goal to add goal to student."}/>
+                        : <></>
             }
         </div>
 

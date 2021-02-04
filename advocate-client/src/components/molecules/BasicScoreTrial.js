@@ -12,7 +12,7 @@ const BasicScoreTrial = ({trial, setTrial, trackings, errors, comments, updateTr
     const track =  {label: "", correct: 0};
 
     const handleTrackingsUpdate = (key, index, value) => {
-        let newTrackings = JSON.parse(JSON.stringify(trackings));
+        let newTrackings = [...trackings];
         let track = {...newTrackings[index]};
 
         Object.assign(track, (key === "correct" ? {correct: track.correct ? 0 : 1} : {[key]: value}))
