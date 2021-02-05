@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {FaCheck as CheckIcon, FaRegHandPointRight as RedirectIcon, FaRegCopy as CopyIcon, FaUndo as NewGoalIcon, FaTimes as XIcon} from "react-icons/fa";
 import GoalForm from "components/molecules/GoalForm";
 import {
@@ -19,6 +19,13 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
     const [goal, setGoal] = useState({...goalModel, studentId: id});
     const [formErrors, setFormErrors] = useState(goalFormErrorModel);
     const [displayTable, setDisplayTable] = useState(false);
+    const scrollRef = useRef(null);
+
+    useEffect(() => {
+        if(Object.values(formErrors).some(err => err !== ""))
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [formErrors]);
+
     const createGoal = (callback) => {
         let fd = new FormData();
 
@@ -68,6 +75,7 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
         <ModalBody
             header={modalHeader}
             hideButtons
+            ref={scrollRef}
         >
             {
                 displayTable ? (

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import DashCard from "components/molecules/DashCard";
 import FilterableTable from 'components/molecules/table/FilterableTable';
 import {crudFetch, editDeleteIcons} from 'utils/functions/functions';
@@ -26,6 +26,14 @@ const Classroom = () => {
 
     const classrooms = Object.values(teacher.classrooms);
     const students = Object.values(teacher.students);
+
+    const scrollRef = useRef(null);
+
+    useEffect(() => {
+        if(Object.values(formErrors).some(err => err !== ""))
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [formErrors]);
+
     const closeModal = () => {setModalAction(""); setMutableClassroom(null); setFormErrors(classroomErrorModel);};
 
     const confirmCreateClassroomCallback = () => {
@@ -65,6 +73,7 @@ const Classroom = () => {
                         header={"Create Classroom"}
                         confirmCallback={confirmCreateClassroomCallback}
                         cancelCallback={closeModal}
+                        ref={scrollRef}
                     >
                         <ClassroomForm
                             students={mutableClassroom.students}
@@ -94,6 +103,7 @@ const Classroom = () => {
                         header={`Edit ${classrooms.find(cr => cr.id === mutableClassroom.id).className}`}
                         confirmCallback={executeClassroomUpdate}
                         cancelCallback={closeModal}
+                        ref={scrollRef}
                     >
                         <ClassroomForm
                             classroom={mutableClassroom}
@@ -169,7 +179,7 @@ const Classroom = () => {
                                             header={cr.className}
                                             preOpened
                                             icons={editDeleteIcons()}
-                                            iconClickedCallback={(action, index) => handleIconClick(action, cr)}
+                                            iconClickedCallback={(action) => handleIconClick(action, cr)}
                                         >
                                             {
                                                 students.some(stu => stu.classroomId === cr.id)
@@ -177,7 +187,7 @@ const Classroom = () => {
                                                     <FilterableTable
                                                         key={`filterabletable-${ind}`}
                                                         headers={BASIC_STUDENT_TABLE_HEADERS}
-                                                        tableData={students.filter(stu => stu.classroomId === cr.id)}
+                                                        tableData={cr.studentIds.map(id => teacher.students[id])}
                                                         dataKeys={BASIC_STUDENT_TABLE_KEYS}
                                                     />
                                                 ) : (

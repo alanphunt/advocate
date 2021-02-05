@@ -50,7 +50,7 @@ button{
   background: none;
   color: inherit;
   outline: none;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   &:hover, &:focus{
     background-color: $primary;

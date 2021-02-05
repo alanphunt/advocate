@@ -129,8 +129,8 @@ export const benchmarkModel = {
 };
 
 export const classroomErrorModel = {
-  className: null,
-  students: null
+  className: "",
+  students: ""
 };
 
 export const blankClassroomModel = {

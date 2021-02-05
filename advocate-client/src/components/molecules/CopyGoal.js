@@ -1,20 +1,37 @@
 import React, {useState} from "react";
 import {crudFetch} from "utils/functions/functions";
 import TableAccordionGroup from "./table/TableAccordionGroup";
-import {BASIC_STUDENT_TABLE_HEADERS, BASIC_STUDENT_TABLE_KEYS} from "utils/constants";
+import {BASIC_STUDENT_TABLE_HEADERS, BASIC_STUDENT_TABLE_KEYS, JSON_HEADER} from "utils/constants";
 import ConfirmOrCancelButtons from "./ConfirmOrCancelButtons";
-import Section from "../atoms/Section";
+import Section from "components/atoms/Section";
+import Checkbox from "./Checkbox";
 
 const CopyGoal = ({goal, students, classrooms, completeCrudOp, closeModal, signout}) => {
     const [student, setStudent] = useState(null);
+    const [includeBenchmarks, setIncludeBenchmarks] = useState(false);
 
     const fetchCopyGoal = () => {
+        let goalDTO = {
+            id: "",
+            complete: 0,
+            enabled: 1,
+            goal: goal.goal,
+            goalName: goal.goalName,
+            monitor: goal.monitor,
+            startDate: goal.startDate,
+            masteryDate: goal.masteryDate,
+            studentId: student.id,
+            benchmarks: includeBenchmarks ? goal.benchmarks : []
+        };
+
         crudFetch({
-            path: `/copygoal?goalId=${goal.id}&studentId=${student.id}`,
-            method: "GET",
+            path: `/copygoal`,
+            method: "POST",
+            body: JSON.stringify(goalDTO),
+            headers: JSON_HEADER,
             success: (data) => completeCrudOp(data,`Successfully copied ${goal.goalName} to ${student.name}!`),
             error: () => {},
-            serverError: signout
+            serverError: () => {}
         });
     };
 
@@ -28,6 +45,13 @@ const CopyGoal = ({goal, students, classrooms, completeCrudOp, closeModal, signo
                     tableData={classrooms.map(cr => cr.studentIds.map(id => students[id]))}
                     dataKeys={BASIC_STUDENT_TABLE_KEYS}
                     selectedCallback={(student, crInd, stuInd) => setStudent(student)}
+                />
+            </Section>
+            <Section>
+                <Checkbox
+                    text={"Include benchmarks?"}
+                    condition={includeBenchmarks}
+                    updateCondition={setIncludeBenchmarks}
                 />
             </Section>
             <ConfirmOrCancelButtons

@@ -95,23 +95,17 @@ public class GoalService {
         return ResponseEntity.badRequest().body(errors);*/
     }
 
-    public ResponseEntity<?> handleGoalCopy(String goalId, String studentId){
-        Optional<Goal> goal = goalRepo.findById(goalId);
-
-        goal.ifPresent(goal1 -> {
-            Goal newGoal = new Goal();
-            newGoal.setId(utilService.generateUniqueId());
-            newGoal.setStudentId(studentId);
-            newGoal.setGoal(goal1.getGoal());
-            newGoal.setMonitor(goal1.getMonitor());
-            newGoal.setGoalName(goal1.getGoalName());
-            newGoal.setStartDate(goal1.getStartDate());
-            newGoal.setMasteryDate(goal1.getMasteryDate());
-            newGoal.setEnabled(1);
-            goalRepo.save(newGoal);
-        });
-
-
+    public ResponseEntity<?> handleGoalCopy(Goal goal){
+        String goalId = utilService.generateUniqueId();
+        goal.setId(goalId);
+        for(Benchmark bm : goal.getBenchmarks()){
+            bm.setId(utilService.generateUniqueId());
+            bm.setGoalId(goalId);
+            bm.setComplete(0);
+            bm.setMetDate(null);
+            bm.setTrials(new ArrayList<>());
+        }
+        goalRepo.save(goal);
         return ls.handleTeacherRehydration();
     }
 

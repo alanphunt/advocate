@@ -137,8 +137,8 @@ const Home = ({setIsFetching}) => {
                         <h2 className={"marg-bot"}>Centralized & Persistent</h2>
                         <p>
                             All your IEPs, data points, and progress reports in one place that follows the student from teacher to teacher.
-                            No more shuffling between documents and spreadsheets to format your data how you want it and gone are the days
-                            of manually retrieving your entire dataset to email it to the next teacher- in hopes that you didn't miss
+                            No more shuffling between documents and spreadsheets to format your data how you want it. Gone are the days
+                            of manually retrieving your entire dataset to transfer it to the next teacher- in hopes that you didn't miss
                             anything critical. Audits just became less intimidating.
                         </p>
                         <BriefcaseIcon className={"summary-bg-icon"}/>
@@ -206,7 +206,7 @@ const Home = ({setIsFetching}) => {
                         and help make the platform the best it can be. This means you get Advocate IEP free for one year,
                         a 50% discount on your next year, and you get a say in what features we should add, keep, or modify.
                     </p>
-                    <Button text={"Let's Change Lives"} icon={<PeaceIcon/>}/>
+                    <Button className={"margin-auto"} text={"Let's Change Lives"} icon={<PeaceIcon/>}/>
                 </div>
             </div>
             <footer className={"homepage-footer"}>

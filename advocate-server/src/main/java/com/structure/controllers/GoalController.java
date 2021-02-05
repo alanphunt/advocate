@@ -1,5 +1,6 @@
 package com.structure.controllers;
 
+import com.structure.models.Goal;
 import com.structure.services.GoalService;
 import com.structure.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +56,8 @@ public class GoalController {
         return goalService.handleGoalUpdate(body);
     }
 
-    @GetMapping(value = "/copygoal")
-    public ResponseEntity<?> copyGoal(String goalId, String studentId){
-        return goalService.handleGoalCopy(goalId, studentId);
+    @PostMapping(value = "/copygoal")
+    public ResponseEntity<?> copygoal(@RequestBody Goal goal){
+        return goalService.handleGoalCopy(goal);
     }
-
 }

@@ -3,8 +3,6 @@ import {
     FaAddressBook as BookIcon,
     FaCalendarCheck as CalCheckIcon,
     FaCalendarPlus as CalPlusIcon,
-    FaRegSquare as UncheckedIcon,
-    FaRegCheckSquare as CheckedIcon,
     FaRegTrashAlt as TrashIcon,
     FaRegCopy as CopyIcon } from "react-icons/fa";
 import NumberPicker from "components/atoms/NumberPicker";
@@ -17,6 +15,7 @@ import RequiredField from "components/atoms/RequiredField";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import TextAreaForTable from "./TextAreaForTable";
 import { convertFromRaw, EditorState } from 'draft-js';
+import Checkbox from "./Checkbox";
 
 const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
     useEffect(() => {
@@ -128,31 +127,11 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
             </Section>
 
             <Section>
-                <FormElement>
-                    <h3 className={"i-bottom flex-center-vert"}>Monitor after mastery?
-                        {
-                            mutableGoal?.monitor
-                                ? <CheckedIcon
-                                    tabIndex={0}
-                                    className={"i-left selectable"}
-                                    onClick={() => {updateGoalLogic(null, "monitor", 0)}}
-                                    onKeyPress={(e) => {
-                                        if (e.key === "Enter")
-                                            updateGoalLogic(null, "monitor", 0)
-                                    }}
-                                />
-                                : <UncheckedIcon
-                                    tabIndex={0}
-                                    className={"i-left selectable"}
-                                    onClick={() => {updateGoalLogic(null, "monitor", 1)}}
-                                    onKeyPress={(e) => {
-                                        if (e.key === "Enter")
-                                            updateGoalLogic(null, "monitor", 1)
-                                    }}
-                                />
-                        }
-                    </h3>
-                </FormElement>
+                <Checkbox
+                    text={"Monitor after mastery?"}
+                    condition={mutableGoal?.monitor}
+                    updateCondition={(updatedCondition) => updateGoalLogic(null, "monitor", updatedCondition ? 1 : 0)}
+                />
             </Section>
 
             <Section>
