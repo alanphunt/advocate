@@ -9,7 +9,6 @@ const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
 
     const hasClassroomsWithStudents = !!Object.keys(teacher.students).length;
     const tableHeaders = ["Name", "Goal Count", "Goal Completion %"];
-    const [studentIndex, setStudentIndex] = useState(-1);
     const [selectedClassroomIndex, setSelectedClassroomIndex] = useState(-1);
 
     useEffect(() => {
@@ -31,12 +30,10 @@ const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
 
     const updateIndexesFromGoalCreation = (studentIndex, classroomIndex) => {
         setSelectedClassroomIndex(classroomIndex);
-        setStudentIndex(studentIndex);
     };
 
     const handleSelectedStudent = (student, studentIndex, classroomIndex) => {
         setSelectedClassroomIndex(classroomIndex);
-        setStudentIndex(studentIndex);
         setStudentId(student.id);
     };
 
@@ -60,7 +57,7 @@ const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
                                                             ))))
                                                 }
                                                 selectedCallback={(student, studentIndex) => handleSelectedStudent(student, studentIndex, classroomIndex)}
-                                                selectedRowIndex={classroomIndex === selectedClassroomIndex ? studentIndex : -1}
+                                                selectedRowId={student?.id}
                                             />
                                         </AccordionItem>
                                     )

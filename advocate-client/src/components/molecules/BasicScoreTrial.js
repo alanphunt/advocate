@@ -83,6 +83,7 @@ const BasicScoreTrial = ({trial, setTrial, trackings, errors, comments, updateTr
                 <Table
                     headers={[<>Item Label<p>(press Tab for next item)</p></>, <>Correct/Incorrect<p>(press Enter to toggle)</p></>]}
                     tableData={renderTableInputs()}
+                    hideSearchAndSort
                 />
             </Section>
             <Section>
@@ -97,18 +98,3 @@ const BasicScoreTrial = ({trial, setTrial, trackings, errors, comments, updateTr
 };
 
 export default BasicScoreTrial;
-
-
-/*
-    useEffect(() => {
-        try{
-            if(typeof editorState === "string"){
-                setInitialState(EditorState.createWithContent(convertFromRaw(JSON.parse(editorState))));
-            }
-            else{
-                setInitialState(editorState);
-            }
-        }catch(e){console.log("failed to parse in TextAreaForTable");}
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [focused]);
- */

@@ -238,6 +238,10 @@
   @include flex($ali-ite: center, $jus-con: space-between);
 }
 
+.flex-center{
+  @include flex($ali-ite: center);
+}
+
 .flex-column{
   @include flex($fle-flo: column);
 }

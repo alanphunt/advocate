@@ -14,18 +14,14 @@ import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
 
 const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchmarkId, setMutableGoal, setModalAction}) => {
-    const [benchmarkIndex, setBenchmarkIndex] = useState(-1);
-    const [selectedGoalIndex, setSelectedGoalIndex] = useState(-1);
+    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState("");
 
     useEffect(() => {
-        setBenchmarkIndex(-1);
-        setSelectedGoalIndex(-1);
+        setSelectedBenchmarkId("");
     }, [studentName, allBenchmarks]);
 
     const selectedBenchmarkCallback = (benchmark, benchmarkIndex, goal, goalIndex) => {
-        setBenchmarkIndex(benchmarkIndex);
-        setSelectedGoalIndex(goalIndex);
-
+        setSelectedBenchmarkId(benchmark.id);
         setBenchmarkId(benchmark.id);
         setGoalId(goal.id);
     };
@@ -60,9 +56,10 @@ const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchma
                                     tableData={goal.benchmarkIds.map(bmId => allBenchmarks[bmId]).map(bm => {
                                         return {id: bm.id, label: <span className={"flex-center-between width-100"}>{bm.label}{bm.complete ? <CheckIcon className={"success"}/> : <></>}</span>}
                                     })}
-                                    headers={["Benchmarks"]}
+                                    headers={[`Benchmarks - (${goal.benchmarkIds.length})`]}
                                     selectedCallback = {(benchmark, bmIndex) => selectedBenchmarkCallback(benchmark, bmIndex, goal, goalIndex)}
-                                    selectedRowIndex={selectedGoalIndex === goalIndex ? benchmarkIndex : -1}
+                                    selectedRowId={selectedBenchmarkId}
+                                    hideSearchAndSort
                                 />
                             ) : (
                                 <Box text={"Edit goal to add benchmarks."}/>

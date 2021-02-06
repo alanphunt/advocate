@@ -242,6 +242,7 @@ const GoalCenter = () =>{
                             allDocuments={teacher.documents}
                             allTrackings={teacher.trackings}
                             benchmark={benchmark}
+                            trialId={trialId}
                             setTrialId={setTrialId}
                             setMutableTrial={setMutableTrial}
                             setModalAction={setModalAction}

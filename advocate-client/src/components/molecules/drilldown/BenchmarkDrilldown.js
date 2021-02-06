@@ -12,13 +12,12 @@ import {determineTrialAverage} from "utils/functions/functions";
 import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
 
-const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setTrialId, setMutableTrial, setModalAction}) => {
-    const [trialIndex, setTrialIndex] = useState(-1);
+const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, trialId, setTrialId, setMutableTrial, setModalAction}) => {
 
 
-    useEffect(() => {
+/*    useEffect(() => {
         setTrialIndex(-1);
-    }, [benchmark])
+    }, [benchmark])*/
 
     const renderTableData = () => {
         return trials.map(trial => {
@@ -47,7 +46,6 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setT
     };
 
     const handleTrialSelect = (trialId, trialIndex) => {
-        setTrialIndex(trialIndex);
         setTrialId(trialId);
     };
 
@@ -77,10 +75,11 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setT
                             {
                                 benchmark && trials.length
                                     ? <Table
-                                        headers={[`Trials (${trials.length})`]}
+                                        headers={[`Trials - (${trials.length})`]}
                                         tableData={renderTableData()}
                                         selectedCallback={(trial, trialIndex) => handleTrialSelect(trial.id, trialIndex)}
-                                        selectedRowIndex={trialIndex}
+                                        selectedRowId={trialId}
+                                        hideSearchAndSort
                                     />
                                     : <Box text={`No trials! Click create trial to add trial to ${benchmark.label}`}/>
                             }

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import DashCard from "components/molecules/DashCard";
-import FilterableTable from 'components/molecules/table/FilterableTable';
+import Table from 'components/molecules/table/Table';
 import {crudFetch, editDeleteIcons} from 'utils/functions/functions';
 import ModalBody from 'components/molecules/ModalBody';
 import TableAccordionGroup from 'components/molecules/table/TableAccordionGroup';
@@ -184,8 +184,7 @@ const Classroom = () => {
                                             {
                                                 students.some(stu => stu.classroomId === cr.id)
                                                 ? (
-                                                    <FilterableTable
-                                                        key={`filterabletable-${ind}`}
+                                                    <Table
                                                         headers={BASIC_STUDENT_TABLE_HEADERS}
                                                         tableData={cr.studentIds.map(id => teacher.students[id])}
                                                         dataKeys={BASIC_STUDENT_TABLE_KEYS}
