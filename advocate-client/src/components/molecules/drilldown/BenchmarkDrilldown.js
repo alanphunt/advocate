@@ -14,11 +14,6 @@ import Box from "components/atoms/Box";
 
 const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, trialId, setTrialId, setMutableTrial, setModalAction}) => {
 
-
-/*    useEffect(() => {
-        setTrialIndex(-1);
-    }, [benchmark])*/
-
     const renderTableData = () => {
         return trials.map(trial => {
             return (

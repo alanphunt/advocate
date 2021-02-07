@@ -13,7 +13,7 @@ import Section from "components/atoms/Section";
         
 */
 
-const ModalBody = React.forwardRef(({header, children, confirmCallback, cancelCallback, hideButtons}, ref) => {
+const ModalBody = React.forwardRef(({header, children, confirmCallback, cancelCallback, hideButtons, isLoading}, ref) => {
     return (
         <div className="modalbody">
             <div ref={ref} className={"itemcardhead"}>
@@ -29,6 +29,7 @@ const ModalBody = React.forwardRef(({header, children, confirmCallback, cancelCa
                         <ConfirmOrCancelButtons
                             confirmCallback={confirmCallback}
                             cancelCallback={cancelCallback}
+                            isLoading={isLoading}
                         />
                       </div>
             }

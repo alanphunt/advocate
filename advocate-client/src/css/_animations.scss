@@ -41,6 +41,10 @@
   z-index: 1;
 }
 
+.loadingSpinner{
+  animation: ldio-qw71tr0evte 1.2048192771084336s linear infinite;
+}
+
 /**LOADING ANIMATION **/
 @keyframes ldio-qw71tr0evte {
   0% { transform: rotate(0) }

@@ -1,6 +1,7 @@
 import React from "react";
 import TextArea from "./TextArea";
 import { EditorState, convertFromRaw } from 'draft-js';
+import Box from "../atoms/Box";
 
 /*
      props:
@@ -10,11 +11,14 @@ import { EditorState, convertFromRaw } from 'draft-js';
 */
 
 const ImmutableTextArea = ({rawData}) => {
+    let data = EditorState.createWithContent(convertFromRaw(JSON.parse(rawData)));
     return (
-        <TextArea
-            immutable={true}
-            editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(rawData)))}
-        />
+        data.getCurrentContent().hasText() ? (
+            <TextArea
+                immutable={true}
+                editorState={data}
+            />
+        ) : (<Box text={"No text."}/>)
     );
 };
 

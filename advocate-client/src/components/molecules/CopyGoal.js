@@ -6,11 +6,12 @@ import ConfirmOrCancelButtons from "./ConfirmOrCancelButtons";
 import Section from "components/atoms/Section";
 import Checkbox from "./Checkbox";
 
-const CopyGoal = ({goal, students, classrooms, completeCrudOp, closeModal, signout}) => {
+const CopyGoal = ({goal, students, classrooms, completeCrudOp, closeModal, signout, isLoading, setIsLoading}) => {
     const [student, setStudent] = useState(null);
     const [includeBenchmarks, setIncludeBenchmarks] = useState(false);
 
     const fetchCopyGoal = () => {
+        setIsLoading({"copyGoal":true});
         let goalDTO = {
             id: "",
             complete: 0,
@@ -30,8 +31,8 @@ const CopyGoal = ({goal, students, classrooms, completeCrudOp, closeModal, signo
             body: JSON.stringify(goalDTO),
             headers: JSON_HEADER,
             success: (data) => completeCrudOp(data,`Successfully copied ${goal.goalName} to ${student.name}!`),
-            error: () => {},
-            serverError: () => {}
+            error: () => setIsLoading({"":false}),
+            serverError: signout
         });
     };
 
@@ -57,6 +58,7 @@ const CopyGoal = ({goal, students, classrooms, completeCrudOp, closeModal, signo
             <ConfirmOrCancelButtons
                 confirmCallback={fetchCopyGoal}
                 cancelCallback={closeModal}
+                isLoading={isLoading}
             />
         </div>
     );

@@ -24,6 +24,8 @@ const Classroom = () => {
     const [modalAction, setModalAction] = useState("");
     const [mutableClassroom, setMutableClassroom] = useState(null);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const classrooms = Object.values(teacher.classrooms);
     const students = Object.values(teacher.students);
 
@@ -37,6 +39,7 @@ const Classroom = () => {
     const closeModal = () => {setModalAction(""); setMutableClassroom(null); setFormErrors(classroomErrorModel);};
 
     const confirmCreateClassroomCallback = () => {
+        setIsLoading(true);
         let data = {
             students: JSON.stringify(mutableClassroom.students),
             className: mutableClassroom.className
@@ -49,6 +52,7 @@ const Classroom = () => {
         })
         .then(res => Promise.all([res.ok, res.json(), res.status]))
         .then(([ok, body, status]) => {
+            setIsLoading(false);
             if(ok) {
                 crudOperationSuccessful(body, `Successfully created ${data.className}!`)
             } 
@@ -62,6 +66,8 @@ const Classroom = () => {
     const crudOperationSuccessful = (body, message) => {
         setToasterText(<p>{<CheckIcon className="i-right"/>}{message}</p>);
         setTeacher(body);
+        if(isLoading)
+            setIsLoading(false);
         closeModal();
     };
 
@@ -74,6 +80,7 @@ const Classroom = () => {
                         confirmCallback={confirmCreateClassroomCallback}
                         cancelCallback={closeModal}
                         ref={scrollRef}
+                        isLoading={isLoading}
                     >
                         <ClassroomForm
                             students={mutableClassroom.students}
@@ -90,6 +97,7 @@ const Classroom = () => {
                         header={`Delete ${mutableClassroom.className}?`}
                         confirmCallback={executeClassroomDeletion}
                         cancelCallback={closeModal}
+                        isLoading={isLoading}
                     >
                         <p>
                             This will delete all students and all goals, benchmarks, trials, and tracking associated with those students.
@@ -104,6 +112,7 @@ const Classroom = () => {
                         confirmCallback={executeClassroomUpdate}
                         cancelCallback={closeModal}
                         ref={scrollRef}
+                        isLoading={isLoading}
                     >
                         <ClassroomForm
                             classroom={mutableClassroom}
@@ -119,6 +128,7 @@ const Classroom = () => {
     };
 
     const executeClassroomDeletion = () => {
+        setIsLoading(true);
         crudFetch(
             {
                 path: `deleteclassroom?classroomId=${mutableClassroom.id}`, 
@@ -131,6 +141,7 @@ const Classroom = () => {
     };
 
     const executeClassroomUpdate = () => {
+        setIsLoading(true);
         crudFetch({
             path: "updateclassroom", 
             method: "PUT",
@@ -143,6 +154,7 @@ const Classroom = () => {
     };
 
     const handleCrudError = (body) => {
+        setIsLoading(false);
         setFormErrors(body);
     };
 

@@ -17,7 +17,7 @@ import {FaCheck as CheckIcon, FaTimes as XIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import Button from "components/atoms/Button";
 
-const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchmark}) => {
+const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchmark, isLoading, setIsLoading}) => {
     const [newTrial, setNewTrial] = useState(new Trial());
     const [trackings, setTrackings] = useState([]);
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -27,6 +27,7 @@ const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchm
     let documentMeta = mapFileMetaDataToDocument(trialFiles, []);
 
     const createTrial = () => {
+        setIsLoading({"createTrial": true});
         const trialNumber = benchmark.trialIds.length + 1;
         let formData = formifyObject({
             "dateStarted": newTrial.dateStarted || "",
@@ -46,7 +47,7 @@ const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchm
             method: "POST",
             body: formData,
             success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully created Score Trial #{trialNumber}!</>),
-            error: (res) => setRequestErrors(res),
+            error: (res) => {setIsLoading({"":false}); setRequestErrors(res);},
             serverError: () => alert(SERVER_ERROR)
         });
     };
@@ -81,7 +82,7 @@ const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchm
                 </Column50>
             </TemplateFrame>
             <div className={"marg-bot"}>
-                <Button icon={<CheckIcon/>} className={"marg-right"} onClick={createTrial} text="Submit Trial"/>
+                <Button icon={<CheckIcon/>} className={"marg-right"} onClick={createTrial} text="Submit Trial" isLoading={isLoading}/>
                 <Button icon={<XIcon/>} className={"cancelButton"} onClick={goBack} text="Back to templates"/>
             </div>
         </>

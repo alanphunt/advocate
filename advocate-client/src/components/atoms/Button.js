@@ -1,5 +1,5 @@
 import React from "react";
-
+import {FaSyncAlt as LoadingIcon} from "react-icons/fa";
 /*
      props:
         text: string- the button text
@@ -12,20 +12,26 @@ import React from "react";
 
 */
 
-const Button = ({text, icon, onClick, onKeyPress, className, type}) => {
+const Button = ({text, icon, onClick, onKeyPress, className, type, isLoading}) => {
     return (
         <button 
             className={className}
             onClick={onClick}
             onKeyPress={e => {
                 e.preventDefault();
-                if(onKeyPress)
+                if(onKeyPress && !isLoading)
                     onKeyPress(e);
             }}
             tabIndex={0}
             type={type ? type : "button"}
+            disabled={isLoading}
         >
-            <span className="i-right">{icon}</span>
+            {
+                isLoading
+                    ? <span className={"loadingSpinner i-right"}><LoadingIcon/></span>
+                    : <span className="i-right">{icon}</span>
+
+            }
             <span>
                 {text}
             </span>

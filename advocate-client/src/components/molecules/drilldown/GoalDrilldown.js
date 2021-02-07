@@ -18,7 +18,7 @@ const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchma
 
     useEffect(() => {
         setSelectedBenchmarkId("");
-    }, [studentName, allBenchmarks]);
+    }, [studentName]);
 
     const selectedBenchmarkCallback = (benchmark, benchmarkIndex, goal, goalIndex) => {
         setSelectedBenchmarkId(benchmark.id);

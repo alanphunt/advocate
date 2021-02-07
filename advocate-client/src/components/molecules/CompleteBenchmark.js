@@ -4,7 +4,7 @@ import Section from "components/atoms/Section";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import ModalBody from "components/molecules/ModalBody";
 
-const CompleteBenchmark = ({benchmark, goalBenchmarks, completeCrudOp, closeModal, goalId}) => {
+const CompleteBenchmark = ({benchmark, goalBenchmarks, completeCrudOp, closeModal, goalId, isLoading, setIsLoading}) => {
     //if the BM isn't complete then we're updating it as complete and vice versa
     const currentStatus = benchmark.complete;
     const updatedStatus = currentStatus ? 0 : 1;
@@ -12,6 +12,7 @@ const CompleteBenchmark = ({benchmark, goalBenchmarks, completeCrudOp, closeModa
     const allBenchmarksComplete = goalBenchmarks.filter(bm => !bm.complete).length === 0;
 
     const markBenchmarkAsComplete = (benchmarkId, updatedStatus, goalId) => {
+        setIsLoading({"masterBenchmark": true});
         let formData = new FormData();
         formData.append("benchmarkId", benchmarkId);
         formData.append("complete", updatedStatus);
@@ -24,8 +25,9 @@ const CompleteBenchmark = ({benchmark, goalBenchmarks, completeCrudOp, closeModa
             })
             .then(response => Promise.all([response.ok, (response.ok ? response.json() : response.text()), response.status]))
             .then(([ok, data, status]) => {
-                if (ok)
-                completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully {updatedStatus ? "" : "un"}mastered {benchmark.label}!</>);
+                setIsLoading({"":false})
+                if(ok)
+                    completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully {updatedStatus ? "" : "un"}mastered {benchmark.label}!</>);
             });
     };
 
@@ -43,14 +45,14 @@ const CompleteBenchmark = ({benchmark, goalBenchmarks, completeCrudOp, closeModa
                 }
             </Section>
             <ConfirmOrCancelButtons
-                confirmCallback={() => {
-                    markBenchmarkAsComplete(
+                confirmCallback={() => markBenchmarkAsComplete(
                         benchmark.id,
                         updatedStatus,
                         ((isLastIncompleteBenchmark || allBenchmarksComplete) ? goalId : "")
-                    );
-                }}
-                cancelCallback={closeModal}/>
+                    )}
+                cancelCallback={closeModal}
+                isLoading={isLoading}
+            />
         </ModalBody>
     );
 };

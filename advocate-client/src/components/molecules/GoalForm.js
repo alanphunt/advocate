@@ -144,7 +144,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                         objectArray={mutableGoal.benchmarks}
                     />
                 </Section>
-                <Table headers={[<span><RequiredField/>Label</span>, <span><RequiredField/>Benchmark</span>, <span><RequiredField/>Mastery Date</span>, <span><RequiredField/>Tracking Type</span>]}>
+                <Table hideSearchAndSort headers={[<span><RequiredField/>Label</span>, <span><RequiredField/>Benchmark</span>, <span><RequiredField/>Mastery Date</span>, <span><RequiredField/>Tracking Type</span>]}>
                     {
                         mutableGoal.benchmarks?.map((benchmark, ind) => {
                             let label = `Benchmark ${alphabet[ind]}`;

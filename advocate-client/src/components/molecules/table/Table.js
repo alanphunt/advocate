@@ -33,7 +33,7 @@ const Table = ({
     const [currentOrder, setCurrentOrder] = useState("unordered");
     const [sortKeyIndex, setSortKeyIndex] = useState(-1);
 
-    const tableKeys = dataKeys ? dataKeys : Object.keys(tableData[0] || {})?.filter(key => key !== "id") || [];
+    const tableKeys = children ? [] : dataKeys ? dataKeys : Object.keys(tableData[0] || {})?.filter(key => key !== "id");
 
     const determineOrdering = (index) => {
         setSortKeyIndex(currentOrder === "reversed" ? -1 : index);

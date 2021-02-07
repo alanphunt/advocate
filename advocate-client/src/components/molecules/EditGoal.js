@@ -15,6 +15,7 @@ import {FaCheck as CheckIcon} from "react-icons/fa";
 const EditGoal = ({mutableGoal, setMutableGoal, closeModal, completeCrudOp, signout}) => {
     const [editGoalFormErrors, setEditGoalFormErrors] = useState(goalFormErrorModel);
     const scrollRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if(Object.values(editGoalFormErrors).some(err => err !== ""))
@@ -22,6 +23,7 @@ const EditGoal = ({mutableGoal, setMutableGoal, closeModal, completeCrudOp, sign
     }, [editGoalFormErrors]);
 
     const editGoal = () => {
+        setIsLoading(true);
         let goalEditorState = mutableGoal.goal.getCurrentContent();
 
         crudFetch({
@@ -38,8 +40,8 @@ const EditGoal = ({mutableGoal, setMutableGoal, closeModal, completeCrudOp, sign
                     }
                 }))
             }),
-            success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated goal {mutableGoal.goalName}</>),
-            error: (data, headers, status) => setEditGoalFormErrors(data),
+            success: (data) => {setIsLoading(false); completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated goal {mutableGoal.goalName}</>);},
+            error: (data, headers, status) => {setIsLoading(false); setEditGoalFormErrors(data);},
             serverError: signout
         });
       };
@@ -50,6 +52,7 @@ const EditGoal = ({mutableGoal, setMutableGoal, closeModal, completeCrudOp, sign
             cancelCallback={closeModal}
             confirmCallback={editGoal}
             ref={scrollRef}
+            isLoading={isLoading}
         >
             <GoalForm formErrors={editGoalFormErrors} mutableGoal={mutableGoal} setMutableGoal={setMutableGoal}/>
         </ModalBody>

@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.OrderBy;
 import java.util.ArrayList;
 
 @Repository
@@ -17,5 +18,6 @@ public interface TrialRepo extends CrudRepository<Trial, String> {
     @Query("UPDATE Trial t SET t.enabled = 0 WHERE t.benchmarkId = ?1")
     int softDeleteAllByBenchmarkId(String id);
 
+    @OrderBy("trialNumber ASC")
     ArrayList<Trial> findAllByBenchmarkId(String benchmarkId);
 }

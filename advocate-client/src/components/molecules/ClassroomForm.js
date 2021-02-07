@@ -93,6 +93,7 @@ const ClassroomForm = ({
                         : <></>
                 }
                 <Table
+                    hideSearchAndSort
                     headers={["Delete", ...BASIC_STUDENT_TABLE_HEADERS]}
                     tableData={students.map((student, index) => renderStudentRow(student, index))}
                 />

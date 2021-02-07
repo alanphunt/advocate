@@ -68,6 +68,7 @@ const BasicScoreTrial = ({trial, setTrial, trackings, errors, comments, updateTr
                         onChange={(e) => setTrial(prev => ({...prev, dateStarted: e.currentTarget.value}))}
                         errorMessage={errors.dateStarted}
                         required
+                        autoFocus
                     />
                 </Section>
 

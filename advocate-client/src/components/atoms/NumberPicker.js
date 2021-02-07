@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FaPlus as PlusIcon, FaMinus as MinusIcon} from "react-icons/fa";
 /*
 Props:
@@ -8,9 +8,7 @@ Props:
     objectArray- used for the length of the array to keep track of the #
  */
 const NumberPicker = ({limit = 100, object, objectArray, updateState}) => {
-    let num = objectArray.length;
-
-    const [amount, setAmount] = useState(num);
+    const [amount, setAmount] = useState(-1);
 
     const change = (num, object, objArr) => {
         setAmount(num);
@@ -31,6 +29,8 @@ const NumberPicker = ({limit = 100, object, objectArray, updateState}) => {
             }
         return newObjArr;
     };
+
+    useEffect(() => setAmount(objectArray.length), [objectArray])
 
     return (
         <div className={"numberpickerwrapper"}>
