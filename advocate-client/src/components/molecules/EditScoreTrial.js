@@ -10,11 +10,12 @@ import {SERVER_ERROR} from "utils/constants";
 import {basicScoreTrialErrorsModel} from "utils/models";
 import ConfirmOrCancelButtons from "./ConfirmOrCancelButtons";
 
-const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTrial, setMutableTrial, completeCrudOp}) => {
+const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTrial, setMutableTrial, completeCrudOp, isLoading, setIsLoading}) => {
     const [trialFiles, setTrialFiles] = useState([]);
     const [requestErrors, setRequestErrors] = useState(basicScoreTrialErrorsModel);
 
     const editTrial = () => {
+        setIsLoading({"editScoreTrial": true});
         let formData = mapMutableTrialData();
         for(let i = 0; i < trialFiles.length; i++){
             formData.append("documents", trialFiles[i]);
@@ -25,21 +26,27 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
             body: formData,
             success: (data) =>
                 completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated {mutableTrial.label}</>),
-            error: (res) => setRequestErrors(res),
+            error: (res) => {setIsLoading({"":false}); setRequestErrors(res)},
             serverError: () => alert(SERVER_ERROR)
         });
     };
 
     const mapMutableTrialData = () => {
         let fd = new FormData();
-
+        let comments;
+        try{
+            comments = prepareEditorStateForRequest(mutableTrial.comments.getCurrentContent())
+        }catch(e){
+            console.log("Editor state was not updated, preparing raw state.");
+            comments = prepareEditorStateForRequest(mutableTrial.comments);
+        }
         fd.append("trial", JSON.stringify({
             ...mutableTrial,
             trackings: [],
             documents: [],
             trackingIds: [],
             documentIds: [],
-            comments: prepareEditorStateForRequest(mutableTrial.comments)
+            comments: comments
         }));
         fd.append("trackings", JSON.stringify(mutableTrial.trackings));
         fd.append("documentMeta", JSON.stringify(mutableTrial.documents));
@@ -57,7 +64,7 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
                         errors={requestErrors}
                         comments={mutableTrial.comments}
                         updateTracks={(newTracks) => setMutableTrial(prev => ({...prev, trackings: newTracks}))}
-                        handleComments={(newComments) => setMutableTrial(prev => ({...prev, comments: newComments.getCurrentContent()}))}
+                        handleComments={(newComments) => setMutableTrial(prev => ({...prev, comments: newComments}))}
                     />
                 </Column50>
                 <Column50>
@@ -69,8 +76,9 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
                             "Benchmark Description": <ImmutableTextArea rawData={benchmark.description}/>
                         }}
                         files={trialFiles}
-                        fileMetaData={mapFileMetaDataToDocument(trialFiles, [])}
                         setFiles={setTrialFiles}
+                        fileMetaData={mapFileMetaDataToDocument(trialFiles, mutableTrial.documents)}
+                        updateFileMetaData={updatedMeta => setMutableTrial(prev => ({...prev, documents: [...updatedMeta]}))}
                         apiPath={"/api/retrievedocument"}
                     />
                 </Column50>
@@ -78,6 +86,7 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
             <ConfirmOrCancelButtons
                 cancelCallback={closeModal}
                 confirmCallback={editTrial}
+                isLoading={isLoading}
             />
         </>
     );

@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import DashCard from "components/molecules/DashCard";
-import FilterableTable from 'components/molecules/table/FilterableTable';
+import Table from 'components/molecules/table/Table';
 import {crudFetch, editDeleteIcons} from 'utils/functions/functions';
 import ModalBody from 'components/molecules/ModalBody';
 import TableAccordionGroup from 'components/molecules/table/TableAccordionGroup';
@@ -24,11 +24,22 @@ const Classroom = () => {
     const [modalAction, setModalAction] = useState("");
     const [mutableClassroom, setMutableClassroom] = useState(null);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const classrooms = Object.values(teacher.classrooms);
     const students = Object.values(teacher.students);
+
+    const scrollRef = useRef(null);
+
+    useEffect(() => {
+        if(Object.values(formErrors).some(err => err !== ""))
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [formErrors]);
+
     const closeModal = () => {setModalAction(""); setMutableClassroom(null); setFormErrors(classroomErrorModel);};
 
     const confirmCreateClassroomCallback = () => {
+        setIsLoading(true);
         let data = {
             students: JSON.stringify(mutableClassroom.students),
             className: mutableClassroom.className
@@ -41,6 +52,7 @@ const Classroom = () => {
         })
         .then(res => Promise.all([res.ok, res.json(), res.status]))
         .then(([ok, body, status]) => {
+            setIsLoading(false);
             if(ok) {
                 crudOperationSuccessful(body, `Successfully created ${data.className}!`)
             } 
@@ -54,6 +66,8 @@ const Classroom = () => {
     const crudOperationSuccessful = (body, message) => {
         setToasterText(<p>{<CheckIcon className="i-right"/>}{message}</p>);
         setTeacher(body);
+        if(isLoading)
+            setIsLoading(false);
         closeModal();
     };
 
@@ -65,6 +79,8 @@ const Classroom = () => {
                         header={"Create Classroom"}
                         confirmCallback={confirmCreateClassroomCallback}
                         cancelCallback={closeModal}
+                        ref={scrollRef}
+                        isLoading={isLoading}
                     >
                         <ClassroomForm
                             students={mutableClassroom.students}
@@ -81,6 +97,7 @@ const Classroom = () => {
                         header={`Delete ${mutableClassroom.className}?`}
                         confirmCallback={executeClassroomDeletion}
                         cancelCallback={closeModal}
+                        isLoading={isLoading}
                     >
                         <p>
                             This will delete all students and all goals, benchmarks, trials, and tracking associated with those students.
@@ -94,6 +111,8 @@ const Classroom = () => {
                         header={`Edit ${classrooms.find(cr => cr.id === mutableClassroom.id).className}`}
                         confirmCallback={executeClassroomUpdate}
                         cancelCallback={closeModal}
+                        ref={scrollRef}
+                        isLoading={isLoading}
                     >
                         <ClassroomForm
                             classroom={mutableClassroom}
@@ -109,6 +128,7 @@ const Classroom = () => {
     };
 
     const executeClassroomDeletion = () => {
+        setIsLoading(true);
         crudFetch(
             {
                 path: `deleteclassroom?classroomId=${mutableClassroom.id}`, 
@@ -121,6 +141,7 @@ const Classroom = () => {
     };
 
     const executeClassroomUpdate = () => {
+        setIsLoading(true);
         crudFetch({
             path: "updateclassroom", 
             method: "PUT",
@@ -133,6 +154,7 @@ const Classroom = () => {
     };
 
     const handleCrudError = (body) => {
+        setIsLoading(false);
         setFormErrors(body);
     };
 
@@ -169,15 +191,14 @@ const Classroom = () => {
                                             header={cr.className}
                                             preOpened
                                             icons={editDeleteIcons()}
-                                            iconClickedCallback={(action, index) => handleIconClick(action, cr)}
+                                            iconClickedCallback={(action) => handleIconClick(action, cr)}
                                         >
                                             {
                                                 students.some(stu => stu.classroomId === cr.id)
                                                 ? (
-                                                    <FilterableTable
-                                                        key={`filterabletable-${ind}`}
+                                                    <Table
                                                         headers={BASIC_STUDENT_TABLE_HEADERS}
-                                                        tableData={students.filter(stu => stu.classroomId === cr.id)}
+                                                        tableData={cr.studentIds.map(id => teacher.students[id])}
                                                         dataKeys={BASIC_STUDENT_TABLE_KEYS}
                                                     />
                                                 ) : (

@@ -12,13 +12,7 @@ import {determineTrialAverage} from "utils/functions/functions";
 import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
 
-const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setTrialId, setMutableTrial, setModalAction}) => {
-    const [trialIndex, setTrialIndex] = useState(-1);
-
-
-    useEffect(() => {
-        setTrialIndex(-1);
-    }, [benchmark])
+const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, trialId, setTrialId, setMutableTrial, setModalAction}) => {
 
     const renderTableData = () => {
         return trials.map(trial => {
@@ -47,7 +41,6 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setT
     };
 
     const handleTrialSelect = (trialId, trialIndex) => {
-        setTrialIndex(trialIndex);
         setTrialId(trialId);
     };
 
@@ -71,18 +64,19 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, setT
                             <p><strong>Projected mastery date: </strong>{benchmark.masteryDate}</p>
                             <p><strong>Actual mastery date: </strong>{benchmark.complete === 1 ? benchmark.metDate : "N/A"}</p>
                             <p><strong>Tracking type: </strong>{benchmark.tracking}</p>
-                            <p><strong>Trial Average: </strong>{benchmark ? `${determineTrialAverage(benchmark)}%` : "..."}</p>
+                            <p><strong>Trial Average: </strong>{benchmark ? `${determineTrialAverage(trials, allTrackings)}%` : "..."}</p>
                         </Section>
                         <Section>
                             {
                                 benchmark && trials.length
                                     ? <Table
-                                        headers={[`Trials (${trials.length})`]}
+                                        headers={[`Trials - (${trials.length})`]}
                                         tableData={renderTableData()}
                                         selectedCallback={(trial, trialIndex) => handleTrialSelect(trial.id, trialIndex)}
-                                        selectedRowIndex={trialIndex}
+                                        selectedRowId={trialId}
+                                        hideSearchAndSort
                                     />
-                                    : <Box text="No trials"/>
+                                    : <Box text={`No trials! Click create trial to add trial to ${benchmark.label}`}/>
                             }
                         </Section>
                         <div className={"flex-column"}>

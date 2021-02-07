@@ -80,7 +80,9 @@ public class ClassroomService{
                 break;
             }
         }
-			return errs;
+        if(students.isEmpty())
+            errs.put("students", Constants.NO_STUDENTS_RESPONSE);
+        return errs;
     } 
 
 

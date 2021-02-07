@@ -33,6 +33,7 @@ export const useProvideAuth = () => {
         fetch(`/api/createuser`, {method: "POST", body: JSON.stringify(data), headers: JSON_HEADER})
         .then(response => Promise.all([response.ok, response.json()]))
         .then(([ok, body]) => {
+            console.log(body)
             if(ok)
                 _completeFetch(body, "/dashboard/main");
             else

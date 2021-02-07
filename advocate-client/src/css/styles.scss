@@ -21,19 +21,35 @@ first 3 letters concatenated with hyphens
 
 .herocontainer{
   background:
-          url("../images/teacherandstudent-sm.jpg")
+          url("../images/side-view-child-tutor-home-learning.jpg")
           center / cover
           no-repeat
           fixed;
+  @include wid-hei(100%, 70%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-overlay{
+  position: absolute;
   @include wid-hei(100%, 100%);
-  color: $white;
+  background-color: #66615b70;
 }
 
 .homeheader{
-  background-color: RGBA(0, 0, 0, .8);
-  padding: 5px 2rem;
+  background-color: $primary-med;
+  padding: .5rem 0;
+  @include box-sha();
+  position: relative;
+  z-index: 10;
+}
+
+.homeheader-inner{
   @include flex($ali-ite: center, $jus-con: space-between);
-  backdrop-filter: saturate(180%) blur(20px);
+  color: $white;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1400px;
 }
 
 .homeheader img{
@@ -45,30 +61,27 @@ first 3 letters concatenated with hyphens
   @include flex($ali-ite: center, $jus-con: space-between);
 }
 
-.homebubble{
-  @include wid-hei(350px, 450px);
-  background-color: RGBA(255, 255, 255, .8);
-  position: absolute;
-  left: 5%;
-  top: 50%;
-  transform: translate(0, -50%);
+.navdiv-hover:hover{
+  color: $dar-gra;
+}
+
+.promptcontainer div{
+  @include flex($ali-ite: center);
 }
 
 .herotext{
-  position: absolute;
-  left: 2rem;
-  top: 40%;
-  transform: translate(0, -40%);
-  max-width: 550px;
+  @include pos-abs-cen();
+  color: $white;
+  text-shadow: 0 2px 4px RGB(0 0 0 / 50%);
+  text-align: center;
+  //margin: 1rem;
 }
 
-.herotext h3{
-  color: $primary;
-  font-size: 2rem;
-  font-weight: 800;
+.herotext h1{
+  font-size: 3rem;
 }
 
-.herotext h2{
+.herotext h2, .beta-inner h2, .benefits-inner h2{
   font-size: 2.5rem;
   font-weight: 500;
   margin-bottom: 1rem;
@@ -76,7 +89,7 @@ first 3 letters concatenated with hyphens
 
 .herotext p {
   font-size: 1.4rem;
-  margin: 0 0 1rem .5rem;
+  margin-bottom: 1rem;
 }
 
 .modal{
@@ -107,4 +120,97 @@ first 3 letters concatenated with hyphens
 .modalwrapper{
   z-index: 3;
   display: none;
+}
+
+.summary-wrapper{
+  min-height: 350px;
+  padding: 5rem 0;
+  width: 100%;
+}
+
+.summary-inner{
+  @include flex($jus-con: space-between, $fle-flo: row wrap);
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+.summary-section{
+  padding: 1rem;
+  flex: 1;
+  position: relative;
+}
+
+.summary-section h2, .beta-inner h2{
+  font-weight: 700;
+}
+
+.summary-bg-icon{
+  z-index: -1;
+  font-size: 15REM;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  opacity: .07;
+}
+
+.benefits-wrapper{
+  padding: 5rem 0;
+  width: 100%;
+  background-color: $primary-dark;
+  @include flex($ali-ite: center);
+}
+
+.benefits-inner{
+  color: $white;
+  margin: 0 auto;
+  max-width: 1400px;
+  width: 100%;
+  &__list{
+    @include flex();
+    &__column{
+      padding: 2rem 0;
+      text-align: center;
+      flex: 1;
+      border-right: 1px solid $white;
+      &:last-of-type{
+        border-right: none;
+      }
+    }
+  }
+}
+
+.beta-wrapper{
+  padding: 5rem 0;
+  width: 100%;
+  height: 400px;
+  background:
+          url("../images/wavy-background.jpg")
+          center / cover
+          no-repeat
+          fixed;
+  @include flex($ali-ite: center);
+  position: relative;
+}
+
+.beta-inner{
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+  z-index: 1;
+}
+
+.beta-overlay{
+  position: absolute;
+  @include wid-hei(100%, 100%);
+  //background: linear-gradient(to left, $white 25%, transparent);
+  opacity: .8;
+  background-color: #ffffff;
+}
+
+.homepage-footer{
+  color: $white;
+  padding: 1rem;
+  background-color: $dar-gra;
+  text-align: center;
 }

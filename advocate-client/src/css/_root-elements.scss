@@ -25,7 +25,9 @@ p{
 
 span{}
 
-ul{}
+ul{
+  list-style: inside;
+}
 
 li{}
 
@@ -48,6 +50,8 @@ button{
   background: none;
   color: inherit;
   outline: none;
+  display: inline-flex;
+  justify-content: center;
   &:hover, &:focus{
     background-color: $primary;
     color: $white;
@@ -73,7 +77,7 @@ label:focus-within select{
   @include pri-bor;
 }
 
-h1, h2, h3{
+h2, h3{
   font-weight: initial;
 }
 

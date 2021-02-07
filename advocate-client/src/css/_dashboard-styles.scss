@@ -91,6 +91,10 @@ a.active.active-border:hover{
   @include flex($ali-ite: center, $jus-con: space-between);
 }
 
+.overflow-auto{
+  overflow: auto;
+}
+
 .dash-nav__breadcrumb{
   text-transform: uppercase;
 }
@@ -170,7 +174,6 @@ a.active.active-border:hover{
 
 .dash-main-inner{
   position: relative;
-  overflow: hidden;
   height: 96%;
   background-color: $white;
   padding: 1rem;
@@ -365,9 +368,14 @@ a.active.active-border:hover{
   text-align: center;
 }
 
-.goalcenterrow{
-  height: 49%;
+.goalcenter-row{
   overflow: auto;
+  &-top{
+    height: 39%;
+  }
+  &-bottom{
+    height: 60%;
+  }
 }
 
 .row-wrapper{

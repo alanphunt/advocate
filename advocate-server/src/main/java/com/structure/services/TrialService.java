@@ -81,12 +81,13 @@ public class TrialService {
     public void handleTrialDeletion(String id, String benchmarkId){
         tr.deleteById(id);
         ArrayList<Trial> trials = tr.findAllByBenchmarkId(benchmarkId);
-
         for(int i = 0; i < trials.size(); i++){
             Trial trial = trials.get(i);
+            System.out.println(trial.toString());
             trial.setTrialNumber(i+1);
             trial.setLabel("Trial #"+(i+1)+" - "+new SimpleDateFormat(Constants.DATE_FORMAT).format(trial.getDateStarted()));
         }
+        tr.saveAll(trials);
     }
 
     private void handleTrialDocuments(Trial trial, List<MultipartFile> newFiles, HttpServletRequest req){
@@ -126,7 +127,10 @@ public class TrialService {
 
     private void determineTrialErrors(Map<String, String> errors, Trial trial, String trackings){
         System.out.println("Checking trial input for errors..");
-//        Map<String, String> errors = new HashMap<>();
+
+        if(trial.getDateStarted() == null)
+            errors.put("dateStarted", Constants.INVALID_DATE_FORMAT);
+
         if(!trackings.isBlank()){
             try{
                 trial.setTrackings(utilService.fromJSON(new TypeReference<>() {}, trackings));
@@ -138,9 +142,8 @@ public class TrialService {
 
         for(Tracking t : trial.getTrackings()){
             if(t.getLabel().isBlank())
-            errors.put("label", Constants.EMPTY_TRACK_LABEL_RESPONSE);
+                errors.put("label", Constants.EMPTY_TRACK_LABEL_RESPONSE);
         }
-//        return errors;
     }
 }
 

@@ -34,7 +34,8 @@ const ClassroomForm = ({
      const handleUpdateStudent = (index, event, key) => {
         let val = event.currentTarget.value;
         let studentsCopy = [...students];
-        Object.assign(studentsCopy[index], {[key]: val})
+        let studentCopy = {...studentsCopy[index], [key]:val};
+        studentsCopy.splice(index, 1, studentCopy);
         updateStudents(studentsCopy);
     };
 
@@ -92,6 +93,7 @@ const ClassroomForm = ({
                         : <></>
                 }
                 <Table
+                    hideSearchAndSort
                     headers={["Delete", ...BASIC_STUDENT_TABLE_HEADERS]}
                     tableData={students.map((student, index) => renderStudentRow(student, index))}
                 />

@@ -13,6 +13,7 @@ import Table from "components/molecules/table/Table";
 const DashMain = () => {
     const {teacher} = useAuth();
     const classrooms = teacher.classrooms;
+
     const createClass = () => {
         return (
             <DashWidget flexSize={1}>
@@ -30,7 +31,7 @@ const DashMain = () => {
                     <ProfileCard teacher={teacher.teacher}/>
                 </DashWidget>
                 {
-                    classrooms.length === 0
+                    Object.values(classrooms).length === 0
                         ? createClass()
                         : (
                             <DashWidget flexSize={2} header={"Classrooms"}>

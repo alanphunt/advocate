@@ -95,9 +95,29 @@ public class GoalService {
         return ResponseEntity.badRequest().body(errors);*/
     }
 
+    public ResponseEntity<?> handleGoalCopy(Goal goal){
+        String goalId = utilService.generateUniqueId();
+        goal.setId(goalId);
+        for(Benchmark bm : goal.getBenchmarks()){
+            bm.setId(utilService.generateUniqueId());
+            bm.setGoalId(goalId);
+            bm.setComplete(0);
+            bm.setMetDate(null);
+            bm.setTrials(new ArrayList<>());
+        }
+        goalRepo.save(goal);
+        return ls.handleTeacherRehydration();
+    }
+
+    public ResponseEntity<?> handleGoalDeletion(String goalId){
+        goalRepo.deleteById(goalId);
+        return ls.handleTeacherRehydration();
+    }
+
     private void determineGoalCreationErrors(Map<String, String> errors, ArrayList<Benchmark> benchmarks, Map<String, String> goalString){
         try {
             for (Benchmark bm : benchmarks) {
+                System.out.println(bm.toString());
                 if(bm.getDescription().isBlank()
                         || bm.getTracking().isBlank()
                         || bm.getMasteryDate() == null
@@ -117,7 +137,7 @@ public class GoalService {
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
             else if(key.equals("startDate") && (!val.equals("null") && !val.isBlank() && !val.matches(Constants.DATE_REGEX))) {
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
-            }else if(val.isBlank() && !key.equals("process") && !key.equals("benchmarks") && !key.equals("startDate"))
+            }else if(val.isBlank() && !key.equals("benchmarkIds") && !key.equals("process") && !key.equals("benchmarks") && !key.equals("startDate"))
                 errors.put(key, Constants.EMPTY_FIELD_RESPONSE);
         }
     }
@@ -134,7 +154,7 @@ public class GoalService {
 
     private void populateBenchmarkAttributes(ArrayList<Benchmark> benchmarks, String goalId){
         for(Benchmark bm : benchmarks){
-            if(bm.getId() == null) {
+            if(bm.getId() == null || bm.getId().isBlank()) {
                 bm.setId(utilService.generateUniqueId());
                 bm.setGoalId(goalId);
                 bm.setEnabled(1);

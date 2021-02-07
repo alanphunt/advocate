@@ -10,7 +10,7 @@ import React from "react";
 
 const DashCard = ({children, className, closeModal, fitOnPage}) => {
     return (
-        <div className={`dash-main-inner ${className || ""}`} onClick={closeModal || null}>
+        <div className={`overflow-auto dash-main-inner ${className || ""}`} onClick={closeModal || null}>
             <div className={`width-100 height-100${fitOnPage ? " row-wrapper" : ""}`}>
                 { children }
             </div>

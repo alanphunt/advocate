@@ -10,7 +10,7 @@ import Button from "components/atoms/Button";
         cancelText: string: optional- text for the cancel button
 */
 
-const ConfirmOrCancelButtons = ({confirmCallback, cancelCallback, confirmText, cancelText}) => {
+const ConfirmOrCancelButtons = ({confirmCallback, cancelCallback, confirmText, cancelText, isLoading}) => {
     const onEnterConfirm = (e) => {
         if(e.key === "Enter")
             confirmCallback();
@@ -22,19 +22,20 @@ const ConfirmOrCancelButtons = ({confirmCallback, cancelCallback, confirmText, c
     };
 
     return (
-        <div className={""}>
+        <div>
             <Button
                 className={"marg-right"}
                 onClick={confirmCallback}
                 onKeyPress={onEnterConfirm}
-                icon={<CheckIcon className={"i-right"}/>}
+                icon={<CheckIcon/>}
                 text={confirmText || "Confirm"}
+                isLoading={isLoading}
             />
             <Button
                 className={"cancelButton"}
                 onClick={cancelCallback}
                 onKeyPress={onEnterCancel}
-                icon={<XIcon className={"i-right"}/>}
+                icon={<XIcon/>}
                 text={cancelText || "Cancel"}
             />
         </div>

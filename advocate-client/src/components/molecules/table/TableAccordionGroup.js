@@ -21,11 +21,11 @@ import Table from "./Table";
 
 const TableAccordionGroup = ({allOpen, openIndex, children, accordionHeaders, tableHeaders, tableData, dataKeys, accordionIcons, selectedCallback, tableChildren, iconClickedCallback}) => {
      
-    const [selectedRowIndex, setSelectedRowIndex] = useState(-1);
+    const [selectedRowId, setSelectedRowId] = useState("");
     const [selectedAccordionIndex, setSelectedAccordionIndex] = useState(-1);
 
     const callbackWrapper = (object, rowIndex, accordionIndex) => {
-        setSelectedRowIndex(rowIndex);
+        setSelectedRowId(object.id);
         setSelectedAccordionIndex(accordionIndex);
         selectedCallback(object, rowIndex, accordionIndex);
     };
@@ -50,7 +50,7 @@ const TableAccordionGroup = ({allOpen, openIndex, children, accordionHeaders, ta
                                     headers={tableHeaders}
                                     dataKeys={dataKeys}
                                     selectedCallback={(rowObject, rowIndex) => callbackWrapper(rowObject, rowIndex, accordionIndex)}
-                                    selectedRowIndex={ selectedAccordionIndex === accordionIndex ? selectedRowIndex : -1}
+                                    selectedRowId={ selectedAccordionIndex === accordionIndex ? selectedRowId : ""}
                                 >
                                     {tableChildren ? tableChildren : null}
                                 </Table>

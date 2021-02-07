@@ -1,25 +1,45 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TableAccordionGroup from "./table/TableAccordionGroup";
 import AccordionItem from "components/atoms/AccordionItem";
 import Table from "./table/Table";
 import {mapStudentGoalMeta} from "utils/functions/functions";
 import Box from "components/atoms/Box";
 
-const GoalCenterTableRow = ({teacher, setStudentId}) => {
+const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
 
-    const hasClassroomsWithStudents = !!Object.keys(teacher.students);
+    const hasClassroomsWithStudents = !!Object.keys(teacher.students).length;
     const tableHeaders = ["Name", "Goal Count", "Goal Completion %"];
-    const [studentIndex, setStudentIndex] = useState(-1);
     const [selectedClassroomIndex, setSelectedClassroomIndex] = useState(-1);
+
+    useEffect(() => {
+        //this is for creating a new goal and selecting a new student in the modal
+        if(student) {
+            let crIndex = -1;
+            let stuIndex = -1;
+            Object.values(teacher.classrooms).forEach((cr, crInd) => {
+                if(cr.id === student.classroomId){
+                    crIndex = crInd;
+                    stuIndex = cr.studentIds.indexOf(student.id);
+                }
+            });
+            if (crIndex !== -1 || stuIndex !== -1) {
+                updateIndexesFromGoalCreation(stuIndex, crIndex);
+            }
+        }
+    }, [student]);
+
+    const updateIndexesFromGoalCreation = (studentIndex, classroomIndex) => {
+        setSelectedClassroomIndex(classroomIndex);
+    };
 
     const handleSelectedStudent = (student, studentIndex, classroomIndex) => {
         setSelectedClassroomIndex(classroomIndex);
-        setStudentIndex(studentIndex);
         setStudentId(student.id);
     };
 
     return (
-        <div className={"goalcenterrow goalcenterrowmarg"}>
+        <div className={"goalcenter-row goalcenter-row-top"}>
+            <h2 className={"marg-bot"}>Select a student to begin</h2>
             {
                 hasClassroomsWithStudents
                     ? (
@@ -27,7 +47,7 @@ const GoalCenterTableRow = ({teacher, setStudentId}) => {
                             {
                                 Object.values(teacher.classrooms).map((classroom, classroomIndex) => {
                                     return (
-                                        <AccordionItem header={classroom.className} preOpened key={`accItem-${classroom.className}`}>
+                                        <AccordionItem header={`${classroom.className} - (${classroom.studentIds.length})`} preOpened key={`accItem-${classroom.className}`}>
                                             <Table
                                                 headers={tableHeaders}
                                                 tableData={
@@ -37,7 +57,7 @@ const GoalCenterTableRow = ({teacher, setStudentId}) => {
                                                             ))))
                                                 }
                                                 selectedCallback={(student, studentIndex) => handleSelectedStudent(student, studentIndex, classroomIndex)}
-                                                selectedRowIndex={classroomIndex === selectedClassroomIndex ? studentIndex : -1}
+                                                selectedRowId={student?.id}
                                             />
                                         </AccordionItem>
                                     )

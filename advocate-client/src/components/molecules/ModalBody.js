@@ -13,10 +13,10 @@ import Section from "components/atoms/Section";
         
 */
 
-const ModalBody = ({header, children, confirmCallback, cancelCallback, hideButtons}) => {
+const ModalBody = React.forwardRef(({header, children, confirmCallback, cancelCallback, hideButtons, isLoading}, ref) => {
     return (
         <div className="modalbody">
-            <div className={"itemcardhead"}>
+            <div ref={ref} className={"itemcardhead"}>
                 <h2>{header}</h2>
             </div>
             <Section>
@@ -29,12 +29,12 @@ const ModalBody = ({header, children, confirmCallback, cancelCallback, hideButto
                         <ConfirmOrCancelButtons
                             confirmCallback={confirmCallback}
                             cancelCallback={cancelCallback}
+                            isLoading={isLoading}
                         />
                       </div>
             }
-
         </div>
     )
-};
+});
 
 export default ModalBody;
