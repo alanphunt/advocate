@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.structure.models.Document;
 import com.structure.models.Tracking;
 import com.structure.models.Trial;
+import com.structure.models.TrialTemplates;
 import com.structure.repositories.TrialRepo;
 import com.structure.utilities.Constants;
 import com.structure.utilities.Utils;

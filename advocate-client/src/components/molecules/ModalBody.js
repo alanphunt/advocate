@@ -1,6 +1,5 @@
 import React from "react";
 import ConfirmOrCancelButtons from "components/molecules/ConfirmOrCancelButtons";
-import Section from "components/atoms/Section";
 
 /*
     Props:
@@ -19,9 +18,9 @@ const ModalBody = React.forwardRef(({header, children, confirmCallback, cancelCa
             <div ref={ref} className={"itemcardhead"}>
                 <h2>{header}</h2>
             </div>
-            <Section>
+            <div>
                 {children}
-            </Section>
+            </div>
             {
                 hideButtons
                     ? <></>

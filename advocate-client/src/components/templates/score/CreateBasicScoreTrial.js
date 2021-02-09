@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import BasicScoreTrial from "components/molecules/BasicScoreTrial";
+import BasicScoreTrialForm from "components/templates/score/BasicScoreTrialForm";
 import {Trial} from "utils/classes/ContextModels";
 import TemplateFrame from "components/templates/TemplateFrame";
 import Column50 from "components/atoms/Column50";
-import CardAndUploadColumn from "./CardAndUploadColumn";
-import ImmutableTextArea from "./ImmutableTextArea";
+import CardAndUploadColumn from "components/molecules/CardAndUploadColumn";
+import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import {EditorState} from "draft-js";
 import {basicScoreTrialErrorsModel} from "utils/models";
 import {
@@ -17,7 +17,7 @@ import {FaCheck as CheckIcon, FaTimes as XIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import Button from "components/atoms/Button";
 
-const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchmark, isLoading, setIsLoading}) => {
+const CreateBasicScoreTrial = ({template, goBack, completeCrudOp, studentName, goalName, benchmark, isLoading, setIsLoading}) => {
     const [newTrial, setNewTrial] = useState(new Trial());
     const [trackings, setTrackings] = useState([]);
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -30,6 +30,7 @@ const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchm
         setIsLoading({"createTrial": true});
         const trialNumber = benchmark.trialIds.length + 1;
         let formData = formifyObject({
+            "trialTemplate": template,
             "dateStarted": newTrial.dateStarted || "",
             "comments": prepareEditorStateForRequest(editorState.getCurrentContent()),
             "trialNumber": trialNumber,
@@ -56,7 +57,7 @@ const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchm
         <>
             <TemplateFrame>
                 <Column50>
-                    <BasicScoreTrial
+                    <BasicScoreTrialForm
                         trial={newTrial}
                         setTrial={setNewTrial}
                         trackings={trackings}
@@ -89,4 +90,4 @@ const CreateScoreTrial = ({goBack, completeCrudOp, studentName, goalName, benchm
     );
 };
 
-export default CreateScoreTrial;
+export default CreateBasicScoreTrial;

@@ -190,9 +190,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                                                 value={benchmark.tracking}
                                             >
                                                 <option value={""}>Select a type..</option>
-                                                <option value={"score"}>Score</option>
-                                                <option value={"accuracy"}>Accuracy</option>
-                                                <option value={"trial"}>Trial</option>
+                                                <option value={"score"}>Score & Accuracy</option>
                                                 <option value={"frequency"}>Frequency</option>
                                                 <option value={"duration"}>Duration</option>
                                                 <option value={"other"}>Other</option>

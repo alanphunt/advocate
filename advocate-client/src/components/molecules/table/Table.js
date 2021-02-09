@@ -48,7 +48,6 @@ const Table = ({
                 setCurrentOrder("unordered")
             }
         }
-
     };
 
     const ascSort = () => {
@@ -73,13 +72,20 @@ const Table = ({
             }
         });
     };
-
     const [filteredData, setFilteredData] = useState([]);
     const [isFiltering, setIsFiltering] = useState(false);
     const [inputValues, setInputValues] = useState({});
 
     const orderIcon = currentOrder === "unordered" ?  <AscIcon className={"i-left"}/> : currentOrder === "sorted" ? <DscIcon className={"i-left"}/> : <ResetIcon className={"i-left"}/>
     const sortedData = currentOrder === "unordered" ? (isFiltering ? filteredData : tableData) : currentOrder === "sorted" ? ascSort() : ascSort().reverse();
+
+    useEffect(() => {
+        if(isFiltering){
+            let key = Object.keys(inputValues)[0];
+            let val = inputValues[key];
+            setFilteredData(tableData.filter(obj => obj[key].toString().toLowerCase().includes(val)));
+        }
+    }, [tableData]);
 
     const handleFilter = (event, filterKey) => {
         const value = event.currentTarget.value.toLowerCase();

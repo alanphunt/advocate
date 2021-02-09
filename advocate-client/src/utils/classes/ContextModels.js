@@ -101,6 +101,7 @@ export class Trial {
         this.dateCompleted = "";
         this.comments = "";
         this.benchmarkId = "";
+        this.trialTemplate = "";
     }
 
 /*    constructor (id, label, trialNumber, dateStarted, dateCompleted, comments, benchmarkId, enabled, documentIds, trackingIds) {

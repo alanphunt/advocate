@@ -3,7 +3,8 @@ import React from "react";
 
 const ProgressReport = () => {
     return (
-        <DashCard/>
+        <DashCard>
+        </DashCard>
     )
 };
 

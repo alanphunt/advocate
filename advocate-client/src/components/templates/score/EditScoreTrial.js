@@ -1,14 +1,14 @@
 import React, {useState} from "react";
-import BasicScoreTrial from "components/molecules/BasicScoreTrial";
+import BasicScoreTrial from "components/templates/score/BasicScoreTrialForm";
 import TemplateFrame from "components/templates/TemplateFrame";
 import Column50 from "components/atoms/Column50";
-import CardAndUploadColumn from "./CardAndUploadColumn";
-import ImmutableTextArea from "./ImmutableTextArea";
+import CardAndUploadColumn from "components/molecules/CardAndUploadColumn";
+import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import {crudFetch, mapFileMetaDataToDocument, prepareEditorStateForRequest} from "utils/functions/functions";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import {basicScoreTrialErrorsModel} from "utils/models";
-import ConfirmOrCancelButtons from "./ConfirmOrCancelButtons";
+import ConfirmOrCancelButtons from "components/molecules/ConfirmOrCancelButtons";
 
 const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTrial, setMutableTrial, completeCrudOp, isLoading, setIsLoading}) => {
     const [trialFiles, setTrialFiles] = useState([]);

@@ -9,7 +9,7 @@ const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
 
     const hasClassroomsWithStudents = !!Object.keys(teacher.students).length;
     const tableHeaders = ["Name", "Goal Count", "Goal Completion %"];
-    const [selectedClassroomIndex, setSelectedClassroomIndex] = useState(-1);
+    // const [selectedClassroomIndex, setSelectedClassroomIndex] = useState(-1);
 
     useEffect(() => {
         //this is for creating a new goal and selecting a new student in the modal
@@ -22,18 +22,18 @@ const GoalCenterTableRow = ({teacher, student, setStudentId}) => {
                     stuIndex = cr.studentIds.indexOf(student.id);
                 }
             });
-            if (crIndex !== -1 || stuIndex !== -1) {
+/*            if (crIndex !== -1 || stuIndex !== -1) {
                 updateIndexesFromGoalCreation(stuIndex, crIndex);
-            }
+            }*/
         }
     }, [student]);
 
-    const updateIndexesFromGoalCreation = (studentIndex, classroomIndex) => {
-        setSelectedClassroomIndex(classroomIndex);
-    };
+    // const updateIndexesFromGoalCreation = (studentIndex, classroomIndex) => {
+    //     setSelectedClassroomIndex(classroomIndex);
+    // };
 
     const handleSelectedStudent = (student, studentIndex, classroomIndex) => {
-        setSelectedClassroomIndex(classroomIndex);
+        // setSelectedClassroomIndex(classroomIndex);
         setStudentId(student.id);
     };
 

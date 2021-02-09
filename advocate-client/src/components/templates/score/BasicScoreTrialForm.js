@@ -1,14 +1,14 @@
 import React from "react";
 import NumberPicker from "components/atoms/NumberPicker";
 import {FaPlus as PlusIcon, FaMinus as MinusIcon, FaCalendarPlus as CalPlusIcon} from "react-icons/fa";
-import Table from "./table/Table";
+import Table from "components/molecules/table/Table";
 import Section from "components/atoms/Section";
-import TextArea from "./TextArea";
+import TextArea from "components/molecules/TextArea";
 import FormElement from "components/atoms/FormElement";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import { EditorState, convertFromRaw } from 'draft-js';
 
-const BasicScoreTrial = ({trial, setTrial, trackings, errors, comments, updateTracks, handleComments}) => {
+const BasicScoreTrialForm = ({trial, setTrial, trackings, errors, comments, updateTracks, handleComments}) => {
     const track =  {label: "", correct: 0};
 
     const handleTrackingsUpdate = (key, index, value) => {
@@ -98,4 +98,4 @@ const BasicScoreTrial = ({trial, setTrial, trackings, errors, comments, updateTr
     );
 };
 
-export default BasicScoreTrial;
+export default BasicScoreTrialForm;

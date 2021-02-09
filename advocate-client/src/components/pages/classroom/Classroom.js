@@ -159,7 +159,7 @@ const Classroom = () => {
     };
 
     const handleIconClick = (action, classroom) => {
-        setMutableClassroom({...classroom, students: students.filter(stu => stu.classroomId === classroom.id)});
+        setMutableClassroom({...classroom, students: classroom.studentIds.map(id => teacher.students[id])});
         setModalAction(action);
     };
 

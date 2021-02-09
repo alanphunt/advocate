@@ -61,6 +61,9 @@ public class Trial {
 
     @Transient
     private ArrayList<String> documentIds = new ArrayList<>();
+
+    @Column(name = "trial_template")
+    private String trialTemplate;
     
     private int enabled;
 
@@ -179,6 +182,14 @@ public class Trial {
         this.documentIds = documentIds;
     }
 
+    public String getTrialTemplate() {
+        return trialTemplate;
+    }
+
+    public void setTrialTemplate(String trialTemplate) {
+        this.trialTemplate = trialTemplate;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -190,6 +201,7 @@ public class Trial {
             ", comments='" + getComments() + "'" +
             ", benchmarkId='" + getBenchmarkId() + "'" +
             ", benchmark='" + getBenchmark() + "'" +
+            ", trialTemplate='" + getTrialTemplate() + "'" +
             ", trackings='" + getTrackings() + "'" +
             ", documents='" + getDocuments() + "'" +
             ", documentIds='" + getDocumentIds() + "'" +

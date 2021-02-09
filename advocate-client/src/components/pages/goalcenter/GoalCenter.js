@@ -12,11 +12,11 @@ import CreateGoal from "components/pages/creategoal/CreateGoal";
 import EditGoal from "components/molecules/EditGoal";
 import ModalBody from "components/molecules/ModalBody";
 import CompleteBenchmark from "components/molecules/CompleteBenchmark";
-import CreateTrial from "components/molecules/CreateTrial";
+import CreateTrial from "components/templates/CreateTrial";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import {Goal, Trial} from "utils/classes/ContextModels";
-import EditScoreTrial from "components/molecules/EditScoreTrial";
+import EditScoreTrial from "components/templates/score/EditScoreTrial";
 import CopyGoal from "components/molecules/CopyGoal";
 
 /*

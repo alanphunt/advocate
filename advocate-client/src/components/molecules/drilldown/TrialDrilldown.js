@@ -4,7 +4,7 @@ import TrialChart from "components/atoms/TrialChart";
 import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import {convertFileSize, determineTrialAccuracy, fileFetch} from "utils/functions/functions";
 import FileChip from "components/atoms/FileChip";
-import Box from "../../atoms/Box";
+import Box from "components/atoms/Box";
 
 const TrialDrilldown = ({trial, trackings, documents}) => {
     const trialAccuracyResults = (trackings?.length ? determineTrialAccuracy(trackings) : null);
@@ -23,6 +23,16 @@ const TrialDrilldown = ({trial, trackings, documents}) => {
         fileFetch("/api/retrievedocument", file, action, () => {}, () => {}, completeRetrieval)
     };
 
+
+    const determineTrialTemplate = () => {
+        switch(trial.trialTemplate){
+            case "BASIC_SCORE_TRIAL":
+                return (
+                    <></>
+                );
+            default: return <></>
+        }
+    };
     return (
         <div className={"drilldown-trialmeta"}>
             <h2 className={"marg-bot-2"}>Tracking for {trial ? trial.label : "..."}</h2>
@@ -30,7 +40,8 @@ const TrialDrilldown = ({trial, trackings, documents}) => {
                 trial ?
                     <div>
                         <p><strong>Start Date: </strong> {trial.dateStarted}</p>
-                        {
+{/*                        {
+                        {determineTrialTemplate()}
                             trialAccuracyResults
                                 ? <>
                                     <p><strong>Trial Accuracy: </strong>{trialAccuracyResults.accuracy}%</p>
@@ -53,7 +64,7 @@ const TrialDrilldown = ({trial, trackings, documents}) => {
                                     <TrialChart trialResults={trialAccuracyResults}/>
                                 </>
                                 : <></>
-                        }
+                        }*/}
                         <p className={"marg-top"}><strong>Comments: </strong></p>
                         <ImmutableTextArea rawData={trial.comments} />
                         <div className={"marg-top"}>
