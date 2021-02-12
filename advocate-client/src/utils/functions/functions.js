@@ -183,7 +183,6 @@ export const prepareEditorStateForRequest = (text) => {
     try{ 
         return JSON.stringify(convertToRaw(text))
     }catch(e){
-        console.log(e)
         return text
     }
 };
@@ -196,7 +195,7 @@ export const formatStudentObject = (studentArray) => {
     });
 };
 
-export const determineTrialAccuracy = (trackings) => {
+export const determineScoreTrialAccuracy = (trackings) => {
     const correct = trackings.filter(t => t.correct === 1);
     const a = Math.floor((correct?.length / trackings?.length * 100));
     let obj = {};

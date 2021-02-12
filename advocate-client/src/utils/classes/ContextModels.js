@@ -21,8 +21,7 @@ export class ContextModel {
 }
 
 export class Teacher {
-    classroomIds = Array.of("");
-    constructor (id, username, enabled, dateCreated, firstName, lastName, description, classroomIds) {
+    constructor (id = "", username = "", enabled = 0, dateCreated = "", firstName = "", lastName = "", description = "", classroomIds = []) {
         this.id = id;
         this.enabled = enabled;
         this.dateCreated = dateCreated;
@@ -34,8 +33,7 @@ export class Teacher {
 }
 
 export class Classroom {
-    studentIds = Array.of("");
-    constructor (id, enabled, className, teacherId, studentIds) {
+    constructor (id = "", enabled = 0, className = "", teacherId = "", studentIds = []) {
         this.id = id;
         this.enabled = enabled;
         this.className = className;
@@ -45,8 +43,7 @@ export class Classroom {
 }
 
 export class Student {
-    goalIds = Array.of("");
-    constructor (id, name, grade, age, classroomId, enabled, goalIds) {
+    constructor (id = "", name = "", grade = "", age = "", classroomId = "", enabled = 0, goalIds = []) {
         this.id = id;
         this.enabled = enabled;
         this.name = name;
@@ -58,8 +55,7 @@ export class Student {
 }
 
 export class Goal {
-    benchmarkIds = Array.of("");
-    constructor (id, goalName, enabled, monitor, startDate, masteryDate, studentId, completionDate, complete, benchmarkIds) {
+    constructor (id = "", goalName = "", enabled = 0, monitor = 0, startDate = "", masteryDate = "", studentId = "", completionDate = "", complete = 0, benchmarkIds = []) {
         this.id = id;
         this.goalName = goalName;
         this.enabled = enabled;
@@ -74,8 +70,7 @@ export class Goal {
 }
 
 export class Benchmark {
-    trialIds = Array.of("");
-    constructor (id, goalId, enabled, complete, label, description, tracking, masteryDate, metDate, trialIds) {
+    constructor (id = "", goalId = "", enabled = 0, complete = 0, label = "", description = "", tracking = "", masteryDate = "", metDate = "", trialIds = []) {
         this.id = id;
         this.enabled = enabled;
         this.complete = complete;
@@ -89,22 +84,7 @@ export class Benchmark {
 }
 
 export class Trial {
-
-    constructor() {
-        this.documentIds = [];
-        this.trackingIds = [];
-        this.label = "";
-        this.id = "";
-        this.enabled = 0;
-        this.trialNumber = -1;
-        this.dateStarted = "";
-        this.dateCompleted = "";
-        this.comments = "";
-        this.benchmarkId = "";
-        this.trialTemplate = "";
-    }
-
-/*    constructor (id, label, trialNumber, dateStarted, dateCompleted, comments, benchmarkId, enabled, documentIds, trackingIds) {
+    constructor (id = "", label = "", trialNumber = 0, dateStarted = "", dateCompleted = "", comments = "", benchmarkId = "", enabled = 0, documentIds = [], trackingIds = []) {
         this.id = id;
         this.enabled = enabled;
         this.label = label;
@@ -115,11 +95,23 @@ export class Trial {
         this.benchmarkId = benchmarkId;
         this.documentIds = documentIds;
         this.trackingIds = trackingIds;
-    }*/
+    }
 }
 
 export class Tracking {
-    constructor (id, label, cueCount, permanentProduct, durationInSeconds, accuracyPercentage, trialId, enabled, correct, frequency) {
+    constructor (id = "",
+                 label = "",
+                 cueCount = 0,
+                 permanentProduct = null,
+                 durationInSeconds = 0,
+                 accuracyPercentage = 0,
+                 trialId = "",
+                 enabled = 0,
+                 correct = 0,
+                 frequency = 0,
+                 best = 0,
+                 outOf = 0
+    ) {
         this.id = id;
         this.label = label;
         this.enabled = enabled;
@@ -130,11 +122,13 @@ export class Tracking {
         this.trialId = trialId;
         this.correct = correct;
         this.frequency = frequency;
+        this.best = best;
+        this.outOf = outOf;
     }
 }
 
 export class Document {
-    constructor (id, trialId, name, type, size, formattedSize, path, uploadDate, lastModified, enabled) {
+    constructor (id = "", trialId = "", name = "", type = "", size = 0, formattedSize = "", path = "", uploadDate = "", lastModified = 0, enabled = 0) {
         this.id = id;
         this.enabled = enabled;
         this.trialId = trialId;

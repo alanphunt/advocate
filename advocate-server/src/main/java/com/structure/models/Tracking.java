@@ -31,7 +31,10 @@ public class Tracking {
     @Column(name = "trial_id")
     private String trialId;
     
-    private int enabled, correct, frequency;
+    private int enabled, correct, frequency, best;
+
+    @Column(name = "out_of")
+    private int outOf;
 
     @ManyToOne
     @JsonIgnore
@@ -127,19 +130,37 @@ public class Tracking {
         this.correct = correct;
     }
 
+    public int getBest() {
+        return best;
+    }
+
+    public void setBest(int best) {
+        this.best = best;
+    }
+
+    public int getOutOf() {
+        return outOf;
+    }
+
+    public void setOutOf(int outOf) {
+        this.outOf = outOf;
+    }
+
     @Override
     public String toString() {
         return "Tracking{" +
-                "id=" + id +
-                ", frequency=" + frequency +
+                "id='" + id + '\'' +
+                ", label='" + label + '\'' +
                 ", cueCount=" + cueCount +
                 ", permanentProduct='" + permanentProduct + '\'' +
                 ", durationInSeconds=" + durationInSeconds +
                 ", accuracyPercentage=" + accuracyPercentage +
-                ", trialId=" + trialId +
-                ", correct=" + correct +
+                ", trialId='" + trialId + '\'' +
                 ", enabled=" + enabled +
-                ", label=" + label +
+                ", correct=" + correct +
+                ", frequency=" + frequency +
+                ", best=" + best +
+                ", outOf=" + outOf +
                 '}';
     }
 }

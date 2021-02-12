@@ -16,7 +16,7 @@ import CreateTrial from "components/templates/CreateTrial";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import {Goal, Trial} from "utils/classes/ContextModels";
-import EditScoreTrial from "components/templates/score/EditScoreTrial";
+import EditScoreTrial from "components/templates/score/basic-score/EditScoreTrial";
 import CopyGoal from "components/molecules/CopyGoal";
 
 /*
@@ -25,266 +25,261 @@ import CopyGoal from "components/molecules/CopyGoal";
     local state will stay the same.
 */
 const GoalCenter = () =>{
-    const {teacher, setTeacher, signout} = useAuth();
-
-    const [toasterText, setToasterText] = useState("");
-    const [modalAction, setModalAction] = useState("");
-    const [isLoading, setIsLoading] = useState({"": false});
-
-    const [studentId, setStudentId] = useState("");
-    const student = teacher.students[studentId];
-    const goals = student?.goalIds.map(id => teacher.goals[id]);
-
-    const [goalId, setGoalId] = useState("");
-    const goal = teacher.goals[goalId];
-    const benchmarks = goal?.benchmarkIds.map(id => teacher.benchmarks[id]);
-
-    const [benchmarkId, setBenchmarkId] = useState("");
-    const benchmark = teacher.benchmarks[benchmarkId];
-    const trials = benchmark?.trialIds.map(id => teacher.trials[id]);
-
-    const [trialId, setTrialId] = useState("");
-    const trial = teacher.trials[trialId];
-    const trackings = trial?.trackingIds.map(id => teacher.trackings[id]);
-    const documents = trial?.documentIds.map(id => teacher.documents[id]);
-
-    const [mutableGoal, setMutableGoal] = useState(new Goal());
-    const [mutableTrial, setMutableTrial] = useState(new Trial());
-
-    const modalLarge = modalAction.includes("copy") || modalAction.includes("edit") || modalAction.includes("create") || modalAction.includes("complete");
-
-    useEffect(() => {
-        if(!modalAction){
-            setIsLoading({"":false});
-            if(mutableTrial?.id || mutableGoal?.id) {
-                setMutableTrial(null);
-                setMutableGoal(null);
-            }
-        }
-    }, [modalAction]);
-
-    useEffect(() => {
-        if(studentId) {
-            setGoalId("");
-            setBenchmarkId("");
-            setTrialId("");
-            setMutableGoal(null);
-            setMutableTrial(null);
-        }
-    }, [studentId]);
-
-    useEffect(() => {
-        if(benchmarkId)
-            setTrialId("");
-    }, [benchmarkId])
-
-    const closeModal = () => {
-        setModalAction("");
-    };
-
-    const completeCrudOp = (data, message, preventClose) => {
-        setToasterText(<p>{message}</p>);
-        setTeacher(data);
-        if(!preventClose)
-            closeModal();
-        if(Object.values(isLoading)[0])
-            setIsLoading({"":false})
-    };
-
-    const completeCrudOpAndSetNewTrial = (data, message, preventClose) => {
-        const newTrialId = Object.values(data.trials).filter(trial => !Object.keys(teacher.trials).includes(trial.id))[0].id
-        completeCrudOp(data, message, preventClose);
-        setTrialId(newTrialId);
-    };
-
-    const deleteTrial = () => {
-        setIsLoading({"deleteTrial": true})
-
-        // let updatedTrials = benchmark.trials.filter(t => t.id !== mutableTrial.id);
-        // let updatedTrials = benchmark.trials.filter(t => t.id !== trial.id);
-
-        // updatedTrials = updatedTrials.map((t, i) => {return {...t, trialNumber: i+1}});
-        // const bm = {...benchmarkId, trials: [...updatedTrials]};
-        crudFetch({
-            path: `deletetrial?trialId=${mutableTrial.id}&benchmarkId=${mutableTrial.benchmarkId}`,
-            method: "DELETE",
-            success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully deleted {mutableTrial.label}!</>),
-            error: () => alert(SERVER_ERROR),
-            serverError: signout
-        });
-    };
-
-    const determineModalChild = (modalAction) => {
-        switch(modalAction){
-            case "createGoal":
-                return (
-                    <CreateGoal
-                        student={student}
-                        setStudentId={setStudentId}
-                        completeCrudOp={completeCrudOp}
-                        classrooms={teacher.classrooms}
-                        students={teacher.students}
-                        signout={signout}
-                        closeModal={closeModal}
-                    />
-                );
-            case "editGoal":
-                return (
-                    <EditGoal mutableGoal={mutableGoal} setMutableGoal={setMutableGoal} closeModal={closeModal} completeCrudOp={completeCrudOp} signout={signout}/>
-                );
-            case "deleteGoal":
-                return (
-                    <ModalBody
-                        header={`Delete goal '${mutableGoal?.goalName}'?`}
-                        cancelCallback={closeModal}
-                        confirmCallback={fetchDeleteGoal}
-                        isLoading={isLoading.deleteGoal}
-                    >
-                        <p className="marg-bot">Note that this action cannot be undone. This will also delete all associated
-                            benchmarks and trials. Proceed?</p>
-                    </ModalBody>
-                );
-            case "copyGoal":
-                return (
-                    <ModalBody
-                        header={`Copy goal ${mutableGoal?.goalName} to which student?`}
-                        hideButtons
-                    >
-                        <CopyGoal
-                            goal={mutableGoal}
-                            classrooms={Object.values(teacher.classrooms)}
-                            students={teacher.students}
-                            completeCrudOp={completeCrudOp}
-                            closeModal={closeModal}
-                            signout={signout}
-                            isLoading={isLoading.copyGoal}
-                            setIsLoading={setIsLoading}
-                        />
-                    </ModalBody>
-                );
-            case "createBaseline":
-                return (
-                    <ModalBody
-                        header={`Create baseline for ${student?.name}`}
-                        cancelCallback={closeModal}
-                        confirmCallback={() => {}}
-                    >
-                        <p>Baseline</p>
-                    </ModalBody>
-                );
-            case "masterBenchmark":
-                return (
-                    <CompleteBenchmark
-                        goalId={goalId}
-                        benchmark={benchmark}
-                        goalBenchmarks={benchmarks}
-                        completeCrudOp={completeCrudOp}
-                        closeModal={closeModal}
-                        isLoading={isLoading.masterBenchmark}
-                        setIsLoading={setIsLoading}
-                    />
-                );
-            case "createTrial":
-                return (
-                    <ModalBody
-                        header={`Create a trial for ${benchmark?.label} from these ${benchmark?.tracking}-based templates`}
-                        hideButtons
-                    >
-                        <CreateTrial
-                            goalName={goal?.goalName}
-                            benchmark={benchmark}
-                            studentName={student?.name}
-                            completeCrudOp={completeCrudOpAndSetNewTrial}
-                            isLoading={isLoading.createTrial}
-                            setIsLoading={setIsLoading}
-                        />
-                    </ModalBody>
-                );
-            case "editTrial":
-                return (
-                    <ModalBody
-                        header={`Edit ${mutableTrial?.label}`}
-                        hideButtons
-                    >
-                        <EditScoreTrial
-                            closeModal={closeModal}
-                            studentName={student?.name}
-                            goalName={goal?.goalName}
-                            benchmark={benchmark}
-                            mutableTrial={mutableTrial}
-                            setMutableTrial={setMutableTrial}
-                            completeCrudOp={completeCrudOp}
-                            isLoading={isLoading.editScoreTrial}
-                            setIsLoading={setIsLoading}
-                        />
-                    </ModalBody>
-                );
-            case "deleteTrial":
-                return (
-                    <ModalBody
-                        header={`Delete trial ${mutableTrial?.label}`}
-                        cancelCallback={closeModal}
-                        confirmCallback={deleteTrial}
-                        isLoading={isLoading.deleteTrial}
-                    >
-                        <p>Note that this action cannot be undone. This will also delete all associated tracking data and documents. Proceed?</p>
-                    </ModalBody>
-                );
-            default: return null;
-        }
-    };
-
-    const fetchDeleteGoal = () => {
-        setIsLoading({"deleteGoal": true});
-        crudFetch({
-            path: `deletegoal?goalId=${mutableGoal.id}`,
-            method: "DELETE",
-            success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully deleted
-                goal {mutableGoal.goalName}</>),
-            error: () => setIsLoading({"": false}),
-            serverError: signout
-        });
+  const {teacher, setTeacher, signout} = useAuth();
+  
+  const [toasterText, setToasterText] = useState("");
+  const [modalAction, setModalAction] = useState("");
+  const [isLoading, setIsLoading] = useState({"": false});
+  
+  const [studentId, setStudentId] = useState("");
+  const student = teacher.students[studentId];
+  const goals = student?.goalIds.map(id => teacher.goals[id]);
+  
+  const [goalId, setGoalId] = useState("");
+  const goal = teacher.goals[goalId];
+  const benchmarks = goal?.benchmarkIds.map(id => teacher.benchmarks[id]);
+  
+  const [benchmarkId, setBenchmarkId] = useState("");
+  const benchmark = teacher.benchmarks[benchmarkId];
+  const trials = benchmark?.trialIds.map(id => teacher.trials[id]);
+  
+  const [trialId, setTrialId] = useState("");
+  const trial = teacher.trials[trialId];
+  const trackings = trial?.trackingIds.map(id => teacher.trackings[id]);
+  const documents = trial?.documentIds.map(id => teacher.documents[id]);
+  
+  const [mutableGoal, setMutableGoal] = useState(new Goal());
+  const [mutableTrial, setMutableTrial] = useState(new Trial());
+  
+  const modalLarge = modalAction.includes("copy") || modalAction.includes("edit") || modalAction.includes("create") || modalAction.includes("complete");
+  
+  useEffect(() => {
+    if(!modalAction){
+      setIsLoading({"":false});
+      if(mutableTrial?.id || mutableGoal?.id) {
+        setMutableTrial(null);
+        setMutableGoal(null);
+      }
     }
-
-    return (
-        <DashCard fitOnPage>
-            <Modal displayed={modalAction} largeModal={modalLarge} closeModal={closeModal}>
-                {determineModalChild(modalAction)}
-            </Modal>
-            <GoalCenterTableRow teacher={teacher} student={student} setStudentId={setStudentId}/>
-            <div className={"goalcenter-row goalcenter-row-bottom"}>
-                <div className={"drilldownwrapper"}>
-                    <div className={"drilldown"}>
-                        <GoalDrilldown
-                            studentName={student?.name}
-                            goals={goals}
-                            allBenchmarks={teacher.benchmarks}
-                            setGoalId={setGoalId}
-                            setBenchmarkId={setBenchmarkId}
-                            setMutableGoal={setMutableGoal}
-                            setModalAction={setModalAction}
-                        />
-                        <BenchmarkDrilldown
-                            trials={trials}
-                            allDocuments={teacher.documents}
-                            allTrackings={teacher.trackings}
-                            benchmark={benchmark}
-                            trialId={trialId}
-                            setTrialId={setTrialId}
-                            setMutableTrial={setMutableTrial}
-                            setModalAction={setModalAction}
-                        />
-                        <TrialDrilldown
-                            trial={trial}
-                            trackings={trackings}
-                            documents={documents}
-                        />
-                    </div>
-                </div>
-            </div>
-            <Toaster displayed={toasterText} closeToaster={() => setToasterText("")}>{toasterText}</Toaster>
-        </DashCard>
-    )
+  }, [modalAction]);
+  
+  useEffect(() => {
+    if(studentId) {
+      setGoalId("");
+      setBenchmarkId("");
+      setTrialId("");
+      setMutableGoal(null);
+      setMutableTrial(null);
+    }
+  }, [studentId]);
+  
+  useEffect(() => {
+    if(benchmarkId)
+      setTrialId("");
+  }, [benchmarkId])
+  
+  const closeModal = () => {
+    setModalAction("");
+  };
+  
+  const completeCrudOp = (data, message, preventClose) => {
+    setToasterText(<p>{message}</p>);
+    setTeacher(data);
+    if(!preventClose)
+      closeModal();
+    if(Object.values(isLoading)[0])
+      setIsLoading({"":false})
+  };
+  
+  const completeCrudOpAndSetNewTrial = (data, message, preventClose) => {
+    const newTrialId = Object.values(data.trials).filter(trial => !Object.keys(teacher.trials).includes(trial.id))[0].id
+    completeCrudOp(data, message, preventClose);
+    setTrialId(newTrialId);
+  };
+  
+  const deleteTrial = () => {
+    setIsLoading({"deleteTrial": true})
+    
+    // let updatedTrials = benchmark.trials.filter(t => t.id !== mutableTrial.id);
+    // let updatedTrials = benchmark.trials.filter(t => t.id !== trial.id);
+    
+    // updatedTrials = updatedTrials.map((t, i) => {return {...t, trialNumber: i+1}});
+    // const bm = {...benchmarkId, trials: [...updatedTrials]};
+    crudFetch({
+      path: `deletetrial?trialId=${mutableTrial.id}&benchmarkId=${mutableTrial.benchmarkId}`,
+      method: "DELETE",
+      success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully deleted {mutableTrial.label}!</>),
+      error: () => alert(SERVER_ERROR),
+      serverError: signout
+    });
+  };
+  
+  const determineModalChild = (modalAction) => {
+    switch(modalAction){
+      case "createGoal":
+        return (
+          <CreateGoal
+            student={student}
+            setStudentId={setStudentId}
+            completeCrudOp={completeCrudOp}
+            classrooms={teacher.classrooms}
+            students={teacher.students}
+            signout={signout}
+            closeModal={closeModal}
+          />
+        );
+      case "editGoal":
+        return (
+          <EditGoal mutableGoal={mutableGoal} setMutableGoal={setMutableGoal} closeModal={closeModal} completeCrudOp={completeCrudOp} signout={signout}/>
+        );
+      case "deleteGoal":
+        return (
+          <ModalBody
+            header={`Delete goal '${mutableGoal?.goalName}'?`}
+            cancelCallback={closeModal}
+            confirmCallback={fetchDeleteGoal}
+            isLoading={isLoading.deleteGoal}
+          >
+            <p className="marg-bot">Note that this action cannot be undone. This will also delete all associated
+              benchmarks and trials. Proceed?</p>
+          </ModalBody>
+        );
+      case "copyGoal":
+        return (
+          <ModalBody
+            header={`Copy goal ${mutableGoal?.goalName} to which student?`}
+            hideButtons
+          >
+            <CopyGoal
+              goal={mutableGoal}
+              classrooms={Object.values(teacher.classrooms)}
+              students={teacher.students}
+              completeCrudOp={completeCrudOp}
+              closeModal={closeModal}
+              signout={signout}
+              isLoading={isLoading.copyGoal}
+              setIsLoading={setIsLoading}
+            />
+          </ModalBody>
+        );
+      case "createBaseline":
+        return (
+          <ModalBody
+            header={`Create baseline for ${student?.name}`}
+            cancelCallback={closeModal}
+            confirmCallback={() => {}}
+          >
+            <p>Baseline</p>
+          </ModalBody>
+        );
+      case "masterBenchmark":
+        return (
+          <CompleteBenchmark
+            goalId={goalId}
+            benchmark={benchmark}
+            goalBenchmarks={benchmarks}
+            completeCrudOp={completeCrudOp}
+            closeModal={closeModal}
+            isLoading={isLoading.masterBenchmark}
+            setIsLoading={setIsLoading}
+          />
+        );
+      case "createTrial":
+        return (
+          <CreateTrial
+            goalName={goal?.goalName}
+            benchmark={benchmark}
+            studentName={student?.name}
+            completeCrudOp={completeCrudOpAndSetNewTrial}
+            isLoading={isLoading.createTrial}
+            setIsLoading={setIsLoading}
+          />
+        );
+      case "editTrial":
+        return (
+          <ModalBody
+            header={`Edit ${mutableTrial?.label}`}
+            hideButtons
+          >
+            <EditScoreTrial
+              closeModal={closeModal}
+              studentName={student?.name}
+              goalName={goal?.goalName}
+              benchmark={benchmark}
+              mutableTrial={mutableTrial}
+              setMutableTrial={setMutableTrial}
+              completeCrudOp={completeCrudOp}
+              isLoading={isLoading.editScoreTrial}
+              setIsLoading={setIsLoading}
+            />
+          </ModalBody>
+        );
+      case "deleteTrial":
+        return (
+          <ModalBody
+            header={`Delete trial ${mutableTrial?.label}`}
+            cancelCallback={closeModal}
+            confirmCallback={deleteTrial}
+            isLoading={isLoading.deleteTrial}
+          >
+            <p className={"marg-bot-2"}>Note that this action cannot be undone. This will also delete all associated tracking data and documents. Proceed?</p>
+          </ModalBody>
+        );
+      default: return null;
+    }
+  };
+  
+  const fetchDeleteGoal = () => {
+    setIsLoading({"deleteGoal": true});
+    crudFetch({
+      path: `deletegoal?goalId=${mutableGoal.id}`,
+      method: "DELETE",
+      success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully deleted
+        goal {mutableGoal.goalName}</>),
+      error: () => setIsLoading({"": false}),
+      serverError: signout
+    });
+  }
+  
+  return (
+    <DashCard fitOnPage>
+      <Modal displayed={modalAction} largeModal={modalLarge} closeModal={closeModal}>
+        {determineModalChild(modalAction)}
+      </Modal>
+      <GoalCenterTableRow teacher={teacher} student={student} setStudentId={setStudentId}/>
+      <div className={"goalcenter-row goalcenter-row-bottom"}>
+        <div className={"drilldownwrapper"}>
+          <div className={"drilldown"}>
+            <GoalDrilldown
+              studentName={student?.name}
+              goals={goals}
+              allBenchmarks={teacher.benchmarks}
+              setGoalId={setGoalId}
+              setBenchmarkId={setBenchmarkId}
+              setMutableGoal={setMutableGoal}
+              setModalAction={setModalAction}
+            />
+            <BenchmarkDrilldown
+              trials={trials}
+              allDocuments={teacher.documents}
+              allTrackings={teacher.trackings}
+              benchmark={benchmark}
+              trialId={trialId}
+              setTrialId={setTrialId}
+              setMutableTrial={setMutableTrial}
+              setModalAction={setModalAction}
+            />
+            <TrialDrilldown
+              trial={trial}
+              trackings={trackings}
+              documents={documents}
+            />
+          </div>
+        </div>
+      </div>
+      <Toaster displayed={toasterText} closeToaster={() => setToasterText("")}>{toasterText}</Toaster>
+    </DashCard>
+  )
 };
 
 export default GoalCenter;

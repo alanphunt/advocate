@@ -12,7 +12,7 @@ import {FaSyncAlt as LoadingIcon} from "react-icons/fa";
 
 */
 
-const Button = ({text, icon, onClick, onKeyPress, className, type, isLoading}) => {
+const Button = ({text, icon, onClick, onKeyPress, className, type, isLoading, disabled}) => {
     return (
         <button 
             className={className}
@@ -24,7 +24,7 @@ const Button = ({text, icon, onClick, onKeyPress, className, type, isLoading}) =
             }}
             tabIndex={0}
             type={type ? type : "button"}
-            disabled={isLoading}
+            disabled={disabled || isLoading}
         >
             {
                 isLoading

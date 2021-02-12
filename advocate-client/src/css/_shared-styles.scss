@@ -16,7 +16,7 @@
 
 .i-hover{
   @include cur-poi;
-  @include transition;
+  //@include transition;
 }
 
 .hover-color:hover{
@@ -164,7 +164,7 @@
   margin-top: 2rem;
 }
 
-.margin-auto{
+.marg-auto{
   margin: 0 auto;
 }
 

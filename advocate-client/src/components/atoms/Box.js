@@ -7,11 +7,11 @@ import React from 'react';
     State:
         
 */
-const Box = ({text, classes}) => {
+const Box = ({text, children, classes}) => {
     
     return(
         <div className={`box ${classes}`}>
-            {text}
+            {text || children}
         </div>
     );
 };

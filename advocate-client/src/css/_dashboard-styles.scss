@@ -371,6 +371,9 @@ a.active.active-border:hover{
 .goalcenter-row{
   overflow: auto;
   &-top{
+    @include lig-bor;
+    @include bor-rad;
+    padding: 10px 1rem;
     height: 39%;
   }
   &-bottom{
@@ -732,4 +735,16 @@ a.active.active-border:hover{
 
 .template-placeholder-height{
   height: 300px;
+}
+
+.bestoutofcontainer{
+  max-width: 250px;
+}
+
+.bestoutofcontainer input{
+  border-radius: 0;
+}
+
+.column-icon{
+  transform: rotate(90deg);
 }

@@ -42,7 +42,7 @@ const ClassroomForm = ({
     const deleteSpecificStudent = (index) => {
         const studentsCopy = [...students];
         studentsCopy.splice(index, 1);
-        if(typeof students[index].id === "string")
+        if(students[index].id !== "")
             setWarning(warningMessage);
         updateStudents([...studentsCopy]);
     };
@@ -51,7 +51,7 @@ const ClassroomForm = ({
         students.forEach((student, index) => {
             //if the ID is of type number then it hasn't been processed
             //on the back end and it won't have goals/benchmarks
-            if(typeof student.id === "string" && studentArray[index]?.id !== student.id)
+          if(student.id !== "" && studentArray[index]?.id !== student.id)
                 setWarning(warningMessage);
         });
         updateStudents([...studentArray]);

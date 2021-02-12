@@ -138,7 +138,27 @@ export const blankClassroomModel = {
   students: []
 };
 
-export const basicScoreTrialErrorsModel = {
+export const trialErrorsModel = {
   dateStarted: "",
-  label: ""
+  label: "",
+  bestOutOf: ""
 };
+
+export class CardColumnModel {
+  constructor(goal, benchmark, desc){
+    this.Goal = goal;
+    this.Benchmark = benchmark;
+    this["Benchmark Description"] = desc;
+  }
+}
+
+export class GraphDataPoint{
+  constructor(x = 0, y = 0, total = 0, label = "", color = "#51bcda", labels = null){
+    this.x = x;
+    this.y = y;
+    this.total = total;
+    this.label = label;
+    this.color = color;
+    this.labels = labels;
+  }
+}

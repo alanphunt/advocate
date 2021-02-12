@@ -4,11 +4,8 @@ import ProfileCard from "components/atoms/ProfileCard";
 import DashWidget from "components/molecules/DashWidget";
 import GoalsToMonitor from "components/molecules/GoalsToMonitor";
 import DashCard from "components/molecules/DashCard";
-import TableAccordionGroup from "components/molecules/table/TableAccordionGroup";
-import { BASIC_STUDENT_TABLE_HEADERS } from "utils/constants";
 import { useAuth } from "utils/auth/AuthHooks";
-import AccordionItem from "components/atoms/AccordionItem";
-import Table from "components/molecules/table/Table";
+import ClassroomWidget from "components/molecules/dashWidgets/ClassroomWidget";
 
 const DashMain = () => {
     const {teacher} = useAuth();
@@ -33,25 +30,7 @@ const DashMain = () => {
                 {
                     Object.values(classrooms).length === 0
                         ? createClass()
-                        : (
-                            <DashWidget flexSize={2} header={"Classrooms"}>
-                                <TableAccordionGroup>
-                                    {
-                                        Object.values(teacher.classrooms).map((classroom, index) => {
-                                            return (
-                                                <AccordionItem header={classroom.className} key={`dashmainClassroom-${classroom.className}`}>
-                                                    <Table
-                                                        tableData={Object.values(teacher.students).filter(stu => stu.classroomId === classroom.id)}
-                                                        headers={BASIC_STUDENT_TABLE_HEADERS}
-                                                        dataKeys={["name", "age", "grade"]}
-                                                    />
-                                                </AccordionItem>
-                                            )
-                                        })
-                                    }
-                                </TableAccordionGroup>
-                            </DashWidget>
-                        )
+                        : <ClassroomWidget classrooms={teacher.classrooms} students={teacher.students}/>
                 }
             </div>
             <div className={"cardwrapperrow"}>

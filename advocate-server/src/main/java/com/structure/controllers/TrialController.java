@@ -41,13 +41,13 @@ public class TrialController {
                 throw new Exception("Empty date");
         }catch(Exception e){
             System.out.println("failed to parse trial start date");
-//            System.out.println(e.getMessage());
             potentialErrors.put("dateStarted", Constants.INVALID_DATE_FORMAT);
         }
 
         Trial trial = new Trial("", Integer.parseInt(body.get("trialNumber")), startDate, body.get("comments"), body.get("benchmarkId"));
+        trial.setTrialTemplate(body.get("trialTemplate"));
         trialService.handleTrialCreation(potentialErrors, trial, body.get("trackings"), body.get("documentMeta"), documents, req);
-        System.out.println(potentialErrors.toString());
+
         if(potentialErrors.isEmpty())
             return ls.handleTeacherRehydration();
 

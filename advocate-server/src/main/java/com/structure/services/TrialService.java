@@ -118,7 +118,7 @@ public class TrialService {
 
     private void setTrackingInfo(List<Tracking> tracks, String trialId){
         for(Tracking t : tracks){
-            if(t.getId() == null){
+            if(t.getId() == null || t.getId().isBlank()){
                 t.setId(utilService.generateUniqueId());
                 t.setTrialId(trialId);
                 t.setEnabled(1);
@@ -132,19 +132,34 @@ public class TrialService {
         if(trial.getDateStarted() == null)
             errors.put("dateStarted", Constants.INVALID_DATE_FORMAT);
 
-        if(!trackings.isBlank()){
+        if(trial.getTrialTemplate().equals(TrialTemplates.SCORE_BASIC.name())){
+            if(!trackings.isBlank()){
+                try{
+                    trial.setTrackings(utilService.fromJSON(new TypeReference<>() {}, trackings));
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                    errors.put("label", Constants.EMPTY_TRACK_LABEL_RESPONSE);
+                }
+                for(Tracking t : trial.getTrackings()){
+                    if(t.getLabel().isBlank())
+                        errors.put("label", Constants.EMPTY_TRACK_LABEL_RESPONSE);
+                }
+            }
+        }
+        else if(trial.getTrialTemplate().equals(TrialTemplates.SCORE_BEST_OUT_OF.name())){
             try{
-                trial.setTrackings(utilService.fromJSON(new TypeReference<>() {}, trackings));
+                Tracking track = utilService.fromJSON(new TypeReference<>() {}, trackings);
+                if(track.getBest() < 0 || track.getOutOf() <= 0)
+                    throw new Exception("Number is negative or zero.");
+
+                trial.setTrackings(Collections.singletonList(track));
+
             }catch(Exception e){
-                System.out.println(e.getMessage());
-                errors.put("label", Constants.EMPTY_TRACK_LABEL_RESPONSE);
+                errors.put("bestOutOf", Constants.NUMBER_FORMAT_ERROR_RESPONSE);
             }
         }
 
-        for(Tracking t : trial.getTrackings()){
-            if(t.getLabel().isBlank())
-                errors.put("label", Constants.EMPTY_TRACK_LABEL_RESPONSE);
-        }
+
     }
 }
 
