@@ -3,7 +3,7 @@ import FormElement from "components/atoms/FormElement";
 import FileChip from "components/atoms/FileChip";
 import { convertFileSize, generateFilePreview, fileFetch } from "utils/functions/functions";
 import {FaPlus as PlusIcon} from "react-icons/fa";
-import {FILE_UPLOAD_LIMIT, SERVER_ERROR} from "utils/constants";
+import {FILE_UPLOAD_LIMIT} from "utils/constants";
 import ErrorLabel from "components/atoms/ErrorLabel";
 
 /*
@@ -22,7 +22,6 @@ const DropFile = ({files, setFiles, fileMetaData, updateFileMetaData, apiPath}) 
         let accumulator = 0;
         accumulator += files.map(f => f.size).reduce((acc, file) => acc + file)
         if(accumulator > FILE_UPLOAD_LIMIT)
-
             return formatFile(accumulator)
     };
 
@@ -49,6 +48,13 @@ const DropFile = ({files, setFiles, fileMetaData, updateFileMetaData, apiPath}) 
                     setError("Maximum upload limit of 15 MB exceeded.")
             }
         }
+/*
+
+        if(updateFileMetaData){
+            let arr = [...fileMetaData];
+            arr.push()
+        }
+*/
 
         setFiles(fileList, "file");
     };

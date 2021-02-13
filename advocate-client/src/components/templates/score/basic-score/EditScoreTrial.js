@@ -10,9 +10,10 @@ import TemplateFrame from "components/templates/TemplateFrame";
 const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTrial, setMutableTrial, completeCrudOp, isLoading, setIsLoading}) => {
   const [trialFiles, setTrialFiles] = useState([]);
   const [requestErrors, setRequestErrors] = useState(trialErrorsModel);
+  let fileMeta = mapFileMetaDataToDocument(trialFiles, mutableTrial.documents);
   
   const editTrial = () => {
-    setIsLoading({"editScoreTrial": true});
+    setIsLoading({"editTrial": true});
     let formData = mapMutableTrialData();
     for(let i = 0; i < trialFiles.length; i++){
       formData.append("documents", trialFiles[i]);
@@ -46,7 +47,7 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
       comments: comments
     }));
     fd.append("trackings", JSON.stringify(mutableTrial.trackings));
-    fd.append("documentMeta", JSON.stringify(mutableTrial.documents));
+    fd.append("documentMeta", JSON.stringify(fileMeta));
     return fd;
   };
   
@@ -58,7 +59,7 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
         benchmark={benchmark}
         trialFiles={trialFiles}
         setTrialFiles={setTrialFiles}
-        fileMetaData={mapFileMetaDataToDocument(trialFiles, mutableTrial.documents)}
+        fileMetaData={fileMeta}
         updateFileMetaData={updatedMeta => setMutableTrial(prev => ({...prev, documents: [...updatedMeta]}))}
         dateStarted={mutableTrial.dateStarted}
         dateStartedError={requestErrors.dateStarted}

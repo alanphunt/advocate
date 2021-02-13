@@ -556,6 +556,7 @@ a.active.active-border:hover{
 }
 
 .toasterwrapper{
+  z-index: 3;
   display: none;
   position: absolute;
   opacity: 0;

@@ -172,7 +172,7 @@ export const formifyObject = (object) => {
 //returns array of updated document metadata according to an array of new Files
 export const mapFileMetaDataToDocument = (fileArray, docArray, trialId) => {
     let fileMeta = [...docArray]
-    fileArray.forEach(file => {
+    fileArray?.forEach(file => {
         fileMeta.push({trialId: trialId || "", name: file.name, type: file.type, size: file.size, lastModified: file.lastModified})
     })
     return fileMeta

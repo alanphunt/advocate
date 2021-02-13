@@ -7,16 +7,19 @@ import {GraphDataPoint} from "utils/models";
 const BasicScoreTrialDisplay = ({trackings}) => {
   const results = (trackings?.length ? determineScoreTrialAccuracy(trackings) : null);
   
-  const dataPoints = [
-    new GraphDataPoint(results.correct, results.accuracy, results.total, "Correct", "#51bcda", results.correctLabels),
-    new GraphDataPoint(results.incorrect, results.inaccuracy, results.total, "Incorrect", "#f44336", results.incorrectLabels)
-  ];
+  let dataPoints = [];
+  let test = [];
+  if(results) {
+    dataPoints = [
+      new GraphDataPoint(results.correct, results.accuracy, results.total, "Correct", "#51bcda", results.correctLabels),
+      new GraphDataPoint(results.incorrect, results.inaccuracy, results.total, "Incorrect", "#f44336", results.incorrectLabels)
+    ];
   
-  const test = [
-    {label: "Correct", y: results.correct},
-    {label: "Incorrect", y: results.incorrect},
-  ]
-  
+    test = [
+      {label: "Correct", y: results.correct},
+      {label: "Incorrect", y: results.incorrect},
+    ]
+  }
   return (
     results
     ? (
@@ -38,7 +41,7 @@ const BasicScoreTrialDisplay = ({trackings}) => {
             })
           }
         </div>
-        <TrialChart dataPoints={test}/>
+        {test ? <TrialChart dataPoints={test}/> : <></>}
       </>
       ) : <></>
   );

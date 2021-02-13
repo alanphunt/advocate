@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, Suspense} from "react";
 import GoalDrilldown from "components/molecules/drilldown/GoalDrilldown";
 import BenchmarkDrilldown from "components/molecules/drilldown/BenchmarkDrilldown";
 import TrialDrilldown from "components/molecules/drilldown/TrialDrilldown";
@@ -16,8 +16,13 @@ import CreateTrial from "components/templates/CreateTrial";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import {Goal, Trial} from "utils/classes/ContextModels";
-import EditScoreTrial from "components/templates/score/basic-score/EditScoreTrial";
 import CopyGoal from "components/molecules/CopyGoal";
+import {TEMPLATE_TYPES} from "components/templates/TemplateList";
+import TemplateLoadingPlaceholder from "components/atoms/TemplateLoadingPlaceholder";
+
+const EditBestOutOf = React.lazy(() => import("components/templates/score/best-out-of/EditBestOutOfTrial"));
+const EditBasicScore = React.lazy(() => import("components/templates/score/basic-score/EditScoreTrial"));
+
 
 /*
     notes:
@@ -201,17 +206,7 @@ const GoalCenter = () =>{
             header={`Edit ${mutableTrial?.label}`}
             hideButtons
           >
-            <EditScoreTrial
-              closeModal={closeModal}
-              studentName={student?.name}
-              goalName={goal?.goalName}
-              benchmark={benchmark}
-              mutableTrial={mutableTrial}
-              setMutableTrial={setMutableTrial}
-              completeCrudOp={completeCrudOp}
-              isLoading={isLoading.editScoreTrial}
-              setIsLoading={setIsLoading}
-            />
+            {determineTrialEdit()}
           </ModalBody>
         );
       case "deleteTrial":
@@ -227,6 +222,38 @@ const GoalCenter = () =>{
         );
       default: return null;
     }
+  };
+  
+  const determineTrialEdit = () => {
+    let EditingComponent = null;
+      switch(mutableTrial.trialTemplate){
+        case TEMPLATE_TYPES.SCORE_BEST_OUT_OF:
+          EditingComponent = EditBestOutOf;
+          break;
+        case TEMPLATE_TYPES.SCORE_BASIC:
+          EditingComponent = EditBasicScore;
+          break;
+        case TEMPLATE_TYPES.SCORE_CUE:
+          break;
+        case TEMPLATE_TYPES.SCORE_WPM:
+          break;
+        default: break;
+      }
+      return (
+        <Suspense fallback={<TemplateLoadingPlaceholder/>}>
+          <EditingComponent
+            closeModal={closeModal}
+            studentName={student?.name}
+            goalName={goal?.goalName}
+            benchmark={benchmark}
+            mutableTrial={mutableTrial}
+            setMutableTrial={setMutableTrial}
+            completeCrudOp={completeCrudOp}
+            isLoading={isLoading.editTrial}
+            setIsLoading={setIsLoading}
+          />
+        </Suspense>
+      )
   };
   
   const fetchDeleteGoal = () => {

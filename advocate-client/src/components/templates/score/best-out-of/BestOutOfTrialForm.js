@@ -5,7 +5,7 @@ import Box from "components/atoms/Box";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import RequiredField from "components/atoms/RequiredField";
 
-const BestOutOfTrialForm = ({best, setBest, outOf, setOutOf, error}) => {
+const BestOutOfTrialForm = ({track, setTrack, error}) => {
   return (
     <>
       <Section>
@@ -14,15 +14,15 @@ const BestOutOfTrialForm = ({best, setBest, outOf, setOutOf, error}) => {
           <FormElement
             type={"number"}
             placeholder={"Best"}
-            value={best}
-            onChange={e => setBest(parseInt(e.currentTarget.value))}
+            value={track.best}
+            onChange={e => setTrack({best: e.currentTarget.value === "" ? "" : parseInt(e.currentTarget.value)})}
           />
           <span className={"marg-left marg-right"}>/</span>
           <FormElement
             type={"number"}
             placeholder={"Out of"}
-            value={outOf}
-            onChange={e => setOutOf(parseInt(e.currentTarget.value))}
+            value={track.outOf}
+            onChange={e => setTrack({outOf: e.currentTarget.value === "" ? "" : parseInt(e.currentTarget.value)})}
           />
         </Box>
         {error ? <ErrorLabel text={error}/> : <></> }

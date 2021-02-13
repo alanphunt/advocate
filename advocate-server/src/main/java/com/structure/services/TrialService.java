@@ -31,7 +31,7 @@ public class TrialService {
     @Autowired 
     private Utils utilService;
 
-    public Map<String, String> handleTrialCreation(Map<String, String> errors, Trial trial, String trackings, String docMeta, List<MultipartFile> docFiles, HttpServletRequest req){
+    public void handleTrialCreation(Map<String, String> errors, Trial trial, String trackings, String docMeta, List<MultipartFile> docFiles, HttpServletRequest req){
         determineTrialErrors(errors, trial, trackings);
         if(errors.isEmpty()){
             System.out.println("No errors in trial input found.");
@@ -49,7 +49,6 @@ public class TrialService {
             handleTrialDocuments(trial, docFiles, req);
             tr.save(trial);
         }
-        return errors;
     }
 
     public Map<String, String> handleTrialEdit(String trialString, String trackings, String documentMeta, List<MultipartFile> documents, HttpServletRequest req){
@@ -81,7 +80,7 @@ public class TrialService {
 
     public void handleTrialDeletion(String id, String benchmarkId){
         tr.deleteById(id);
-        ArrayList<Trial> trials = tr.findAllByBenchmarkId(benchmarkId);
+        List<Trial> trials = tr.findAllByBenchmarkId(benchmarkId);
         for(int i = 0; i < trials.size(); i++){
             Trial trial = trials.get(i);
             System.out.println(trial.toString());
@@ -150,12 +149,13 @@ public class TrialService {
             try{
                 Tracking track = utilService.fromJSON(new TypeReference<>() {}, trackings);
                 if(track.getBest() < 0 || track.getOutOf() <= 0)
-                    throw new Exception("Number is negative or zero.");
-
+                    throw new Exception(Constants.NUMBER_FORMAT_ERROR_RESPONSE);
+                if(track.getBest() > track.getOutOf())
+                    throw new Exception(Constants.NUMERATOR_LESS_THAN_DENOMINATOR_RESPONSE);
                 trial.setTrackings(Collections.singletonList(track));
 
             }catch(Exception e){
-                errors.put("bestOutOf", Constants.NUMBER_FORMAT_ERROR_RESPONSE);
+                errors.put("bestOutOf", e.getMessage());
             }
         }
 

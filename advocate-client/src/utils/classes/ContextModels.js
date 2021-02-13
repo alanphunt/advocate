@@ -84,7 +84,7 @@ export class Benchmark {
 }
 
 export class Trial {
-    constructor (id = "", label = "", trialNumber = 0, dateStarted = "", dateCompleted = "", comments = "", benchmarkId = "", enabled = 0, documentIds = [], trackingIds = []) {
+    constructor (id = "", label = "", trialNumber = 0, dateStarted = "", dateCompleted = "", comments = "", benchmarkId = "", enabled = 0, documentIds = [], trackingIds = [], trialTemplate = "") {
         this.id = id;
         this.enabled = enabled;
         this.label = label;
@@ -95,6 +95,7 @@ export class Trial {
         this.benchmarkId = benchmarkId;
         this.documentIds = documentIds;
         this.trackingIds = trackingIds;
+        this.trialTemplate = trialTemplate;
     }
 }
 

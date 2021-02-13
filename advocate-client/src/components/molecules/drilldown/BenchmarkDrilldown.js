@@ -11,6 +11,7 @@ import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import {determineTrialAverage} from "utils/functions/functions";
 import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
+import {TEMPLATE_TYPES} from "../../templates/TemplateList";
 
 const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, trialId, setTrialId, setMutableTrial, setModalAction}) => {
 
@@ -36,7 +37,7 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, tria
 
     const handleTrialIconAction = (e, iconKey, trial) => {
         e.stopPropagation();
-        setMutableTrial({...trial, documents: trial.documentIds.map(id => allDocuments[id]), trackings: trial.trackingIds.map(id => allTrackings[id])});
+        setMutableTrial({...trial, documents: trial.documentIds.map(id => allDocuments[id]), trackings: (trial.trialTemplate === TEMPLATE_TYPES.SCORE_BASIC ? trial.trackingIds.map(id => allTrackings[id]) : allTrackings[trial.trackingIds[0]])});
         setModalAction(iconKey);
     };
 

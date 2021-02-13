@@ -23,6 +23,7 @@ public class Constants {
     public static final String INVALID_DATE_FORMAT = "Dates must be in MM/dd/yy format.";
     public static final String EMPTY_TRACK_LABEL_RESPONSE = "Please ensure all tracks have a label.";
     public static final String NUMBER_FORMAT_ERROR_RESPONSE = "Fields must be a positive number.";
+    public static final String NUMERATOR_LESS_THAN_DENOMINATOR_RESPONSE = "Numerator must be greater than the denominator.";
 
     public static final int COOKIE_LIFE_SECONDS = 60 * 60 * 3;
     public static final int COOKIE_LIFE_MS = 1000 * COOKIE_LIFE_SECONDS;

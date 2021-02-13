@@ -16,7 +16,7 @@ import {FaCheck as CheckIcon, FaTimes as XIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import Button from "components/atoms/Button";
 import BestOutOfTrialForm from "./score/best-out-of/BestOutOfTrialForm";
-import ModalBody from "../molecules/ModalBody";
+import ModalBody from "components/molecules/ModalBody";
 const BasicScoreTrialForm = React.lazy(() => import("./score/basic-score/BasicScoreTrialForm"));
 
 const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoading, setIsLoading}) => {
@@ -129,10 +129,8 @@ const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoadin
           `Create Best Out Of Score Trial for ${studentName}`,
           `Create a Best Out Of Score Trial`,
           <BestOutOfTrialForm
-            best={trackings?.best}
-            outOf={trackings?.outOf}
-            setBest={val => setTrackings(prev => ({...prev, best: val}))}
-            setOutOf={val => setTrackings(prev => ({...prev, outOf: val}))}
+            track={trackings}
+            setTrack={(val) => setTrackings(prev => ({...prev, ...val}))}
             error={requestErrors.bestOutOf}
           />
         )

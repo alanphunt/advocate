@@ -4,7 +4,6 @@ import TrialChart from "components/atoms/TrialChart";
 import {GraphDataPoint} from "utils/models";
 
 const BestOutOfTrialDisplay = ({tracking}) => {
-  console.log(tracking)
   let correct = tracking?.best || 0;
   let incorrect = tracking.outOf - tracking.best;
   let correctPercentage = Math.floor(correct/tracking.outOf*100);
@@ -20,7 +19,7 @@ const BestOutOfTrialDisplay = ({tracking}) => {
       label: "Score", y: correct
     },
     {
-      label: "Out Of", y: incorrect
+      label: "Incorrect", y: incorrect
     }
   ]
   return (
