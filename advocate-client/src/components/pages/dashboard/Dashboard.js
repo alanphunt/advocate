@@ -7,7 +7,7 @@ import ProgressReport from "components/pages/progressreports/ProgressReport";
 import Help from "components/pages/help/Help";
 import GoalCenter from "components/pages/goalcenter/GoalCenter";
 import Profile from "components/pages/profile/Profile";
-import CreateGoal from "components/pages/creategoal/CreateGoal";
+import CreateGoal from "components/molecules/CreateGoal";
 import Test from "components/pages/Test/Test"
 import DashNav from 'components/molecules/DashNav';
 

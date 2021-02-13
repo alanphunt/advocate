@@ -7,6 +7,7 @@ import { BASIC_STUDENT_TABLE_HEADERS} from "utils/constants";
 import {FaAddressBook as BookIcon, FaRegTrashAlt as TrashIcon} from "react-icons/fa";
 import RequiredField from "components/atoms/RequiredField";
 import ErrorLabel from "components/atoms/ErrorLabel";
+import {Student} from "utils/classes/ContextModels";
 
 /*
      props:
@@ -21,13 +22,6 @@ const ClassroomForm = ({
     errors
 }) => {
 
-    const student = {
-        id: -1,
-        name: '',
-        age: '',
-        grade: ''
-    };     
-    
     const [warning, setWarning] = useState("");
     const warningMessage = "You've deleted a student which will also delete associated goals, benchmarks, trials, and tracking data. Clicking confirm will make these changes permanent. Click cancel to undo."
 
@@ -84,7 +78,7 @@ const ClassroomForm = ({
             </Section>
             <Section>
                 <h3 className={"i-bottom"}><RequiredField/>Number of students</h3>
-                <NumberPicker updateState={adjustStudentCount} object={student} objectArray={students}/>
+                <NumberPicker updateState={adjustStudentCount} object={new Student()} objectArray={students}/>
             </Section>
             <Section>
                 {

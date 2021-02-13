@@ -99,7 +99,7 @@ const Classroom = () => {
                         cancelCallback={closeModal}
                         isLoading={isLoading}
                     >
-                        <p>
+                        <p className={"marg-bot-2"}>
                             This will delete all students and all goals, benchmarks, trials, and tracking associated with those students.
                             This action cannot be undone.
                         </p>

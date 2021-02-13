@@ -8,7 +8,7 @@ import { useAuth } from "utils/auth/AuthHooks";
 import Modal from "components/molecules/Modal";
 import Toaster from "components/atoms/Toaster";
 import GoalCenterTableRow from "components/molecules/GoalCenterTableRow";
-import CreateGoal from "components/pages/creategoal/CreateGoal";
+import CreateGoal from "components/molecules/CreateGoal";
 import EditGoal from "components/molecules/EditGoal";
 import ModalBody from "components/molecules/ModalBody";
 import CompleteBenchmark from "components/molecules/CompleteBenchmark";
@@ -19,6 +19,7 @@ import {Goal, Trial} from "utils/classes/ContextModels";
 import CopyGoal from "components/molecules/CopyGoal";
 import {TEMPLATE_TYPES} from "components/templates/TemplateList";
 import TemplateLoadingPlaceholder from "components/atoms/TemplateLoadingPlaceholder";
+import CreateBaseline from "components/molecules/CreateBaseline";
 
 const EditBestOutOf = React.lazy(() => import("components/templates/score/best-out-of/EditBestOutOfTrial"));
 const EditBasicScore = React.lazy(() => import("components/templates/score/basic-score/EditScoreTrial"));
@@ -174,7 +175,7 @@ const GoalCenter = () =>{
             cancelCallback={closeModal}
             confirmCallback={() => {}}
           >
-            <p>Baseline</p>
+            <CreateBaseline/>
           </ModalBody>
         );
       case "masterBenchmark":
