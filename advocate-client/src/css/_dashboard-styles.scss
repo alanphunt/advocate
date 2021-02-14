@@ -9,8 +9,8 @@
 .sidebarwrapper{
   @include wid-hei(100%, 100%);
   max-width: 50px;
-  background:#334A52;
-  color: $lig-gra;
+  background: $primary-med;
+  color: $med-whi;
   font-size: 12px;
   z-index: 2;
 }
@@ -50,21 +50,21 @@
 
 .sideitemwrapper a:hover, .sidebarfooter .sideitem:hover{
   color: $white;
-  border-top: 1px solid #cccccc50;
-  border-bottom: 1px solid #cccccc50;
+  border-top: 1px solid $lig-gra;
+  border-bottom: 1px solid $lig-gra;
 }
 
 a.active{
-  color: $primary;
+  color: $dar-gra;
 }
 
 a.active-border{
-  border-top: 1px solid #cccccc50;
-  border-bottom: 1px solid #cccccc50;
+  border-top: 1px solid $lig-gra;
+  border-bottom: 1px solid $lig-gra;
 }
 
 a.active.active-border:hover{
-  color: $primary;
+  color: $dar-gra;
 }
 
 .itemmain{

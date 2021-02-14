@@ -1,5 +1,5 @@
 import React from "react";
-import puzzle from "images/puzzle-sm.png";
+import puzzle from "images/puzzle-sm-wht.png";
 import SidebarLinks from "components/molecules/SidebarLinks";
 import { FaArrowLeft as LeftArrowIcon, FaArrowRight as RightArrowIcon } from "react-icons/fa";
 import NavItem from "components/atoms/NavItem";

@@ -18,13 +18,13 @@ export const useProvideAuth = () => {
 
     const signin = (data, errorHandler, callback, handleServerError) => {
         fetch(`/api/authenticate`, {method: "POST", body: JSON.stringify(data), headers: JSON_HEADER})
-        .then(response => Promise.all([response.ok, response.json()]))
-        .then(([ok, body]) => {
+        .then(response => Promise.all([response.ok, response.json(), response.status]))
+        .then(([ok, body, status]) => {
             if(ok)
                 _completeFetch(body, "/dashboard/main");
             else
                 errorHandler(body);
-            callback && callback();
+            callback && callback(status);
         })
         .catch(() => {alert(SERVER_ERROR); handleServerError();});
     };
@@ -55,7 +55,6 @@ export const useProvideAuth = () => {
 
     const signout = () => {
         fetch("/api/logout");
-        STORAGE.clear();
         history.replace("/", {from: "/"});
         setTeacher(null);
     };

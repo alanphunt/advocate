@@ -7,10 +7,10 @@ import React from "react";
 
 */
 
-const TableCell = ({children, text}) => {
+const TableCell = ({children, text, classes}) => {
     
     return(
-        <div className={`td`}>
+        <div className={`td ${classes || ""}`}>
             {children || text}
         </div>
     );

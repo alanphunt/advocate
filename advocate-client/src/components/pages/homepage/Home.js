@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+ import React, {useState, useEffect} from 'react';
 import logo from 'images/logo-sm-wht.png'
 import {
     FaUser as UserIcon,
@@ -17,18 +17,14 @@ import RegisterForm from 'components/molecules/RegisterForm';
 import { homepageErrorModel, loginModel, registrationModel } from 'utils/models';
 import { useAuth } from 'utils/auth/AuthHooks';
 import ModalBody from 'components/molecules/ModalBody';
-import Modal from "components/molecules/Modal";
+ import {OKAY_STATUS} from "utils/constants";
 
-const Home = ({setIsFetching}) => { 
+const Home = ({setIsFetching, modalAction, setModalAction, setModalBody, closeModal}) => {
     const {signin, register} = useAuth();
     const [loginObject, setLoginObject] = useState(loginModel);
     const [registrationObject, setRegistrationObject] = useState(registrationModel);
     const [errors, setErrors] = useState(homepageErrorModel);
-
-    const [modalBody, setModalBody] = useState(null);
-    const [modalAction, setModalAction] = useState("");
-    const closeModal = () => setModalBody(null);
-
+    
     const resetForms = () => {
         setLoginObject(loginModel);
         setRegistrationObject(registrationModel);
@@ -59,14 +55,12 @@ const Home = ({setIsFetching}) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modalAction, loginObject, registrationObject, errors])
-
+    
     useEffect(() => {
-        if(!modalBody){
+        if(!modalAction)
             resetForms();
-            setModalAction("");
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [modalBody])
+    }, [modalAction])
 
     const handleFormSubmission = (e) => {
         e.preventDefault();
@@ -74,8 +68,8 @@ const Home = ({setIsFetching}) => {
         const isLoginForm = modalAction === "login";
         const data = isLoginForm ? loginObject : registrationObject;
         isLoginForm 
-            ?  signin(data, setErrors, () => setIsFetching(false), () => setIsFetching(false))
-            :  register(data, setErrors, () => setIsFetching(false), () => setIsFetching(false))
+            ?  signin(data, errorsExist, handleCompletion, () => setIsFetching(false))
+            :  register(data, errorsExist, handleCompletion, () => setIsFetching(false))
     };
 
     const divKeyPressEvent = (event, formType) => {
@@ -89,20 +83,25 @@ const Home = ({setIsFetching}) => {
         else
             setRegistrationObject({...registrationObject, [key]: e.currentTarget.value})
     };
+    
+    const errorsExist = (message) => {
+        setErrors(message);
+    };
+    
+    const handleCompletion = (status) => {
+        setIsFetching(false);
+        if(status === OKAY_STATUS)
+            closeModal();
+    };
 
     return (
-        <div className={"width-100 height-100"} onClick={() => {if(modalBody) closeModal();}}>
-            <Modal displayed={modalBody} closeModal={closeModal} >
-                { modalBody }
-            </Modal>
+        <div className={"width-100 height-100"}>
             <header className={"homeheader"}>
                 <div className={"homeheader-inner"}>
                     <img src={logo} alt={"Advocate logo"}/>
                     <div className={"promptcontainer"}>
                         <div
-                            onClick={() => {
-                                setModalAction("login")}
-                            }
+                            onClick={() => setModalAction("login")}
                             onKeyPress={event => {divKeyPressEvent(event, "login");}}
                             tabIndex={0}
                             className={"headerlogin selectable navdiv-hover"}>
@@ -110,9 +109,7 @@ const Home = ({setIsFetching}) => {
                             <span>Login</span>
                         </div>
                         <div
-                            onClick={() => {
-                                setModalAction("register")
-                            }}
+                            onClick={() => setModalAction("register")}
                             onKeyPress={event => {divKeyPressEvent(event, "register");}}
                             tabIndex={0}
                             className={"headerregister selectable navdiv-hover"}>
@@ -122,7 +119,7 @@ const Home = ({setIsFetching}) => {
                     </div>
                 </div>
             </header>
-            <div className={"herocontainer"}>
+            <section className={"herocontainer"}>
                 <div className={"hero-overlay"}/>
                 <div className={"herotext"}>
                     <h1>Advocate IEP</h1>
@@ -130,8 +127,8 @@ const Home = ({setIsFetching}) => {
                     <p>See how Advocate IEP meets teachers where they're at to help ensure consistent student achievement.</p>
                     <Button className={"margin-auto"} text={"Get Started Now"} icon={<PlaneIcon/>}/>
                 </div>
-            </div>
-            <div className={"summary-wrapper"}>
+            </section>
+            <section className={"summary-wrapper"}>
                 <div className={"summary-inner"}>
                     <div className={"summary-section"}>
                         <h2 className={"marg-bot"}>Centralized & Persistent</h2>
@@ -165,8 +162,8 @@ const Home = ({setIsFetching}) => {
                         <MapIcon className={"summary-bg-icon"}/>
                     </div>
                 </div>
-            </div>
-            <div className={"benefits-wrapper"}>
+            </section>
+            <section className={"benefits-wrapper"}>
                 <div className={"benefits-inner"}>
                     <h2>Why is Advocate IEP the new standard?</h2>
                     <p className={"marg-bot-3"}>
@@ -196,8 +193,8 @@ const Home = ({setIsFetching}) => {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className={"beta-wrapper"}>
+            </section>
+            <section className={"beta-wrapper"}>
                 <div className={"beta-overlay"}/>
                 <div className={"beta-inner"}>
                     <h2>Become an Advocate for Advocate IEP</h2>
@@ -208,7 +205,7 @@ const Home = ({setIsFetching}) => {
                     </p>
                     <Button className={"margin-auto"} text={"Let's Change Lives"} icon={<PeaceIcon/>}/>
                 </div>
-            </div>
+            </section>
             <footer className={"homepage-footer"}>
                 <p className={"marg-bot"}>We do not disclose any data of any kind to outside parties. Ever. We encrypt all personally
                     identifying information (PII) of students on secured servers to ensure compliance with FERPA and COPPA regulations.</p>
@@ -217,5 +214,5 @@ const Home = ({setIsFetching}) => {
         </div>
     );
 };
-//centralized & persistent, simple & fast,
+
 export default Home;

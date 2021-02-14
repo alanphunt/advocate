@@ -19,6 +19,10 @@ first 3 letters concatenated with hyphens
   position: relative;
 }
 
+.modal-opened{
+  overflow: hidden;
+}
+
 .herocontainer{
   background:
           url("../images/side-view-child-tutor-home-learning.jpg")
@@ -41,7 +45,7 @@ first 3 letters concatenated with hyphens
   padding: .5rem 0;
   @include box-sha();
   position: relative;
-  z-index: 10;
+  z-index: 1;
 }
 
 .homeheader-inner{
@@ -94,7 +98,7 @@ first 3 letters concatenated with hyphens
 
 .modal{
   background: $white;
-  width: 100%;
+  @include wid-hei(100%, 100%);
   color: $dar-gra;
   overflow: auto;
 }
@@ -108,9 +112,12 @@ first 3 letters concatenated with hyphens
   top: -30px;
   right: -30px;
   font-size: 2rem;
+  color: $primary;
   @include cur-poi;
   @include transition;
-  color: $dar-gra;
+  &:hover{
+    color: $dar-gra;
+  }
 }
 
 .formcontainer{
@@ -120,6 +127,11 @@ first 3 letters concatenated with hyphens
 .modalwrapper{
   z-index: 3;
   display: none;
+  background-color: $opacity-bg;
+  @include wid-hei(100%, 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .summary-wrapper{

@@ -7,9 +7,9 @@ import React from "react";
 
 */
 
-const TableHeaderCell = ({children}) => {
+const TableHeaderCell = ({children, classes}) => {
     return(
-        <div className={`th`}>
+        <div className={`th ${classes || ""}`}>
             <h3>{children}</h3>
         </div>
     );

@@ -2,6 +2,7 @@ export const SERVER_ERROR = "Oops, sorry! Something went wrong on our end, try a
 
 export const STORAGE = sessionStorage;
 
+export const OKAY_STATUS = 200;
 export const UNAUTHORIZED_STATUS = 401;
 export const FORBIDDEN_STATUS = 403;
 export const BAD_REQUEST_STATUS = 400;

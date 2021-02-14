@@ -16,6 +16,8 @@ import ErrorLabel from "components/atoms/ErrorLabel";
 import TextAreaForTable from "./TextAreaForTable";
 import { convertFromRaw, EditorState } from 'draft-js';
 import Checkbox from "./Checkbox";
+import TableCell from "components/atoms/table/TableCell";
+import TableRow from "components/atoms/table/TableRow";
 
 const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
     useEffect(() => {
@@ -144,13 +146,16 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                         objectArray={mutableGoal.benchmarks}
                     />
                 </Section>
-                <Table hideSearchAndSort headers={[<span><RequiredField/>Label</span>, <span><RequiredField/>Benchmark</span>, <span><RequiredField/>Mastery Date</span>, <span><RequiredField/>Tracking Type</span>]}>
+                <Table
+                  columnSize={{0: "flex-half"}}
+                  hideSearchAndSort
+                  headers={[<span><RequiredField/>Label</span>, <span><RequiredField/>Benchmark</span>, <span><RequiredField/>Mastery Date</span>, <span><RequiredField/>Tracking Type</span>]}>
                     {
                         mutableGoal.benchmarks?.map((benchmark, ind) => {
                             let label = `Benchmark ${alphabet[ind]}`;
                                 return (
-                                    <div key={"benchmark"+ind} className={"tr"}>
-                                        <div className="td">
+                                    <TableRow key={"benchmark"+ind}>
+                                        <TableCell classes="flex-half">
                                             <strong>{label}</strong>
                                             <div>
                                                 <CopyIcon
@@ -164,8 +169,8 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                                                         deleteSpecificBenchmark(ind);
                                                     }}/>
                                                 </div>
-                                        </div>
-                                        <div className="td">
+                                        </TableCell>
+                                        <TableCell>
                                             <TextAreaForTable
                                                 placeholder="Benchmark Description"
                                                 editorState={benchmark.description}
@@ -174,15 +179,15 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                                                 index={ind}
                                                 setFocused={setFocused}
                                             />
-                                        </div>
-                                        <div className="td">
-                                            <FormElement 
+                                        </TableCell>
+                                        <TableCell>
+                                            <FormElement
                                                 onChange={(e) => updateBenchmark(ind, e, "masteryDate")}
                                                 placeholder='MM/DD/YY'
                                                 value={benchmark.masteryDate}
                                             />
-                                        </div>
-                                        <div className="td">
+                                        </TableCell>
+                                        <TableCell>
                                             <select
                                                 onChange={(e) => {
                                                     updateBenchmark(ind, e, "tracking")
@@ -195,8 +200,8 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
                                                 <option value={"duration"}>Duration</option>
                                                 <option value={"other"}>Other</option>
                                             </select>
-                                        </div>
-                                    </div>
+                                        </TableCell>
+                                    </TableRow>
                                 )
                             })
                     }

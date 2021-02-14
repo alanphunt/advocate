@@ -26,6 +26,8 @@ const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
   
   const tableInputs = (track, index) => {
     return {
+      action:
+        <span><TrashIcon className={"i-hover"} onClick={() => handleTrackDeletion(index)}/></span>,
       label:
         <FormElement
           onChange={(e) => handleTrackingsUpdate("label", index, e.currentTarget.value)}
@@ -52,7 +54,6 @@ const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
             />
           </span>
         </div>
-        <span><TrashIcon className={"i-hover"} onClick={() => handleTrackDeletion(index)}/></span>
       </div>
     }
   };
@@ -63,24 +64,25 @@ const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
     });
   }
   return (
-        <>
-          <Section>
-            <Section>
-              <h3 className={"marg-bot"}>Track Count</h3>
-              <NumberPicker
-                updateState={updateTracks}
-                object={track}
-                objectArray={trackings}
-              />
-            </Section>
-            {labelError ? <ErrorLabel text={labelError}/> : <></>}
-            <Table
-              headers={[<>Item Label<p>(press Tab for next item)</p></>, <>Correct/Incorrect<p>(press Enter to toggle)</p></>]}
-              tableData={renderTableInputs()}
-              hideSearchAndSort
-            />
-          </Section>
-        </>
+    <>
+      <Section>
+        <Section>
+          <h3 className={"marg-bot"}>Track Count</h3>
+          <NumberPicker
+            updateState={updateTracks}
+            object={track}
+            objectArray={trackings}
+          />
+        </Section>
+        {labelError ? <ErrorLabel text={labelError}/> : <></>}
+        <Table
+          columnSize={{0: "flex-quarter"}}
+          headers={[<>Action</>, <>Item Label<p>(press Tab for next item)</p></>, <>Correct/Incorrect<p>(press Enter to toggle)</p></>]}
+          tableData={renderTableInputs()}
+          hideSearchAndSort
+        />
+      </Section>
+    </>
   );
 };
 

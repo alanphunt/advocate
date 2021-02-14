@@ -30,11 +30,9 @@ const EditBasicScore = React.lazy(() => import("components/templates/score/basic
     we have to use IDs in state because if we store objects that we plan on updating the teacher object will get updated but
     local state will stay the same.
 */
-const GoalCenter = () =>{
+const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setToasterText}) =>{
   const {teacher, setTeacher, signout} = useAuth();
   
-  const [toasterText, setToasterText] = useState("");
-  const [modalAction, setModalAction] = useState("");
   const [isLoading, setIsLoading] = useState({"": false});
   
   const [studentId, setStudentId] = useState("");
@@ -56,8 +54,6 @@ const GoalCenter = () =>{
   
   const [mutableGoal, setMutableGoal] = useState(new Goal());
   const [mutableTrial, setMutableTrial] = useState(new Trial());
-  
-  const modalLarge = modalAction.includes("copy") || modalAction.includes("edit") || modalAction.includes("create") || modalAction.includes("complete");
   
   useEffect(() => {
     if(!modalAction){
@@ -82,11 +78,11 @@ const GoalCenter = () =>{
   useEffect(() => {
     if(benchmarkId)
       setTrialId("");
-  }, [benchmarkId])
+  }, [benchmarkId]);
   
-  const closeModal = () => {
-    setModalAction("");
-  };
+  useEffect(() => {
+    setModalBody(determineModalChild());
+  }, [modalAction, trialId, mutableTrial, mutableGoal])
   
   const completeCrudOp = (data, message, preventClose) => {
     setToasterText(<p>{message}</p>);
@@ -120,7 +116,7 @@ const GoalCenter = () =>{
     });
   };
   
-  const determineModalChild = (modalAction) => {
+  const determineModalChild = () => {
     switch(modalAction){
       case "createGoal":
         return (
@@ -146,7 +142,7 @@ const GoalCenter = () =>{
             confirmCallback={fetchDeleteGoal}
             isLoading={isLoading.deleteGoal}
           >
-            <p className="marg-bot">Note that this action cannot be undone. This will also delete all associated
+            <p className="marg-bot-2">Note that this action cannot be undone. This will also delete all associated
               benchmarks and trials. Proceed?</p>
           </ModalBody>
         );
@@ -271,9 +267,6 @@ const GoalCenter = () =>{
   
   return (
     <DashCard fitOnPage>
-      <Modal displayed={modalAction} largeModal={modalLarge} closeModal={closeModal}>
-        {determineModalChild(modalAction)}
-      </Modal>
       <GoalCenterTableRow teacher={teacher} student={student} setStudentId={setStudentId}/>
       <div className={"goalcenter-row goalcenter-row-bottom"}>
         <div className={"drilldownwrapper"}>
@@ -305,7 +298,6 @@ const GoalCenter = () =>{
           </div>
         </div>
       </div>
-      <Toaster displayed={toasterText} closeToaster={() => setToasterText("")}>{toasterText}</Toaster>
     </DashCard>
   )
 };

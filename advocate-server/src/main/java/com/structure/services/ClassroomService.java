@@ -50,7 +50,7 @@ public class ClassroomService{
             classroom.getStudents().forEach(stu -> {
                 if(stu.getGoalIds().isEmpty())
                     stu.setGoals(new ArrayList<>());
-                if(stu.getClassroomId() == null)
+                if(stu.getClassroomId().isBlank())
                     fillStudentData(stu, classroom.getId());
 
             });
