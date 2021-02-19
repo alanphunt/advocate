@@ -3,17 +3,17 @@ import Table from "components/molecules/table/Table";
 
 const GoalsToMonitor = ({teacher}) => {
     const classrooms = Object.values(teacher.classrooms);
-    const students = Object.values(teacher.students);
     const goals = Object.values(teacher.goals);
 
-    const dataObjects = goals.filter(goal => goal.completionDate && goal.monitor).map(goal => {
-        let student = students.find(stu => stu.id === goal.studentId);
+    const dataObjects = goals.filter(goal => goal.complete && goal.monitor).map(goal => {
+        let student = teacher.students[goal.studentId];
 
         return (
             {
-                goalName: goal.goalName,
+                id: student.id,
                 studentName: student.name,
                 classroom: classrooms.find(cr => cr.id === student.classroomId).className,
+                goalName: goal.goalName,
                 masteryDate: goal.completionDate
             }
         )
@@ -23,6 +23,7 @@ const GoalsToMonitor = ({teacher}) => {
             <Table
                 headers={["Student", "Classroom", "Goal", "Mastery Date"]}
                 tableData={dataObjects}
+                hideSearchAndSort
             />
     );
 };

@@ -110,7 +110,7 @@ public class GoalService {
     }
 
     public ResponseEntity<?> handleGoalDeletion(String goalId){
-        goalRepo.deleteById(goalId);
+        goalRepo.hardDeleteGoalById(goalId);
         return ls.handleTeacherRehydration();
     }
 
@@ -128,8 +128,8 @@ public class GoalService {
         }catch(Exception e){
             errors.put("benchmarks", Constants.BENCHMARKS_EMPTY_RESPONSE);
         }
-        if(benchmarks.size() == 0)
-            errors.put("benchmarks", Constants.NO_BENCHMARKS_RESPONSE);
+/*        if(benchmarks.size() == 0)
+            errors.put("benchmarks", Constants.NO_BENCHMARKS_RESPONSE);*/
 
         for (String key : goalString.keySet()){
             String val = goalString.get(key);

@@ -137,7 +137,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
             </Section>
 
             <Section>
-                <h3 className={"i-bottom"}><RequiredField/>Benchmarks</h3>
+                <h3 className={"i-bottom"}>Benchmarks</h3>
                 <Section>
                     <NumberPicker
                         updateState={adjustBenchmarkCount}

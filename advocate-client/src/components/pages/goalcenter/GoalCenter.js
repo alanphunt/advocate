@@ -82,7 +82,7 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
   
   useEffect(() => {
     setModalBody(determineModalChild());
-  }, [modalAction, trialId, mutableTrial, mutableGoal])
+  }, [modalAction, trialId, mutableTrial, mutableGoal, isLoading])
   
   const completeCrudOp = (data, message, preventClose) => {
     setToasterText(<p>{message}</p>);
