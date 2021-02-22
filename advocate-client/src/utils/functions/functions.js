@@ -2,6 +2,7 @@ import React from "react";
 import {BAD_REQUEST_STATUS, FORBIDDEN_STATUS, JSON_HEADER, SERVER_ERROR} from "utils/constants";
 import {FaRegEdit as EditIcon, FaRegTrashAlt as TrashIcon} from "react-icons/fa";
 import {convertToRaw} from 'draft-js';
+import {Document} from "utils/classes/ContextModels"
 
 export const fetchPost = (path, body, callback, errorCallback, catchCallback) => {
     const formData = new FormData();
@@ -173,7 +174,8 @@ export const formifyObject = (object) => {
 export const mapFileMetaDataToDocument = (fileArray, docArray, trialId) => {
     let fileMeta = [...docArray]
     fileArray?.forEach(file => {
-        fileMeta.push({trialId: trialId || "", name: file.name, type: file.type, size: file.size, lastModified: file.lastModified})
+        // fileMeta.push({trialId: trialId || "", name: file.name, type: file.type, size: file.size, lastModified: file.lastModified})
+        fileMeta.push({...new Document(), name: file.name, type: file.type, size: file.size, lastModified: file.lastModified})
     })
     return fileMeta
 };

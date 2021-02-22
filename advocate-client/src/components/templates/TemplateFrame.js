@@ -3,13 +3,31 @@ import {CardColumnModel} from "utils/models";
 import Column50 from "components/atoms/Column50";
 import CardAndUploadColumn from "components/molecules/CardAndUploadColumn";
 import ImmutableTextArea from "components/molecules/ImmutableTextArea";
-import Section from "../atoms/Section";
-import TextArea from "../molecules/TextArea";
+import Section from "components/atoms/Section";
+import TextArea from "components/molecules/TextArea";
 import {convertFromRaw, EditorState} from "draft-js";
-import FormElement from "../atoms/FormElement";
+import FormElement from "components/atoms/FormElement";
 import {FaCalendarPlus as CalPlusIcon} from "react-icons/fa";
 
-const TemplateFrame = ({children, dateStarted, setTrial, dateStartedError, comments, handleComments, trialFiles, setTrialFiles, fileMetaData, updateFileMetaData, cardHeader, goalName, benchmark}) => {
+const TemplateFrame = ({
+  children,
+  dateStarted,
+  setTrial,
+  dateStartedError,
+  comments,
+  handleComments,
+  trialFiles,
+  setTrialFiles,
+  fileMetaData,
+  updateFileMetaData,
+  cardHeader,
+  goalName,
+  benchmark,
+  hideCard,
+  hideFileUpload,
+  cardObject
+}) => {
+  
   return (
     <>
       <div className={"display"}>
@@ -30,7 +48,7 @@ const TemplateFrame = ({children, dateStarted, setTrial, dateStartedError, comme
           {children}
           
           <Section>
-            <h3 className={"marg-bot"}>Trial Comments</h3>
+            <h3 className={"i-bottom"}>Comments</h3>
             <TextArea
               editorState={typeof comments === "string" ? EditorState.createWithContent(convertFromRaw(JSON.parse(comments))) : comments}
               setEditorState={handleComments}
@@ -40,12 +58,14 @@ const TemplateFrame = ({children, dateStarted, setTrial, dateStartedError, comme
         <Column50>
           <CardAndUploadColumn
             header={cardHeader}
-            object={new CardColumnModel(goalName, benchmark.label, <ImmutableTextArea rawData={benchmark.description}/>)}
+            object={hideCard ? null : cardObject ? cardObject : new CardColumnModel(goalName, benchmark.label, <ImmutableTextArea rawData={benchmark.description}/>)}
             files={trialFiles}
             setFiles={setTrialFiles}
             fileMetaData={fileMetaData}
             updateFileMetaData={updateFileMetaData}
             apiPath={"/api/retrievedocument"}
+            hideCard={hideCard}
+            hideFileUpload={hideFileUpload}
           />
         </Column50>
       </div>

@@ -13,6 +13,5 @@ public interface DocumentRepo extends CrudRepository<Document, String> {
     Optional<Document> findDocumentByName(String filename);
 
     ArrayList<Document> findAllByTrialId(String trialId);
-
     
 }

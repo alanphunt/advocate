@@ -36,7 +36,6 @@ public class Goal {
     @Column(name = "mastery_date")
     private Date masteryDate;
 
-    
     @Column(name = "student_id")
     private String studentId;
 

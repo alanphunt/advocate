@@ -30,6 +30,9 @@ public class Tracking {
     
     @Column(name = "trial_id")
     private String trialId;
+
+    @Column(name = "baseline_id")
+    private String baselineId;
     
     private int enabled, correct, frequency, best;
 
@@ -41,11 +44,17 @@ public class Tracking {
     @JoinColumn(name = "trial_id", updatable = false, insertable = false)
     private Trial trial;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "baseline_id", updatable = false, insertable = false)
+    private Baseline baseline;
+
     public Tracking(){}
 
-    public Tracking(String id, String trialId, String label) {
+    public Tracking(String id, String trialId, String baselineId, String label) {
         this.id = id;
         this.trialId = trialId;
+        this.baselineId = baselineId;
         this.label = label;
         this.enabled = 1;
     }
@@ -146,6 +155,14 @@ public class Tracking {
         this.outOf = outOf;
     }
 
+    public String getBaselineId() {
+        return baselineId;
+    }
+
+    public void setBaselineId(String baselineId) {
+        this.baselineId = baselineId;
+    }
+
     @Override
     public String toString() {
         return "Tracking{" +
@@ -156,6 +173,7 @@ public class Tracking {
                 ", durationInSeconds=" + durationInSeconds +
                 ", accuracyPercentage=" + accuracyPercentage +
                 ", trialId='" + trialId + '\'' +
+                ", baselineId='" + baselineId + '\'' +
                 ", enabled=" + enabled +
                 ", correct=" + correct +
                 ", frequency=" + frequency +

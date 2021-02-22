@@ -14,14 +14,14 @@ const BestOutOfTrialForm = ({track, setTrack, error}) => {
           <FormElement
             type={"number"}
             placeholder={"Best"}
-            value={track.best}
+            value={track?.best}
             onChange={e => setTrack({best: e.currentTarget.value === "" ? "" : parseInt(e.currentTarget.value)})}
           />
           <span className={"marg-left marg-right"}>/</span>
           <FormElement
             type={"number"}
             placeholder={"Out of"}
-            value={track.outOf}
+            value={track?.outOf}
             onChange={e => setTrack({outOf: e.currentTarget.value === "" ? "" : parseInt(e.currentTarget.value)})}
           />
         </Box>

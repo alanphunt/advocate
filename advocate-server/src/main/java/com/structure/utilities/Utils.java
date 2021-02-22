@@ -2,13 +2,13 @@ package com.structure.utilities;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.*;
 import com.structure.models.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
@@ -40,17 +40,9 @@ public class Utils {
         }
     }
 
-    public Gson gson(){
-        GsonBuilder builder = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .setDateFormat(Constants.DATE_FORMAT);
-        return builder.create();
-    }
-
     public String generateUniqueId() {
         return RandomStringUtils.randomAlphanumeric(11);
     }
-
 
     public <T> T fromJSON(final TypeReference<T> type, String jsonPacket) throws Exception {
         return new ObjectMapper().readValue(jsonPacket, type);
@@ -68,10 +60,10 @@ public class Utils {
         TeacherDTO dto = new TeacherDTO();
         System.out.println(teacher.toString());
         dto.setTeacher(teacher);
-        dto.getTeacher().setClassroomIds(new ArrayList<>());
 
         Map<String, Classroom> classrooms = new HashMap<>();
         Map<String, Student> students = new HashMap<>();
+        Map<String, Baseline> baselines = new HashMap<>();
         Map<String, Goal> goals = new HashMap<>();
         Map<String, Benchmark> benchmarks = new HashMap<>();
         Map<String, Trial> trials = new HashMap<>();
@@ -83,6 +75,18 @@ public class Utils {
             for(Student s : c.getStudents()){
                 c.getStudentIds().add(s.getId());
                 students.put(s.getId(), s);
+                for(Baseline b : s.getBaselines()){
+                    baselines.put(b.getId(), b);
+                    s.getBaselineIds().add(b.getId());
+                    for(Document bd : b.getDocuments()){
+                        documents.put(bd.getId(), bd);
+                        b.getDocumentIds().add(bd.getId());
+                    }
+                    for(Tracking btr : b.getTrackings()){
+                        trackings.put(btr.getId(), btr);
+                        b.getTrackingIds().add(btr.getId());
+                    }
+                }
                 for(Goal g : s.getGoals()){
                     s.getGoalIds().add(g.getId());
                     goals.put(g.getId(), g);
@@ -108,12 +112,28 @@ public class Utils {
 
         dto.setClassrooms(classrooms);
         dto.setStudents(students);
+        dto.setBaselines(baselines);
         dto.setGoals(goals);
         dto.setBenchmarks(benchmarks);
         dto.setTrials(trials);
         dto.setTrackings(trackings);
         dto.setDocuments(documents);
         return dto;
+    }
+
+    public Optional<Date> parseDate(String dateString){
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT);
+        Date date;
+        try{
+            if(!dateString.isBlank())
+                date = sdf.parse(dateString);
+            else
+                throw new Exception("Empty date");
+        }catch(Exception e){
+            System.out.println("failed to parse date");
+            return Optional.empty();
+        }
+        return Optional.of(date);
     }
 
 }

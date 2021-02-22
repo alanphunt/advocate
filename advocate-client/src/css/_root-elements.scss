@@ -42,7 +42,7 @@ label{
 }
 
 button{
-  padding: 10px;
+  padding: .65rem 1rem;
   @include lig-bor;
   border-radius: 25px;
   @include transition;
@@ -87,7 +87,7 @@ img{
 
 input, select, textarea{
   padding: 10px 10px 10px 18px;
-  border-radius: 25px;
+  @include bor-rad;
   outline: none;
   @include transition;
   @include lig-bor;

@@ -41,3 +41,12 @@ export const TemplateList = {
   "duration": [new Template("No Templates", "More templates coming soon!", "duration")],
   "other": [new Template("Task Analysis", "Analyze a task.", "taskAnalysis")]
 }
+
+export const legibleTemplate = (type) => {
+    return {
+      [TEMPLATE_TYPES.SCORE_BASIC]: "Basic Score",
+      [TEMPLATE_TYPES.SCORE_BEST_OUT_OF]: "Best Out Of",
+      [TEMPLATE_TYPES.SCORE_CUE]: "Cue Count",
+      [TEMPLATE_TYPES.SCORE_WPM]: "Words Per Minute",
+    }[type];
+};

@@ -1,5 +1,5 @@
 import {useState, useContext, createContext, useMemo} from "react";
-import {JWT_ERROR, SERVER_ERROR, STORAGE, JSON_HEADER} from "utils/constants";
+import {JWT_ERROR, SERVER_ERROR, JSON_HEADER} from "utils/constants";
 import { useHistory, useLocation } from 'react-router';
 import {ContextModel} from "utils/classes/ContextModels";
 export const TeacherContext = createContext();

@@ -144,6 +144,11 @@ export const trialErrorsModel = {
   bestOutOf: ""
 };
 
+export const baselineErrorsModel = {
+  ...trialErrorsModel,
+  baselineLabel: ""
+}
+
 export class CardColumnModel {
   constructor(goal, benchmark, desc){
     this.Goal = goal;
@@ -162,3 +167,10 @@ export class GraphDataPoint{
     this.labels = labels;
   }
 }
+
+export const templateOptionsModel = {
+  "Score & Accuracy": "score",
+  "Frequency": "frequency",
+  "Duration": "duration",
+  "Other": "other"
+};

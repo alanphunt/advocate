@@ -28,10 +28,18 @@ public class Document {
     @Column(name = "trial_id")
     private String trialId;
 
+    @Column(name = "baseline_id")
+    private String baselineId;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "trial_id", insertable = false, updatable = false)
     private Trial trial;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "baseline_id", insertable = false, updatable = false)
+    private Baseline baseline;
     
     private String name;
     
@@ -49,7 +57,6 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Date uploadDate;
 
-    
     @Column(name = "last_modified")
     private long lastModified;
     
@@ -80,14 +87,6 @@ public class Document {
         this.trialId = trialId;
     }
 
-    public Trial getTrial() {
-        return this.trial;
-    }
-
-    public void setTrial(Trial trial) {
-        this.trial = trial;
-    }
-
     public String getName() {
         return this.name;
     }
@@ -106,6 +105,10 @@ public class Document {
 
     public long getSize() {
         return this.size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
     }
 
     public void setFileSize(int size) {
@@ -152,21 +155,28 @@ public class Document {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", trialId='" + getTrialId() + "'" +
-            ", name='" + getName() + "'" +
-            ", type='" + getType() + "'" +
-            ", size='" + getSize() + "'" +
-            ", formattedSize='" + getFormattedSize() + "'" +
-            ", downloadPath='" + getPath() + "'" +
-            ", uploadDate='" + getUploadDate() + "'" +
-            ", lastModified='" + getLastModified() + "'" +
-            ", enabled='" + getEnabled() + "'" +
-            "}";
+    public String getBaselineId() {
+        return baselineId;
     }
 
+    public void setBaselineId(String baselineId) {
+        this.baselineId = baselineId;
+    }
 
+    @Override
+    public String toString() {
+        return "Document{" +
+                "id='" + id + '\'' +
+                ", trialId='" + trialId + '\'' +
+                ", baselineId='" + baselineId + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", size=" + size +
+                ", formattedSize='" + formattedSize + '\'' +
+                ", path='" + path + '\'' +
+                ", uploadDate=" + uploadDate +
+                ", lastModified=" + lastModified +
+                ", enabled=" + enabled +
+                '}';
+    }
 }

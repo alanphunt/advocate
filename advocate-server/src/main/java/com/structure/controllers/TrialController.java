@@ -64,8 +64,8 @@ public class TrialController {
     }
 
     @DeleteMapping(value = "/deletetrial")
-    public ResponseEntity<?> deleteTrial(String trialId, String benchmarkId){
-        trialService.handleTrialDeletion(trialId, benchmarkId);
+    public ResponseEntity<?> deleteTrial(String trialId, String benchmarkId, HttpServletRequest request){
+        trialService.handleTrialDeletion(trialId, benchmarkId, request);
         return ls.handleTeacherRehydration();
     }
 }

@@ -1,27 +1,12 @@
-import React, {useState} from "react";
+import React from "react";
 import ImmutableTextArea from "components/molecules/ImmutableTextArea";
-import {convertFileSize, fileFetch} from "utils/functions/functions";
-import FileChip from "components/atoms/FileChip";
-import Box from "components/atoms/Box";
 import {TEMPLATE_TYPES} from "components/templates/TemplateList";
 import BasicScoreTrialDisplay from "components/templates/score/basic-score/BasicScoreTrialDisplay";
 import BestOutOfTrialDisplay from "components/templates/score/best-out-of/BestOutOfTrialDisplay";
+import Strong from "components/atoms/Strong";
+import FileChipWrapper from "components/molecules/FileChipWrapper";
 
 const TrialDrilldown = ({trial, trackings, documents}) => {
-  const [chipIndex, setChipIndex] = useState(-1);
-  
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const completeRetrieval = () => {
-    setIsLoading(false);
-    setChipIndex(-1);
-  };
-  
-  const handleFileAction = (file, action, index) => {
-    setChipIndex(index);
-    setIsLoading(true);
-    fileFetch("/api/retrievedocument", file, action, () => {}, () => {}, completeRetrieval)
-  };
   
   const determineTrialTemplate = () => {
     switch(trial.trialTemplate){
@@ -39,33 +24,17 @@ const TrialDrilldown = ({trial, trackings, documents}) => {
   
   return (
     <div className={"drilldown-trialmeta"}>
-      <h2 className={"marg-bot-2"}>Tracking for {trial ? trial.label : "..."}</h2>
+      <h2 className={"marg-bot-2"}>{trial ? trial.label : "Trial ..."}</h2>
       {
         trial ?
           <div>
             <p><strong>Start Date: </strong> {trial.dateStarted}</p>
             {determineTrialTemplate()}
-            <p className={"marg-top"}><strong>Comments: </strong></p>
+            <Strong className={"marg-top"} text={"Comments: "}/>
             <ImmutableTextArea rawData={trial.comments} />
             <div className={"marg-top"}>
-              <p><strong>Documents:</strong></p>
-              {
-                documents?.length ? (
-                  <div className="filechip-wrapper">
-                    {
-                      documents.map((file, index) => {
-                        return <FileChip
-                          key={`filechip-${file.name}`}
-                          text={`${file.name} - ${convertFileSize(file.size)}`}
-                          onPreview={() => handleFileAction(file, "preview", index)}
-                          onDownload={() => handleFileAction(file, "download", index)}
-                          isLoading={index === chipIndex && isLoading}
-                        />
-                      })
-                    }
-                  </div>
-                ) : (<Box text={"No documents."}/>)
-              }
+              <Strong text={"Documents:"}/>
+              <FileChipWrapper fileMeta={documents}/>
             </div>
           </div>
           : <></>

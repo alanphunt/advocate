@@ -10,7 +10,7 @@ import React from 'react';
 const Box = ({text, children, classes}) => {
     
     return(
-        <div className={`box ${classes}`}>
+        <div className={`box${' '+ classes || ""}`}>
             {text || children}
         </div>
     );

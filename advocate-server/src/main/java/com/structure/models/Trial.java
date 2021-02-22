@@ -51,8 +51,8 @@ public class Trial {
     private List<Tracking> trackings = new ArrayList<>();
 
     
-    @OneToMany(mappedBy = "trial", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "trial", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @OrderBy("uploadDate ASC")
     private List<Document> documents = new ArrayList<>();
 
@@ -192,22 +192,20 @@ public class Trial {
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", trialNumber='" + getTrialNumber() + "'" +
-            ", dateStarted='" + getDateStarted() + "'" +
-            ", label='" + getLabel() + "'" +
-            ", dateCompleted='" + getDateCompleted() + "'" +
-            ", comments='" + getComments() + "'" +
-            ", benchmarkId='" + getBenchmarkId() + "'" +
-            ", benchmark='" + getBenchmark() + "'" +
-            ", trialTemplate='" + getTrialTemplate() + "'" +
-            ", trackings='" + getTrackings() + "'" +
-            ", documents='" + getDocuments() + "'" +
-            ", documentIds='" + getDocumentIds() + "'" +
-            ", trackingIds='" + getTrackingIds() + "'" +
-            ", enabled='" + getEnabled() + "'" +
-            "}";
+        return "Trial{" +
+                "id='" + id + '\'' +
+                ", label='" + label + '\'' +
+                ", trialNumber=" + trialNumber +
+                ", dateStarted=" + dateStarted +
+                ", dateCompleted=" + dateCompleted +
+                ", comments='" + comments + '\'' +
+                ", benchmarkId='" + benchmarkId + '\'' +
+                ", trackings=" + trackings +
+                ", documents=" + documents +
+                ", trackingIds=" + trackingIds +
+                ", documentIds=" + documentIds +
+                ", trialTemplate='" + trialTemplate + '\'' +
+                ", enabled=" + enabled +
+                '}';
     }
-
 }

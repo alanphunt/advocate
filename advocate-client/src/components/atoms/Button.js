@@ -15,7 +15,7 @@ import {FaSyncAlt as LoadingIcon} from "react-icons/fa";
 const Button = ({text, icon, onClick, onKeyPress, className, type, isLoading, disabled}) => {
     return (
         <button 
-            className={className}
+            className={`${className}${disabled ? " disabled" : ""}`}
             onClick={onClick}
             onKeyPress={e => {
                 e.preventDefault();

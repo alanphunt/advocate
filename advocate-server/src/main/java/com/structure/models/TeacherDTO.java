@@ -7,6 +7,7 @@ public class TeacherDTO {
     private Teacher teacher;
     private Map<String, Classroom> classrooms;
     private Map<String, Student> students;
+    private Map<String, Baseline> baselines;
     private Map<String, Goal> goals;
     private Map<String, Benchmark> benchmarks;
     private Map<String, Trial> trials;
@@ -19,6 +20,7 @@ public class TeacherDTO {
     public void setTeacher(Teacher teacher){
         this.teacher = teacher;
     }
+
     public Teacher getTeacher(){
         return this.teacher;
     }
@@ -37,6 +39,14 @@ public class TeacherDTO {
 
     public void setStudents(Map<String,Student> students) {
         this.students = students;
+    }
+
+    public Map<String, Baseline> getBaselines() {
+        return baselines;
+    }
+
+    public void setBaselines(Map<String, Baseline> baselines) {
+        this.baselines = baselines;
     }
 
     public Map<String,Goal> getGoals() {
@@ -81,17 +91,16 @@ public class TeacherDTO {
 
     @Override
     public String toString() {
-        return "{" +
-            " teacher='" + getTeacher() + "'" +
-            ", classrooms='" + getClassrooms() + "'" +
-            ", students='" + getStudents() + "'" +
-            ", goals='" + getGoals() + "'" +
-            ", benchmarks='" + getBenchmarks() + "'" +
-            ", trials='" + getTrials() + "'" +
-            ", trackings='" + getTrackings() + "'" +
-            ", documents='" + getDocuments() + "'" +
-            "}";
+        return "TeacherDTO{" +
+                "teacher=" + teacher +
+                ", classrooms=" + classrooms +
+                ", students=" + students +
+                ", baselines=" + baselines +
+                ", goals=" + goals +
+                ", benchmarks=" + benchmarks +
+                ", trials=" + trials +
+                ", trackings=" + trackings +
+                ", documents=" + documents +
+                '}';
     }
-
-
 }

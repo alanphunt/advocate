@@ -212,28 +212,6 @@
   color: $success;
 }
 
-.drilldownwrapper{
-  height: 100%;
-}
-
-.drilldown{
-  @include flex($jus-con: space-between);
-  height: 100%;
-}
-
-.drilldown-goals, .drilldown-trials, .drilldown-trialmeta{
-  flex: 1;
-  margin-right: 1rem;
-  @include lig-bor;
-  @include bor-rad;
-  padding: 10px 1rem;
-  overflow: auto;
-}
-
-.drilldown-trialmeta{
-  margin-right: 0;
-}
-
 .flex-center-between{
   @include flex($ali-ite: center, $jus-con: space-between);
 }

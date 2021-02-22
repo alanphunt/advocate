@@ -5,9 +5,7 @@ import TrialDrilldown from "components/molecules/drilldown/TrialDrilldown";
 import DashCard from "components/molecules/DashCard";
 import {crudFetch} from "utils/functions/functions";
 import { useAuth } from "utils/auth/AuthHooks";
-import Modal from "components/molecules/Modal";
-import Toaster from "components/atoms/Toaster";
-import GoalCenterTableRow from "components/molecules/GoalCenterTableRow";
+import GoalCenterTopRow from "components/molecules/GoalCenterTopRow";
 import CreateGoal from "components/molecules/CreateGoal";
 import EditGoal from "components/molecules/EditGoal";
 import ModalBody from "components/molecules/ModalBody";
@@ -23,7 +21,6 @@ import CreateBaseline from "components/molecules/CreateBaseline";
 
 const EditBestOutOf = React.lazy(() => import("components/templates/score/best-out-of/EditBestOutOfTrial"));
 const EditBasicScore = React.lazy(() => import("components/templates/score/basic-score/EditScoreTrial"));
-
 
 /*
     notes:
@@ -55,10 +52,13 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
   const [mutableGoal, setMutableGoal] = useState(new Goal());
   const [mutableTrial, setMutableTrial] = useState(new Trial());
   
+  const [baseline, setBaseline] = useState(null);
+  const [mutableBaseline, setMutableBaseline] = useState(null);
+  
   useEffect(() => {
     if(!modalAction){
       setIsLoading({"":false});
-      if(mutableTrial?.id || mutableGoal?.id) {
+      if(mutableTrial?.id || mutableGoal?.id ) {
         setMutableTrial(null);
         setMutableGoal(null);
       }
@@ -101,19 +101,28 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
   
   const deleteTrial = () => {
     setIsLoading({"deleteTrial": true})
-    
-    // let updatedTrials = benchmark.trials.filter(t => t.id !== mutableTrial.id);
-    // let updatedTrials = benchmark.trials.filter(t => t.id !== trial.id);
-    
-    // updatedTrials = updatedTrials.map((t, i) => {return {...t, trialNumber: i+1}});
-    // const bm = {...benchmarkId, trials: [...updatedTrials]};
     crudFetch({
       path: `deletetrial?trialId=${mutableTrial.id}&benchmarkId=${mutableTrial.benchmarkId}`,
       method: "DELETE",
       success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully deleted {mutableTrial.label}!</>),
-      error: () => alert(SERVER_ERROR),
+      error: () => {setIsLoading({"":false}); alert(SERVER_ERROR)},
       serverError: signout
     });
+  };
+  
+  const executeBaselineDeletion = () => {
+    setIsLoading({"deleteBaseline": true});
+    crudFetch({
+      path: `deletebaseline?baselineId=${baseline.id}`,
+      method: "DELETE",
+      success: (data) => {setBaseline(null); completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully deleted {baseline.label}!</>);},
+      error: () => {setIsLoading({"":false}); alert(SERVER_ERROR)},
+      serverError: () => {}
+    })
+  };
+  
+  const executeBaselineEdit = () => {
+      setIsLoading({"editBaseline": true});
   };
   
   const determineModalChild = () => {
@@ -167,11 +176,40 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
       case "createBaseline":
         return (
           <ModalBody
-            header={`Create baseline for ${student?.name}`}
-            cancelCallback={closeModal}
-            confirmCallback={() => {}}
+            header={`Create a Baseline for ${student?.name}`}
+            hideButtons
           >
-            <CreateBaseline/>
+            <CreateBaseline
+              student={student}
+              goal={goal}
+              closeModal={closeModal}
+              completeCrudOp={completeCrudOp}
+              isLoading={isLoading.createBaseline}
+              setIsLoading={setIsLoading}
+              signout={signout}
+            />
+          </ModalBody>
+        );
+      case "deleteBaseline":
+        return (
+          <ModalBody
+            header={`Delete baseline '${baseline.label}'?`}
+            cancelCallback={closeModal}
+            confirmCallback={executeBaselineDeletion}
+            isLoading={isLoading.deleteBaseline}
+          >
+            <p className="marg-bot-2">
+              Note that this action cannot be undone. This will also delete all associated
+              documents. Proceed?
+            </p>
+          </ModalBody>
+        );
+      case "editBaseline":
+        return (
+          <ModalBody
+            header={`Edit baseline '${mutableBaseline.label}'?`}
+            hideButtons
+          >
           </ModalBody>
         );
       case "masterBenchmark":
@@ -209,7 +247,7 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
       case "deleteTrial":
         return (
           <ModalBody
-            header={`Delete trial ${mutableTrial?.label}`}
+            header={`Delete ${mutableTrial?.label}?`}
             cancelCallback={closeModal}
             confirmCallback={deleteTrial}
             isLoading={isLoading.deleteTrial}
@@ -267,7 +305,7 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
   
   return (
     <DashCard fitOnPage>
-      <GoalCenterTableRow teacher={teacher} student={student} setStudentId={setStudentId}/>
+      <GoalCenterTopRow baseline={baseline} setBaseline={setBaseline} setMutableBaseline={setMutableBaseline} teacher={teacher} student={student} setStudentId={setStudentId} setModalAction={setModalAction}/>
       <div className={"goalcenter-row goalcenter-row-bottom"}>
         <div className={"drilldownwrapper"}>
           <div className={"drilldown"}>

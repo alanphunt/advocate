@@ -8,7 +8,8 @@ import {
     FaRegHourglass as HourglassIcon,
     FaRegMap as MapIcon,
     FaRegHandPeace as PeaceIcon,
-    FaCheckCircle as HandIcon
+    FaCheckCircle as HandIcon,
+    FaRegPaperPlane as ConfirmIcon
 
 } from "react-icons/fa";
 import Button from 'components/atoms/Button';
@@ -47,7 +48,7 @@ const Home = ({setIsFetching, modalAction, setModalAction, setModalBody, closeMo
                                     ? <RegisterForm errors={errors} register={registrationObject} updateFormValues={updateFormValues}/>
                                     : <></>
                             }
-                            <Button text={modalAction === "login" ? "Login" : "Register"} onClick={handleFormSubmission} type="submit"/>
+                            <Button icon={<ConfirmIcon/>} text={modalAction === "login" ? "Login" : "Register"} onClick={handleFormSubmission} type="submit"/>
                         </form>
                     </div>
                 </ModalBody>

@@ -27,6 +27,10 @@ public class Student {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Goal> goals = new ArrayList<>();
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<Baseline> baselines = new ArrayList<>();
+
     private String name, grade, age;
     
     @Column(name = "classroom_id")
@@ -36,6 +40,9 @@ public class Student {
 
     @Transient
     private ArrayList<String> goalIds = new ArrayList<>();
+
+    @Transient
+    private ArrayList<String> baselineIds = new ArrayList<>();
 
     public Student(){}
 
@@ -96,14 +103,6 @@ public class Student {
         this.enabled = enabled;
     }
 
-    public Classroom getClassroom() {
-        return classroom;
-    }
-
-    public void setClassroom(Classroom classroom) {
-        this.classroom = classroom;
-    }
-
     public List<Goal> getGoals (){
         return goals;
     }
@@ -120,16 +119,35 @@ public class Student {
         this.goalIds = goalIds;
     }
 
+    public List<Baseline> getBaselines() {
+        return baselines;
+    }
+
+    public void setBaselines(List<Baseline> baselines) {
+        this.baselines = baselines;
+    }
+
+    public ArrayList<String> getBaselineIds() {
+        return baselineIds;
+    }
+
+    public void setBaselineIds(ArrayList<String> baselineIds) {
+        this.baselineIds = baselineIds;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
-                "id=" + id +
-                ", name=" + name +
-                ", age=" + age +
-                ", grade=" + grade +
-                ", classroomId=" + classroomId +
-                ", goalIds" + goalIds +
+                "id='" + id + '\'' +
+                ", goals=" + goals +
+                ", baselines=" + baselines +
+                ", baselineIds=" + baselineIds +
+                ", name='" + name + '\'' +
+                ", grade='" + grade + '\'' +
+                ", age='" + age + '\'' +
+                ", classroomId='" + classroomId + '\'' +
                 ", enabled=" + enabled +
+                ", goalIds=" + goalIds +
                 '}';
     }
 }

@@ -87,14 +87,6 @@ public class Classroom {
         this.students = students;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
     public ArrayList<String> getStudentIds() {
         return studentIds;
     }

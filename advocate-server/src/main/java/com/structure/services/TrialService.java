@@ -1,6 +1,5 @@
 package com.structure.services;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -8,9 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.structure.models.Document;
-import com.structure.models.Tracking;
 import com.structure.models.Trial;
-import com.structure.models.TrialTemplates;
 import com.structure.repositories.TrialRepo;
 import com.structure.utilities.Constants;
 import com.structure.utilities.Utils;
@@ -31,6 +28,9 @@ public class TrialService {
     @Autowired 
     private Utils utilService;
 
+    @Autowired
+    private TrackingService ts;
+
     public void handleTrialCreation(Map<String, String> errors, Trial trial, String trackings, String docMeta, List<MultipartFile> docFiles, HttpServletRequest req){
         determineTrialErrors(errors, trial, trackings);
         if(errors.isEmpty()){
@@ -45,8 +45,9 @@ public class TrialService {
 
             trial.setId(utilService.generateUniqueId());
 
-            setTrackingInfo(trial.getTrackings(), trial.getId());
-            handleTrialDocuments(trial, docFiles, req);
+            ts.setTrackingInfo(trial.getTrackings(), trial.getId(), Trial.class);
+//            handleTrialDocuments(trial, docFiles, req);
+            docService.handleDocuments(trial.getDocuments(), trial.getId(), Trial.class, docFiles, req);
             tr.save(trial);
         }
     }
@@ -70,15 +71,17 @@ public class TrialService {
         Map<String, String> errors = new HashMap<>();
         determineTrialErrors(errors, trial, trackings);
         if(errors.isEmpty() && trial != null){
-            handleTrialDocuments(trial, documents, req);
-            setTrackingInfo(trial.getTrackings(), trial.getId());
+            docService.handleDocuments(trial.getDocuments(), trial.getId(), Trial.class, documents, req);
+//            handleTrialDocuments(trial, documents, req);
+            ts.setTrackingInfo(trial.getTrackings(), trial.getId(), Trial.class);
             docService.deleteOldFileIfNecessary(trial);
             tr.save(trial);
         }
         return errors;
     }
 
-    public void handleTrialDeletion(String id, String benchmarkId){
+    public void handleTrialDeletion(String id, String benchmarkId, HttpServletRequest request){
+        docService.deleteAllServerFilesById(id, request);
         tr.deleteById(id);
         List<Trial> trials = tr.findAllByBenchmarkId(benchmarkId);
         for(int i = 0; i < trials.size(); i++){
@@ -90,6 +93,7 @@ public class TrialService {
         tr.saveAll(trials);
     }
 
+/*
     private void handleTrialDocuments(Trial trial, List<MultipartFile> newFiles, HttpServletRequest req){
         System.out.println("Begin handling documents..");
         for(Document docMeta : trial.getDocuments()){
@@ -114,16 +118,9 @@ public class TrialService {
             }
         }
     }
+*/
 
-    private void setTrackingInfo(List<Tracking> tracks, String trialId){
-        for(Tracking t : tracks){
-            if(t.getId() == null || t.getId().isBlank()){
-                t.setId(utilService.generateUniqueId());
-                t.setTrialId(trialId);
-                t.setEnabled(1);
-            }
-        }
-    }
+
 
     private void determineTrialErrors(Map<String, String> errors, Trial trial, String trackings){
         System.out.println("Checking trial input for errors..");
@@ -131,7 +128,9 @@ public class TrialService {
         if(trial.getDateStarted() == null)
             errors.put("dateStarted", Constants.INVALID_DATE_FORMAT);
 
-        if(trial.getTrialTemplate().equals(TrialTemplates.SCORE_BASIC.name())){
+        trial.setTrackings(ts.determineTrackingErrors(errors, trackings, trial.getTrialTemplate()));
+
+/*        if(trial.getTrialTemplate().equals(TrialTemplates.SCORE_BASIC.name())){
             if(!trackings.isBlank()){
                 try{
                     trial.setTrackings(utilService.fromJSON(new TypeReference<>() {}, trackings));
@@ -157,7 +156,7 @@ public class TrialService {
             }catch(Exception e){
                 errors.put("bestOutOf", e.getMessage());
             }
-        }
+        }*/
 
 
     }

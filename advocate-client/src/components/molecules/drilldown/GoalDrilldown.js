@@ -12,6 +12,7 @@ import AccordionItem from "components/atoms/AccordionItem";
 import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
+import Strong from "components/atoms/Strong";
 
 const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchmarkId, setMutableGoal, setModalAction}) => {
     const [selectedBenchmarkId, setSelectedBenchmarkId] = useState("");
@@ -42,12 +43,12 @@ const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchma
                 return (
                     <AccordionItem key={`benchmarkAccItem-${goalIndex}`} header={goal.goalName} iconClickedCallback={(key) => handleGoalIconAction(key, goal)} icons={goalIconSet}>
                         <div key={`goaldrilldowntable-${goal.id}`}>
-                            <p><strong>Goal: </strong></p>
+                            <Strong text={"Goal: "}/>
                             <ImmutableTextArea rawData={goal.goal} />
-                            <p><strong>Start date: </strong>{goal.startDate || 'N/A'}</p>
-                            <p><strong>Projected mastery date: </strong>{goal.masteryDate}</p>
-                            <p><strong>Actual mastery date: </strong>{goal.complete ? goal.completionDate : "N/A"}</p>
-                            <p className={"marg-bot"}><strong>Monitor after mastery: </strong>{goal.monitor === 0 ? "No" : "Yes"}</p>
+                            <Strong text={"Start date: "}>{goal.startDate || 'N/A'}</Strong>
+                            <Strong text={"Projected mastery date: "}>{goal.masteryDate}</Strong>
+                            <Strong text={"Actual mastery date: "}>{goal.complete ? goal.completionDate : "N/A"}</Strong>
+                            <Strong className={"marg-bot"} text={"Monitor after mastery: "}>{goal.monitor === 0 ? "No" : "Yes"}</Strong>
                         </div>
                         {
                             //a goal can have no benchmarks if it was copied from another student
@@ -77,12 +78,6 @@ const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchma
             <div className={"marg-bot-2 flex-center-between"}>
                 <h2>Goals for {studentName ? studentName.charAt(0).toUpperCase() + studentName.substring(1) : "..."}</h2>
                 <div>
-                    <Button
-                        text="Create Baseline"
-                        icon={<PlusIcon className={"i-right"}/>}
-                        className={`marg-right${studentName ? " enabled" : " disabled"}`}
-                        onClick={() => setModalAction("createBaseline")}
-                    />
                     <Button
                         text="Create Goal"
                         icon={<PlusIcon className={"i-right"}/>}

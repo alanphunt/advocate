@@ -5,10 +5,11 @@ import Table from "components/molecules/table/Table";
 import Section from "components/atoms/Section";
 import FormElement from "components/atoms/FormElement";
 import ErrorLabel from "components/atoms/ErrorLabel";
+import RequiredField from "components/atoms/RequiredField";
+import {Tracking} from "utils/classes/ContextModels";
 
 const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
-  const track =  {label: "", correct: 0};
-  
+
   const handleTrackingsUpdate = (key, index, value) => {
     let newTrackings = [...trackings];
     let track = {...newTrackings[index]};
@@ -19,9 +20,9 @@ const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
   };
   
   const handleTrackDeletion = (index) => {
-      const newTracks = [...trackings];
-      newTracks.splice(index, 1);
-      updateTracks(newTracks);
+    const newTracks = [...trackings];
+    newTracks.splice(index, 1);
+    updateTracks(newTracks);
   };
   
   const tableInputs = (track, index) => {
@@ -59,28 +60,33 @@ const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
   };
   
   const renderTableInputs = () => {
-    return trackings?.map((track, index) => {
+    return trackings.map((track, index) => {
       return tableInputs(track, index);
     });
   }
+  
   return (
     <>
       <Section>
         <Section>
-          <h3 className={"marg-bot"}>Track Count</h3>
+          <h3 className={"i-bottom"}>Track Count</h3>
           <NumberPicker
             updateState={updateTracks}
-            object={track}
+            object={new Tracking()}
             objectArray={trackings}
           />
         </Section>
         {labelError ? <ErrorLabel text={labelError}/> : <></>}
-        <Table
-          columnSize={{0: "flex-quarter"}}
-          headers={[<>Action</>, <>Item Label<p>(press Tab for next item)</p></>, <>Correct/Incorrect<p>(press Enter to toggle)</p></>]}
-          tableData={renderTableInputs()}
-          hideSearchAndSort
-        />
+        {
+         trackings.length >= 0 ? (
+           <Table
+             columnSize={{0: "flex-quarter"}}
+             headers={[<>Action</>, <><RequiredField/>Item Label<p>(press Tab for next item)</p></>, <>Correct/Incorrect<p>(press Enter to toggle)</p></>]}
+             tableData={renderTableInputs()}
+             hideSearchAndSort
+           />
+         ) : <></>
+        }
       </Section>
     </>
   );

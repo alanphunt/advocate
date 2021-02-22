@@ -37,6 +37,10 @@ const App = () => {
       setIsFetching(true);
       refreshTeacher(() => setIsFetching(false)).catch(e => {setIsFetching(false);alert(e);});
     }
+    if(!teacher && (modalBody || modalAction)){
+      setModalAction("");
+      setModalBody(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teacher]);
   
