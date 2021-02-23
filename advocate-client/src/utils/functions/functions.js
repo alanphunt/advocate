@@ -199,7 +199,7 @@ export const formatStudentObject = (studentArray) => {
 
 export const determineScoreTrialAccuracy = (trackings) => {
     const correct = trackings.filter(t => t.correct === 1);
-    const a = Math.floor((correct?.length / trackings?.length * 100));
+    const a = ((correct?.length / trackings?.length * 100)).toFixed(1);
     let obj = {};
     obj.accuracy = a || 0;
     obj.inaccuracy = 100-a;

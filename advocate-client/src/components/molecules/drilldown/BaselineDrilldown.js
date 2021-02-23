@@ -15,7 +15,6 @@ import FileChipWrapper from "components/molecules/FileChipWrapper";
 import ConfirmOrCancelButtons from "components/molecules/ConfirmOrCancelButtons";
 
 const BaselineDrilldown = ({student, allBaselines, trackings, documents, setModalAction, baseline, setBaseline, setMutableBaseline}) => {
-  console.log(baseline);
   const dropdownOptions = Object.values(allBaselines)?.reduce((reducer, obj) => ({...reducer, [obj.label]: obj.id}), {});
   
   useEffect(() => {
@@ -24,25 +23,25 @@ const BaselineDrilldown = ({student, allBaselines, trackings, documents, setModa
   }, [student]);
   
   const determineBaseline = () => {
-      switch(baseline?.baselineTemplate){
-        case TEMPLATE_TYPES.SCORE_BASIC:
-          return (
-            <>
-              <BasicScoreTrialDisplay
-                trackings={baseline?.trackingIds.map(id => trackings[id])}
-              />
-            </>
-          );
-        case TEMPLATE_TYPES.SCORE_BEST_OUT_OF:
-          return (
-            <>
-              <BestOutOfTrialDisplay
-                tracking={trackings[baseline?.trackingIds[0]]}
-              />
-            </>
-          );
-        default: return <></>;
-      }
+    switch(baseline?.baselineTemplate){
+      case TEMPLATE_TYPES.SCORE_BASIC:
+        return (
+          <>
+            <BasicScoreTrialDisplay
+              trackings={baseline?.trackingIds.map(id => trackings[id])}
+            />
+          </>
+        );
+      case TEMPLATE_TYPES.SCORE_BEST_OUT_OF:
+        return (
+          <>
+            <BestOutOfTrialDisplay
+              tracking={trackings[baseline?.trackingIds[0]]}
+            />
+          </>
+        );
+      default: return <></>;
+    }
   };
   
   return (

@@ -10,6 +10,8 @@ import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +64,8 @@ public class TrackingService {
                         throw new Exception(Constants.NUMBER_FORMAT_ERROR_RESPONSE);
                     if (t.getBest() > t.getOutOf())
                         throw new Exception(Constants.NUMERATOR_LESS_THAN_DENOMINATOR_RESPONSE);
+                    NumberFormat nf = new DecimalFormat("0.0");
+                    t.setAccuracyPercentage(Double.parseDouble(nf.format((double)t.getBest()/t.getOutOf()*100)));
                 } catch (Exception e) {
                     errors.put("bestOutOf", e.getMessage());
                 }

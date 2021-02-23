@@ -53,6 +53,9 @@ public class Benchmark {
     @Transient
     private ArrayList<String> trialIds = new ArrayList<>();
 
+    @Column(name = "trial_average")
+    private double trialAverage;
+
     public List<Trial> getTrials() {
         return trials;
     }
@@ -154,6 +157,14 @@ public class Benchmark {
         this.trialIds = trialIds;
     }
 
+    public double getTrialAverage() {
+        return trialAverage;
+    }
+
+    public void setTrialAverage(double trialAverage) {
+        this.trialAverage = trialAverage;
+    }
+
     @Override
     public String toString() {
         return "Benchmark{" +
@@ -167,6 +178,7 @@ public class Benchmark {
                 ", metDate=" + metDate +
                 ", trialIds=" + trialIds +
                 ", complete=" + complete +
+                ", trialAverage=" + trialAverage +
                 '}';
     }
 }

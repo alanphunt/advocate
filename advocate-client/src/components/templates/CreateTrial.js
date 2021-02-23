@@ -118,7 +118,7 @@ const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoadin
               `Create a Basic Score Trial`,
               <BasicScoreTrialForm
                 trackings={trackings}
-                errors={requestErrors.label}
+                labelError={requestErrors.label}
                 updateTracks={setTrackings}
               />
             )

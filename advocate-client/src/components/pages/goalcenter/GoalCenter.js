@@ -80,6 +80,8 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
       setTrialId("");
   }, [benchmarkId]);
   
+  useEffect(() => {}, [])
+  
   useEffect(() => {
     setModalBody(determineModalChild());
   }, [modalAction, trialId, mutableTrial, mutableGoal, isLoading])
@@ -94,7 +96,11 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
   };
   
   const completeCrudOpAndSetNewTrial = (data, message, preventClose) => {
-    const newTrialId = Object.values(data.trials).filter(trial => !Object.keys(teacher.trials).includes(trial.id))[0].id
+    console.log(data);
+    console.log(teacher);
+    const newTrialId = Object.keys(data.trials).filter(id => !Object.keys(teacher.trials).includes(id))[0];
+    console.log(newTrialId);
+    // const newTrialId = Object.values(data.trials).filter(trial => !Object.keys(teacher.trials).includes(trial.id))[0].id
     completeCrudOp(data, message, preventClose);
     setTrialId(newTrialId);
   };

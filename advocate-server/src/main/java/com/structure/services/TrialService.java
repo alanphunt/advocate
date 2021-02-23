@@ -1,5 +1,7 @@
 package com.structure.services;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -31,6 +33,9 @@ public class TrialService {
     @Autowired
     private TrackingService ts;
 
+    @Autowired
+    private BenchmarkService bs;
+
     public void handleTrialCreation(Map<String, String> errors, Trial trial, String trackings, String docMeta, List<MultipartFile> docFiles, HttpServletRequest req){
         determineTrialErrors(errors, trial, trackings);
         if(errors.isEmpty()){
@@ -46,9 +51,9 @@ public class TrialService {
             trial.setId(utilService.generateUniqueId());
 
             ts.setTrackingInfo(trial.getTrackings(), trial.getId(), Trial.class);
-//            handleTrialDocuments(trial, docFiles, req);
             docService.handleDocuments(trial.getDocuments(), trial.getId(), Trial.class, docFiles, req);
             tr.save(trial);
+            bs.updateBenchmarkTrialAverage(trial.getBenchmarkId());
         }
     }
 
@@ -72,55 +77,36 @@ public class TrialService {
         determineTrialErrors(errors, trial, trackings);
         if(errors.isEmpty() && trial != null){
             docService.handleDocuments(trial.getDocuments(), trial.getId(), Trial.class, documents, req);
-//            handleTrialDocuments(trial, documents, req);
+
             ts.setTrackingInfo(trial.getTrackings(), trial.getId(), Trial.class);
             docService.deleteOldFileIfNecessary(trial);
             tr.save(trial);
+            bs.updateBenchmarkTrialAverage(trial.getBenchmarkId());
         }
         return errors;
     }
 
     public void handleTrialDeletion(String id, String benchmarkId, HttpServletRequest request){
+        NumberFormat nf = new DecimalFormat("0.0");
         docService.deleteAllServerFilesById(id, request);
         tr.deleteById(id);
         List<Trial> trials = tr.findAllByBenchmarkId(benchmarkId);
+        double newBenchmarkAverage = 0;
+
         for(int i = 0; i < trials.size(); i++){
             Trial trial = trials.get(i);
             System.out.println(trial.toString());
             trial.setTrialNumber(i+1);
             trial.setLabel("Trial #"+(i+1)+" - "+new SimpleDateFormat(Constants.DATE_FORMAT).format(trial.getDateStarted()));
+            newBenchmarkAverage += bs.determineTrialAverage(trial);
         }
+        if(!trials.isEmpty()) {
+            newBenchmarkAverage = Double.parseDouble(nf.format(newBenchmarkAverage / trials.size()));
+            bs.setBenchmarkAverage(newBenchmarkAverage, benchmarkId);
+        }else
+            bs.setBenchmarkAverage(0.0, benchmarkId);
         tr.saveAll(trials);
     }
-
-/*
-    private void handleTrialDocuments(Trial trial, List<MultipartFile> newFiles, HttpServletRequest req){
-        System.out.println("Begin handling documents..");
-        for(Document docMeta : trial.getDocuments()){
-            System.out.println(docMeta.toString());
-            if(newFiles != null){
-                for(MultipartFile docFile : newFiles){
-                    System.out.println(docFile.toString());
-                    if(docFile.getOriginalFilename().equals(docMeta.getName())){
-                        System.out.println("File names match");
-                        try{
-                            docService.handleDocumentUpload(req, docFile, trial.getId(), docMeta);
-                        }catch(IOException io){
-                            System.out.println(io.getMessage());
-                        }
-                    }else{
-                        System.out.println("File names do not match.");
-                    }
-                }
-            }
-            else{
-                System.out.println("no uploaded files attached to request");
-            }
-        }
-    }
-*/
-
-
 
     private void determineTrialErrors(Map<String, String> errors, Trial trial, String trackings){
         System.out.println("Checking trial input for errors..");

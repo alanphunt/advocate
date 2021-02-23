@@ -8,10 +8,10 @@ import {
 } from "react-icons/fa";
 import Section from "components/atoms/Section";
 import ImmutableTextArea from "components/molecules/ImmutableTextArea";
-import {determineTrialAverage} from "utils/functions/functions";
 import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
-import {TEMPLATE_TYPES} from "../../templates/TemplateList";
+import {TEMPLATE_TYPES} from "components/templates/TemplateList";
+import Strong from "components/atoms/Strong";
 
 const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, trialId, setTrialId, setMutableTrial, setModalAction}) => {
 
@@ -42,7 +42,7 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, tria
     setModalAction(iconKey);
   };
 
-  const handleTrialSelect = (trialId, trialIndex) => {
+  const handleTrialSelect = (trialId) => {
     setTrialId(trialId);
   };
 
@@ -61,12 +61,12 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, tria
               benchmark ? (
                   <>
                       <Section>
-                          <p><strong>Description: </strong></p>
+                          <Strong text={"Description: "}/>
                           <ImmutableTextArea rawData={benchmark.description}/>
-                          <p><strong>Projected mastery date: </strong>{benchmark.masteryDate}</p>
-                          <p><strong>Actual mastery date: </strong>{benchmark.complete === 1 ? benchmark.metDate : "N/A"}</p>
-                          <p><strong>Tracking type: </strong>{benchmark.tracking}</p>
-                          <p><strong>Trial Average: </strong>{benchmark ? `${determineTrialAverage(trials, allTrackings)}%` : "..."}</p>
+                          <Strong text={"Projected mastery date: "}>{benchmark.masteryDate}</Strong>
+                          <Strong text={"Actual mastery date: "}>{benchmark.complete === 1 ? benchmark.metDate : "N/A"}</Strong>
+                          <Strong text={"Tracking type: "}>{benchmark.tracking}</Strong>
+                          <Strong text={"Trial Average: "}>{benchmark.trialAverage.toFixed(1)}%</Strong>
                       </Section>
                       <Section>
                           {
@@ -74,7 +74,7 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, tria
                                   ? <Table
                                       headers={[`Trials - (${trials.length})`]}
                                       tableData={renderTableData()}
-                                      selectedCallback={(trial, trialIndex) => handleTrialSelect(trial.id, trialIndex)}
+                                      selectedCallback={(trial) => handleTrialSelect(trial.id)}
                                       selectedRowId={trialId}
                                       hideSearchAndSort
                                   />

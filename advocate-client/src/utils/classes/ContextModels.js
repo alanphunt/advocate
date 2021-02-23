@@ -77,7 +77,7 @@ export class Goal {
 }
 
 export class Benchmark {
-  constructor (id = "", goalId = "", enabled = 0, complete = 0, label = "", description = "", tracking = "", masteryDate = "", metDate = "", trialIds = []) {
+  constructor (id = "", goalId = "", enabled = 0, complete = 0, label = "", description = "", tracking = "", masteryDate = "", metDate = "", trialIds = [], trialAverage = 0.0) {
     this.id = id;
     this.enabled = enabled;
     this.complete = complete;
@@ -87,6 +87,7 @@ export class Benchmark {
     this.masteryDate = masteryDate;
     this.metDate = metDate;
     this.trialIds = trialIds;
+    this.trialAverage = trialAverage;
   }
 }
 
