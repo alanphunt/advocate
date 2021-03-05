@@ -1,13 +1,11 @@
 package com.structure.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.structure.utilities.Constants;
-
 import java.util.*;
 
 @Entity
@@ -17,14 +15,11 @@ public class Teacher {
 
     @Id
     private String id;
+
+    @Column(name = "account_id")
+    private String accountId;
     
-    private String username;
-
     private int enabled;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
-    @Column(name = "date_created")
-    private Date dateCreated;
 
     @Column(name = "first_name")
     private String firstName;
@@ -34,13 +29,14 @@ public class Teacher {
     
     private String description;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = {CascadeType.ALL})
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Classroom> classrooms = new ArrayList<>();
 
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name="username", insertable = false, updatable = false)
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
     private AccountDetails accountDetails;
 
     @Transient
@@ -48,13 +44,12 @@ public class Teacher {
 
     public Teacher(){}
 
-    public Teacher(String id, String firstName, String lastName, String username) {
+    public Teacher(String id, String firstName, String lastName, String accountId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = username;
+        this.accountId = accountId;
         this.enabled = 1;
-        this.dateCreated = new Date();
         this.description = "";
     }
 
@@ -66,28 +61,12 @@ public class Teacher {
         this.id = id;
     }
 
-    public String getUsername(){
-        return this.username;
-    }
-
-    public void setUsername(String username){
-        this.username = username;
-    }
-
     public int getEnabled() {
         return enabled;
     }
 
     public void setEnabled(int enabled) {
         this.enabled = enabled;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
     }
 
     public String getFirstName() {
@@ -143,8 +122,7 @@ public class Teacher {
         return "Teacher{" +
                 "id=" + id +
                 ", enabled=" + enabled +
-                ", username=" + username +
-                ", dateCreated=" + dateCreated +
+                ", accountId=" + accountId +
                 ", firstName=" + firstName +
                 ", lastName=" + lastName +
                 ", description=" + description +

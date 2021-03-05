@@ -3,11 +3,13 @@ package com.structure.utilities;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.structure.models.*;
+import com.structure.models.DTO.TeacherDTO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintValidatorContext;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -56,10 +58,27 @@ public class Utils {
         return text.contains("\"text\":\"\",\"type\":\"");
     }
 
-    public TeacherDTO mapTeacherToTeacherDTO(Teacher teacher) {
+    public Optional<Date> parseDate(String dateString){
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT);
+        Date date;
+        try{
+            if(!dateString.isBlank())
+                date = sdf.parse(dateString);
+            else
+                throw new Exception("Empty date");
+        }catch(Exception e){
+            System.out.println("failed to parse date");
+            return Optional.empty();
+        }
+        return Optional.of(date);
+    }
+
+    public TeacherDTO mapTeacherToTeacherDTO(AccountDetails details) {
         TeacherDTO dto = new TeacherDTO();
-        System.out.println(teacher.toString());
-        dto.setTeacher(teacher);
+        details.setRole(details.getAuthorities().get(0).getAuthority());
+        dto.setAccountDetails(details);
+        dto.setTeacher(details.getTeacher());
+        Teacher teacher = dto.getTeacher();
 
         Map<String, Classroom> classrooms = new HashMap<>();
         Map<String, Student> students = new HashMap<>();
@@ -68,7 +87,9 @@ public class Utils {
         Map<String, Benchmark> benchmarks = new HashMap<>();
         Map<String, Trial> trials = new HashMap<>();
         Map<String, Tracking> trackings = new HashMap<>();
+        Map<String, TrackingMeta> trackingMeta = new HashMap<>();
         Map<String, Document> documents = new HashMap<>();
+
         for(Classroom c : teacher.getClassrooms()){
             classrooms.put(c.getId(), c);
             dto.getTeacher().getClassroomIds().add(c.getId());
@@ -82,9 +103,14 @@ public class Utils {
                         documents.put(bd.getId(), bd);
                         b.getDocumentIds().add(bd.getId());
                     }
-                    for(Tracking btr : b.getTrackings()){
-                        trackings.put(btr.getId(), btr);
-                        b.getTrackingIds().add(btr.getId());
+                    if(b.getTracking() != null) {
+                        Tracking tracking = b.getTracking();
+                        trackings.put(tracking.getId(), tracking);
+                        b.setTrackingId(tracking.getId());
+                        for (TrackingMeta trm : tracking.getTrackingMeta()) {
+                            tracking.getTrackingMetaIds().add(trm.getId());
+                            trackingMeta.put(trm.getId(), trm);
+                        }
                     }
                 }
                 for(Goal g : s.getGoals()){
@@ -96,9 +122,14 @@ public class Utils {
                         for(Trial t : b.getTrials()){
                             b.getTrialIds().add(t.getId());
                             trials.put(t.getId(), t);
-                            for(Tracking tr : t.getTrackings()){
-                                t.getTrackingIds().add(tr.getId());
-                                trackings.put(tr.getId(), tr);
+                            if(t.getTracking() != null) {
+                                Tracking trialTracking = t.getTracking();
+                                trackings.put(trialTracking.getId(), trialTracking);
+                                t.setTrackingId(trialTracking.getId());
+                                for (TrackingMeta trm : trialTracking.getTrackingMeta()) {
+                                    trialTracking.getTrackingMetaIds().add(trm.getId());
+                                    trackingMeta.put(trm.getId(), trm);
+                                }
                             }
                             for(Document d : t.getDocuments()){
                                 t.getDocumentIds().add(d.getId());
@@ -117,23 +148,10 @@ public class Utils {
         dto.setBenchmarks(benchmarks);
         dto.setTrials(trials);
         dto.setTrackings(trackings);
+        dto.setTrackingMeta(trackingMeta);
         dto.setDocuments(documents);
         return dto;
     }
 
-    public Optional<Date> parseDate(String dateString){
-        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT);
-        Date date;
-        try{
-            if(!dateString.isBlank())
-                date = sdf.parse(dateString);
-            else
-                throw new Exception("Empty date");
-        }catch(Exception e){
-            System.out.println("failed to parse date");
-            return Optional.empty();
-        }
-        return Optional.of(date);
-    }
 
 }

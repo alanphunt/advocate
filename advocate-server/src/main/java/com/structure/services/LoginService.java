@@ -1,6 +1,5 @@
 package com.structure.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -9,20 +8,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.structure.models.AuthRequest;
-import com.structure.models.Benchmark;
-import com.structure.models.Classroom;
-import com.structure.models.Document;
-import com.structure.models.Goal;
-import com.structure.models.Student;
+import com.structure.models.AccountDetails;
+import com.structure.models.DTO.LoginDTO;
 import com.structure.models.Teacher;
-import com.structure.models.TeacherDTO;
-import com.structure.models.Tracking;
-import com.structure.models.Trial;
 import com.structure.utilities.AccountDetailsRequestBean;
 import com.structure.utilities.Constants;
 
 import com.structure.utilities.Utils;
+import com.structure.utilities.constants.Error;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,33 +33,36 @@ public class LoginService {
     @Autowired
     private AccountDetailsRequestBean detailsBean;
     @Autowired
-    private TeacherService teacherService;
+    private AccountDetailsService accountService;
     @Autowired
     private Utils utilService;
 
     public ResponseEntity<?> handleTeacherRehydration(){
         try {
-            return ResponseEntity.ok(utilService.mapTeacherToTeacherDTO(teacherService.findTeacherByUsername(detailsBean.getAccountDetails().getUsername())));
+            return ResponseEntity.ok(utilService.mapTeacherToTeacherDTO(
+                    accountService.refreshAccountDetailsWithUsername(detailsBean.getAccountDetails().getUsername())
+            ));
         } catch (Exception npe) {
             System.out.println(npe.getMessage());
             Map<String, String> errors = new HashMap<>();
-            errors.put("error", Constants.SERVER_ERROR);
+            errors.put("error", Error.AUTH_FAILED);
             return ResponseEntity.status(Constants.HTTP_UNAUTHORIZED).body(errors);
         }
     }
 
-    public ResponseEntity<?> handleLogin(AuthRequest authRequest, HttpServletResponse resp){
+    public ResponseEntity<?> handleLogin(LoginDTO authRequest, HttpServletResponse resp){
         Authentication auth = null;
         try {
             auth = authMan.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(determineLoginErrors(authRequest));
+            Map<String, String> errors = new HashMap<>();
+            errors.put("login", "Username or password is incorrect.");
+            return ResponseEntity.badRequest().body(errors);
         }
-        // AccountDetails details = (AccountDetails) auth.getPrincipal();
-        Teacher teacher = teacherService.findTeacherByUsername(auth.getName());
-        jwtUtil.createAndAddJwtToCookie(jwtUtil.generateToken(auth.getName()), resp);
-        return ResponseEntity.ok(utilService.mapTeacherToTeacherDTO(teacher));
+        AccountDetails details = (AccountDetails) auth.getPrincipal();
+        jwtUtil.createAndAddJwtToCookie(jwtUtil.generateToken(details.getUsername()), resp);
+        return ResponseEntity.ok(utilService.mapTeacherToTeacherDTO(details));
     }
 
     public void handleLogout(HttpServletRequest req, HttpServletResponse res){
@@ -77,12 +73,6 @@ public class LoginService {
         } catch (NoSuchElementException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private Map<String, String> determineLoginErrors(AuthRequest auth) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("login", "Username or password is incorrect.");
-        return errors;
     }
 
 

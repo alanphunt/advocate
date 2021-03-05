@@ -14,9 +14,10 @@ import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import FileChipWrapper from "components/molecules/FileChipWrapper";
 import ConfirmOrCancelButtons from "components/molecules/ConfirmOrCancelButtons";
 
-const BaselineDrilldown = ({student, allBaselines, trackings, documents, setModalAction, baseline, setBaseline, setMutableBaseline}) => {
+const BaselineDrilldown = ({student, allBaselines, trackings, documents, setModalAction, baseline, setBaseline, setMutableBaseline, trackingMeta}) => {
   const dropdownOptions = Object.values(allBaselines)?.reduce((reducer, obj) => ({...reducer, [obj.label]: obj.id}), {});
-  
+  const baselineTracking = trackings[baseline?.trackingId];
+  const baselineTrackingMeta = baselineTracking?.trackingMetaIds.map(id => trackingMeta[id]);
   useEffect(() => {
     if(!!baseline)
       setBaseline(null);
@@ -28,7 +29,7 @@ const BaselineDrilldown = ({student, allBaselines, trackings, documents, setModa
         return (
           <>
             <BasicScoreTrialDisplay
-              trackings={baseline?.trackingIds.map(id => trackings[id])}
+              trackingMeta={baselineTrackingMeta}
             />
           </>
         );
@@ -36,7 +37,7 @@ const BaselineDrilldown = ({student, allBaselines, trackings, documents, setModa
         return (
           <>
             <BestOutOfTrialDisplay
-              tracking={trackings[baseline?.trackingIds[0]]}
+              tracking={baselineTracking}
             />
           </>
         );
@@ -81,7 +82,7 @@ const BaselineDrilldown = ({student, allBaselines, trackings, documents, setModa
               <Strong text={"Comments: "}/>
               <ImmutableTextArea rawData={baseline.comments}/>
             </div>
-            <div className={"marg-bot"}>
+            <div>
               <Strong text={"Documents: "}/>
               <FileChipWrapper fileMeta={baseline.documentIds.map(id => documents[id])}/>
             </div>

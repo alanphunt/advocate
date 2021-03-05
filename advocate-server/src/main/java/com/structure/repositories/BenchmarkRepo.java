@@ -17,7 +17,7 @@ public interface BenchmarkRepo extends CrudRepository<Benchmark, String> {
     @Query("UPDATE Benchmark bm SET bm.complete = ?2, bm.metDate = ?3 WHERE bm.id = ?1")
     int updateBenchmark(String id, int complete, Date metDate);
 
-    @Modifying
+/*    @Modifying
     @Transactional(timeout = 5)
     @Query("UPDATE Benchmark bm SET bm.enabled = 0 WHERE bm.id = ?1")
     int softDeleteBenchmarkById(String id);
@@ -25,7 +25,7 @@ public interface BenchmarkRepo extends CrudRepository<Benchmark, String> {
     @Modifying
     @Transactional(timeout = 5)
     @Query("UPDATE Benchmark bm SET bm.enabled = 0 WHERE bm.goalId = ?1")
-    int softDeleteAllBenchmarksByGoalId(String id);
+    int softDeleteAllBenchmarksByGoalId(String id);*/
 
     @Modifying
     @Transactional(timeout = 5)

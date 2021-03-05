@@ -1,19 +1,22 @@
 package com.structure.controllers;
 
-import com.structure.models.AuthRequest;
+import com.structure.models.DTO.LoginDTO;
 import com.structure.services.LoginService;
 import com.structure.utilities.Constants;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = Constants.API_PATH, method = { RequestMethod.GET, RequestMethod.POST })
+@Validated
 public class LoginController {
 
     @Autowired private LoginService loginService;
@@ -25,7 +28,7 @@ public class LoginController {
     }
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletResponse resp) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO authRequest, HttpServletResponse resp) {
         return loginService.handleLogin(authRequest, resp);
     }
 

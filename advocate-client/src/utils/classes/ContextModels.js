@@ -1,8 +1,18 @@
+export class AccountDetails{
+  constructor(username = "", dateCreated = "", accountNonExpired = 0, accountNonLocked = 0, credentialsNonExpired = 0, role = ""){
+    this.username = username;
+    this.dateCreated = dateCreated;
+    this.accountNonExpiredc = accountNonExpired;
+    this.accountNonLocked = accountNonLocked;
+    this.credentialsNonExpired = credentialsNonExpired;
+    this.role = role;
+  }
+}
+
 export class Teacher {
-  constructor (id = "", username = "", enabled = 0, dateCreated = "", firstName = "", lastName = "", description = "", classroomIds = []) {
+  constructor (id = "", enabled = 0, firstName = "", lastName = "", description = "", classroomIds = []) {
     this.id = id;
     this.enabled = enabled;
-    this.dateCreated = dateCreated;
     this.firstName = firstName;
     this.lastName = lastName;
     this.description = description;
@@ -37,27 +47,23 @@ export class Baseline{
   constructor(
     id = "",
     studentId = "",
-    documents = [],
-    trackings = [],
-    trackingIds = [],
     documentIds = [],
     label = "",
     comments = "",
     baselineTemplate = "",
     dateStarted = "",
-    enabled = 0
+    enabled = 0,
+    trackingId = ""
   ) {
     this.id = id;
     this.studentId = studentId;
-    this.documents = documents;
-    this.trackings = trackings;
-    this.trackingIds = trackingIds;
     this.documentIds = documentIds;
     this.label = label;
     this.comments = comments;
     this.baselineTemplate = baselineTemplate;
     this.dateStarted = dateStarted;
     this.enabled = enabled;
+    this.trackingId = trackingId;
   }
 }
 
@@ -92,7 +98,7 @@ export class Benchmark {
 }
 
 export class Trial {
-  constructor (id = "", label = "", trialNumber = 0, dateStarted = "", dateCompleted = "", comments = "", benchmarkId = "", enabled = 0, documentIds = [], trackingIds = [], trialTemplate = "") {
+  constructor (id = "", label = "", trialNumber = 0, dateStarted = "", dateCompleted = "", comments = "", benchmarkId = "", enabled = 0, documentIds = [], trialTemplate = "", trackingId = "") {
     this.id = id;
     this.enabled = enabled;
     this.label = label;
@@ -102,8 +108,8 @@ export class Trial {
     this.comments = comments;
     this.benchmarkId = benchmarkId;
     this.documentIds = documentIds;
-    this.trackingIds = trackingIds;
     this.trialTemplate = trialTemplate;
+    this.trackingId = trackingId;
   }
 }
 
@@ -120,7 +126,8 @@ export class Tracking {
                correct = 0,
                frequency = 0,
                best = 0,
-               outOf = 0
+               outOf = 0,
+               trackingMetaIds = []
   ) {
     this.id = id;
     this.label = label;
@@ -135,6 +142,17 @@ export class Tracking {
     this.frequency = frequency;
     this.best = best;
     this.outOf = outOf;
+    this.trackingMetaIds = trackingMetaIds;
+  }
+}
+
+export class TrackingMeta {
+  constructor(id = "", trackingId = "", label = "", correct = 0, enabled = 0) {
+    this.id = id;
+    this.trackingId = trackingId;
+    this.label = label;
+    this.correct = correct;
+    this.enabled = enabled;
   }
 }
 
@@ -155,6 +173,7 @@ export class Document {
 }
 
 export class ContextModel {
+  accountDetails = new AccountDetails();
   teacher = new Teacher();
   classrooms = Array.of(new Classroom());
   students = Array.of(new Student());
@@ -163,9 +182,11 @@ export class ContextModel {
   benchmarks = Array.of(new Benchmark());
   trials = Array.of(new Trial());
   trackings = Array.of(new Tracking());
+  trackingMeta = Array.of(new TrackingMeta());
   documents = Array.of(new Document());
   
-  constructor(teacher, classrooms, students, baselines, goals, benchmarks, trials, trackings, documents) {
+  constructor(accountDetails, teacher, classrooms, students, baselines, goals, benchmarks, trials, trackings, trackingMeta, documents) {
+    this.accountDetails = accountDetails;
     this.teacher = teacher;
     this.classrooms = classrooms;
     this.students = students;
@@ -174,6 +195,7 @@ export class ContextModel {
     this.benchmarks = benchmarks;
     this.trials = trials;
     this.trackings = trackings;
+    this.trackingMeta = trackingMeta;
     this.documents = documents;
   }
 }

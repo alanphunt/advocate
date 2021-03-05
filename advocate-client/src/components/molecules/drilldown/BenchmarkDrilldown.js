@@ -13,7 +13,7 @@ import Box from "components/atoms/Box";
 import {TEMPLATE_TYPES} from "components/templates/TemplateList";
 import Strong from "components/atoms/Strong";
 
-const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, trialId, setTrialId, setMutableTrial, setModalAction}) => {
+const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, trialId, setTrialId, setMutableTrial, setModalAction, allTrackingMeta}) => {
 
   const renderTableData = () => {
     return trials.map(trial => {
@@ -35,13 +35,17 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, tria
       )
     })
   };
-
+  
   const handleTrialIconAction = (e, iconKey, trial) => {
     e.stopPropagation();
-    setMutableTrial({...trial, documents: trial.documentIds.map(id => allDocuments[id]), trackings: (trial.trialTemplate === TEMPLATE_TYPES.SCORE_BASIC ? trial.trackingIds.map(id => allTrackings[id]) : allTrackings[trial.trackingIds[0]])});
+    const track = {...allTrackings[trial.trackingId]};
+    if (trial.trialTemplate === TEMPLATE_TYPES.SCORE_BASIC)
+      Object.assign(track, {trackingMeta: track.trackingMetaIds.map(id => allTrackingMeta[id])});
+    
+      setMutableTrial({...trial, documents: trial.documentIds.map(id => allDocuments[id]), tracking: track});
     setModalAction(iconKey);
   };
-
+  
   const handleTrialSelect = (trialId) => {
     setTrialId(trialId);
   };

@@ -141,13 +141,8 @@ export const blankClassroomModel = {
 export const trialErrorsModel = {
   dateStarted: "",
   label: "",
-  bestOutOf: ""
+  tracking: ""
 };
-
-export const baselineErrorsModel = {
-  ...trialErrorsModel,
-  baselineLabel: ""
-}
 
 export class CardColumnModel {
   constructor(goal, benchmark, desc){

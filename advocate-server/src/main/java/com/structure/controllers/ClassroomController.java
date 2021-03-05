@@ -1,22 +1,21 @@
 package com.structure.controllers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.structure.models.Classroom;
-import com.structure.models.Student;
 import com.structure.utilities.AccountDetailsRequestBean;
 import com.structure.utilities.Constants;
 import com.structure.services.ClassroomService;
 import com.structure.services.LoginService;
-import com.structure.utilities.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
 @RequestMapping(path=Constants.API_PATH)
+@Validated
 public class ClassroomController {
 
     @Autowired
@@ -26,26 +25,13 @@ public class ClassroomController {
     private LoginService ls;
 
     @Autowired
-    private Utils utils;
-
-    @Autowired
     private AccountDetailsRequestBean detailsBean;
 
     @PostMapping(value="/createclassroom")
-    public ResponseEntity<?> createClassroom(@RequestBody Map<String, String> body){
-        ArrayList<Student> students = null;
-        try {
-            students = utils.fromJSON(new TypeReference<>() {}, body.get("students"));
-        }catch(Exception e){
-            System.out.println(e.getClass());
-        }
-        String className = body.get("className");
-        Map<String, String> errors = crs.saveClassroomOrReturnErrors(detailsBean.getAccountDetails().getTeacherId(), students, className);
-        if(errors.size() == 0)
-            return ls.handleTeacherRehydration();
-
-        return ResponseEntity.status(Constants.HTTP_BAD_REQUEST).body(errors);
-
+    public ResponseEntity<?> createClassroom(@Valid @RequestBody Classroom classroom){
+        classroom.setTeacherId(detailsBean.getAccountDetails().getId());
+        crs.handleClassroomCreation(classroom);
+        return ls.handleTeacherRehydration();
     }
 
     @DeleteMapping(value = "/deleteclassroom")

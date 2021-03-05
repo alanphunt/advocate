@@ -7,22 +7,27 @@ import TableAccordionGroup from 'components/molecules/table/TableAccordionGroup'
 import {FaCheck as CheckIcon, FaPlus as PlusIcon} from "react-icons/fa";
 import ClassroomForm from 'components/molecules/ClassroomForm';
 import Button from 'components/atoms/Button';
-import { BAD_REQUEST_STATUS, BASIC_STUDENT_TABLE_HEADERS, JSON_HEADER, BASIC_STUDENT_TABLE_KEYS } from 'utils/constants';
+import {
+  BAD_REQUEST_STATUS,
+  BASIC_STUDENT_TABLE_HEADERS,
+  JSON_HEADER,
+  BASIC_STUDENT_TABLE_KEYS,
+  NOT_LOADING,
+  CLASSROOM_LOADING,
+  DELETE_CLASSROOM_LOADING, EDIT_CLASSROOM_LOADING
+} from 'utils/constants';
 import Section from 'components/atoms/Section';
 import Box from 'components/atoms/Box';
 import { useAuth } from "utils/auth/AuthHooks";
 import AccordionItem from 'components/atoms/AccordionItem';
-import {classroomErrorModel, blankClassroomModel} from "utils/models";
-import Modal from 'components/molecules/Modal';
-import Toaster from 'components/atoms/Toaster';
+import {classroomErrorModel} from "utils/models";
+import {Classroom as ClassObject} from "utils/classes/ContextModels";
 
-const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setToasterText}) => {
+const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setToasterText, isLoading, setIsLoading}) => {
   const {teacher, setTeacher, signout} = useAuth();
   const [formErrors, setFormErrors] = useState(classroomErrorModel);
   
-  const [mutableClassroom, setMutableClassroom] = useState(null);
-  
-  const [isLoading, setIsLoading] = useState(false);
+  const [mutableClassroom, setMutableClassroom] = useState(new ClassObject());
   
   const classrooms = Object.values(teacher.classrooms);
   const students = Object.values(teacher.students);
@@ -36,30 +41,31 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
   
   useEffect(() => {
     setModalBody(determineModalBody());
-  }, [mutableClassroom, formErrors, isLoading])
+  }, [modalAction, mutableClassroom, formErrors, isLoading])
   
   const closeModalWrapper = () => {
     closeModal();
+    setMutableClassroom(new ClassObject());
     setFormErrors(classroomErrorModel);
   };
   
   const confirmCreateClassroomCallback = () => {
-    setIsLoading(true);
-    let data = {
+    setIsLoading(CLASSROOM_LOADING);
+/*    let data = {
       students: JSON.stringify(mutableClassroom.students),
       className: mutableClassroom.className
-    };
+    };*/
     
     fetch("/api/createclassroom", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(mutableClassroom),
       headers: JSON_HEADER
     })
       .then(res => Promise.all([res.ok, res.json(), res.status]))
       .then(([ok, body, status]) => {
-        setIsLoading(false);
+        setIsLoading(NOT_LOADING);
         if(ok) {
-          crudOperationSuccessful(body, `Successfully created ${data.className}!`)
+          crudOperationSuccessful(body, `Successfully created ${mutableClassroom.className}!`)
         }
         else if(status === BAD_REQUEST_STATUS)
           setFormErrors(body);
@@ -69,7 +75,7 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
   };
   
   const crudOperationSuccessful = (body, message) => {
-    setIsLoading(false);
+    setIsLoading(NOT_LOADING);
     setToasterText(<p>{<CheckIcon className="i-right"/>}{message}</p>);
     setTeacher(body);
     closeModalWrapper();
@@ -84,10 +90,9 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
             confirmCallback={confirmCreateClassroomCallback}
             cancelCallback={closeModalWrapper}
             ref={scrollRef}
-            isLoading={isLoading}
+            isLoading={isLoading.createClassroom}
           >
             <ClassroomForm
-              students={mutableClassroom.students}
               classroom={mutableClassroom}
               updateClassroom={updateClassroom}
               updateStudents={updateClassroomStudents}
@@ -101,7 +106,7 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
             header={`Delete ${mutableClassroom.className}?`}
             confirmCallback={executeClassroomDeletion}
             cancelCallback={closeModalWrapper}
-            isLoading={isLoading}
+            isLoading={isLoading.deleteClassroom}
           >
             <p className={"marg-bot-2"}>
               This will delete all students and all goals, benchmarks, trials, and tracking associated with those students.
@@ -116,12 +121,11 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
             confirmCallback={executeClassroomUpdate}
             cancelCallback={closeModalWrapper}
             ref={scrollRef}
-            isLoading={isLoading}
+            isLoading={isLoading.editClassroom}
           >
             <ClassroomForm
               classroom={mutableClassroom}
               updateClassroom={updateClassroom}
-              students={mutableClassroom.students}
               updateStudents={updateClassroomStudents}
               errors={formErrors}
             />
@@ -132,7 +136,7 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
   };
   
   const executeClassroomDeletion = () => {
-    setIsLoading(true);
+    setIsLoading(DELETE_CLASSROOM_LOADING);
     crudFetch(
       {
         path: `deleteclassroom?classroomId=${mutableClassroom.id}`,
@@ -145,7 +149,7 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
   };
   
   const executeClassroomUpdate = () => {
-    setIsLoading(true);
+    setIsLoading(EDIT_CLASSROOM_LOADING);
     crudFetch({
       path: "updateclassroom",
       method: "PUT",
@@ -158,7 +162,7 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
   };
   
   const handleCrudError = (body) => {
-    setIsLoading(false);
+    setIsLoading(NOT_LOADING);
     setFormErrors(body);
   };
   
@@ -177,7 +181,7 @@ const Classroom = ({modalAction, closeModal, setModalAction, setModalBody, setTo
         <Button
           text="Create new class"
           icon={<PlusIcon className="i-right"/>}
-          onClick={() => {setMutableClassroom(blankClassroomModel); setModalAction("create"); }}
+          onClick={() => setModalAction("create")}
         />
       </Section>
       {

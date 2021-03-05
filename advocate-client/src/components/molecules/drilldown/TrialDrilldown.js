@@ -6,17 +6,17 @@ import BestOutOfTrialDisplay from "components/templates/score/best-out-of/BestOu
 import Strong from "components/atoms/Strong";
 import FileChipWrapper from "components/molecules/FileChipWrapper";
 
-const TrialDrilldown = ({trial, trackings, documents}) => {
+const TrialDrilldown = ({trial, tracking, documents, trackingMeta}) => {
   
   const determineTrialTemplate = () => {
     switch(trial.trialTemplate){
       case TEMPLATE_TYPES.SCORE_BASIC:
         return (
-          <BasicScoreTrialDisplay trackings={trackings}/>
+          <BasicScoreTrialDisplay trackingMeta={trackingMeta}/>
         );
       case TEMPLATE_TYPES.SCORE_BEST_OUT_OF:
         return (
-          <BestOutOfTrialDisplay tracking={trackings[0]}/>
+          <BestOutOfTrialDisplay tracking={tracking}/>
         );
       default: return <></>
     }

@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from "react";
 import Select from "components/atoms/Select";
-import {templateOptionsModel, baselineErrorsModel} from "utils/models";
+import {templateOptionsModel, trialErrorsModel} from "utils/models";
 import Section from "components/atoms/Section";
 import TrialTemplateCards from "components/molecules/TrialTemplateCards";
 import ConfirmOrCancelButtons from "components/molecules/ConfirmOrCancelButtons";
 import {
+  blobifyJson,
   crudFetch,
-  formifyObject,
   mapFileMetaDataToDocument,
-  prepareEditorStateForRequest
 } from "utils/functions/functions";
 import {FaRegHandPointRight as HandIcon} from "react-icons/fa";
 import TemplateFrame from "components/templates/TemplateFrame";
@@ -26,22 +25,11 @@ const CreateBaseline = ({closeModal, student, goal, completeCrudOp, isLoading, s
   const [pageKey, setPageKey] = useState("start");
   
   const [baseline, setBaseline] = useState(new Baseline());
-  const [trackings, setTrackings] = useState(new Tracking());
+  const [tracking, setTracking] = useState(new Tracking());
+  const [trackingMeta, setTrackingMeta] = useState([]);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [requestErrors, setRequestErrors] = useState(baselineErrorsModel);
+  const [requestErrors, setRequestErrors] = useState(trialErrorsModel);
   const [trialFiles, setTrialFiles] = useState([]);
-  
-  useEffect(() => {
-    if(!trackingType)
-      setBaseline(prev => ({...prev, baselineTemplate: ""}))
-  }, [trackingType]);
-  
-  useEffect(() => {
-    if(baseline.baselineTemplate) {
-      if (baseline.baselineTemplate === TEMPLATE_TYPES.SCORE_BASIC)
-        setTrackings([]);
-    }
-  }, [baseline.baselineTemplate]);
   
   let fileMetaData = mapFileMetaDataToDocument(trialFiles, []);
   
@@ -51,9 +39,9 @@ const CreateBaseline = ({closeModal, student, goal, completeCrudOp, isLoading, s
         return (
           <>
             <BasicScoreTrialForm
-              trackings={trackings}
-              labelError={requestErrors.label}
-              updateTracks={setTrackings}
+              labelError={requestErrors.tracking}
+              updateTracks={setTrackingMeta}
+              trackingMeta={trackingMeta}
             />
           </>
         );
@@ -61,9 +49,9 @@ const CreateBaseline = ({closeModal, student, goal, completeCrudOp, isLoading, s
         return (
           <>
             <BestOutOfTrialForm
-              track={trackings}
-              setTrack={(val) => setTrackings(prev => ({...prev, ...val}))}
-              error={requestErrors.bestOutOf}
+              track={tracking}
+              setTrack={(val) => setTracking(prev => ({...prev, ...val}))}
+              error={requestErrors.tracking}
             />
           </>
         );
@@ -73,20 +61,11 @@ const CreateBaseline = ({closeModal, student, goal, completeCrudOp, isLoading, s
   
   const executeBaselineCreation = () => {
     setIsLoading({createBaseline: true});
-    let fd = formifyObject({
-      "startDate": baseline.dateStarted,
-      "label": baseline.label,
-      "trackings": JSON.stringify(trackings),
-      baseline: JSON.stringify({
-        "comments": prepareEditorStateForRequest(editorState.getCurrentContent()),
-        "documents": fileMetaData,
-        "studentId": student.id,
-        "baselineTemplate": baseline.baselineTemplate
-      })
-    });
+    let fd = new FormData();
     for(let i = 0; i < trialFiles.length; i++){
       fd.append("documents", trialFiles[i]);
     }
+    fd.append("baseline", blobifyJson({...baseline, tracking: {...tracking, trackingMeta: trackingMeta}}))
     crudFetch({
       path: "createbaseline",
       method: "POST",
@@ -99,6 +78,12 @@ const CreateBaseline = ({closeModal, student, goal, completeCrudOp, isLoading, s
   
   const goBack = () => {
     setTrackingType("");
+    setBaseline(new Baseline());
+    setTracking(new Tracking());
+    setTrackingMeta([]);
+    setEditorState(EditorState.createEmpty());
+    setRequestErrors(trialErrorsModel);
+    setTrialFiles([]);
     setPageKey("start");
   };
   
@@ -165,7 +150,7 @@ const CreateBaseline = ({closeModal, student, goal, completeCrudOp, isLoading, s
                     onChange={(e) => setBaseline(prev => ({...prev, label: e.currentTarget.value}))}
                     placeholder={"Baseline Label"}
                     label={"Label"}
-                    errorMessage={requestErrors.baselineLabel}
+                    errorMessage={requestErrors.label}
                     required
                     icon={<LabelIcon/>}
                   />

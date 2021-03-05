@@ -24,18 +24,13 @@ public class ClassroomService{
     @Autowired
     private Utils utils;
 
-    public Map<String, String> saveClassroomOrReturnErrors(String teacherId, ArrayList<Student> students, String className){
-        Classroom classroom = new Classroom(utils.generateUniqueId(), className, teacherId);
-        Map<String, String> errors = determineClassroomError(students, classroom);
-        
-        if(errors.size() == 0){
-            students.forEach(stu -> {
-                fillStudentData(stu, classroom.getId());
-            });
-            classroom.setStudents(students);
-            classroomRepo.save(classroom);
+    public void handleClassroomCreation(Classroom classroom){
+        classroom.setId(utils.generateUniqueId());
+        classroom.setEnabled(1);
+        for(Student stu : classroom.getStudents()){
+            fillStudentData(stu, classroom.getId());
         }
-        return errors;
+        classroomRepo.save(classroom);
     }
 
     public void deleteClassroom(String classroomId){

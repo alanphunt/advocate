@@ -18,14 +18,13 @@ import RegisterForm from 'components/molecules/RegisterForm';
 import { homepageErrorModel, loginModel, registrationModel } from 'utils/models';
 import { useAuth } from 'utils/auth/AuthHooks';
 import ModalBody from 'components/molecules/ModalBody';
- import {OKAY_STATUS} from "utils/constants";
+ import {OKAY_STATUS, NOT_LOADING, HOME_LOADING} from "utils/constants";
 
-const Home = ({setIsFetching, modalAction, setModalAction, setModalBody, closeModal}) => {
+const Home = ({setIsLoading, modalAction, setModalAction, setModalBody, closeModal}) => {
     const {signin, register} = useAuth();
     const [loginObject, setLoginObject] = useState(loginModel);
     const [registrationObject, setRegistrationObject] = useState(registrationModel);
     const [errors, setErrors] = useState(homepageErrorModel);
-    
     const resetForms = () => {
         setLoginObject(loginModel);
         setRegistrationObject(registrationModel);
@@ -65,12 +64,12 @@ const Home = ({setIsFetching, modalAction, setModalAction, setModalBody, closeMo
 
     const handleFormSubmission = (e) => {
         e.preventDefault();
-        setIsFetching(true);
+        setIsLoading(HOME_LOADING);
         const isLoginForm = modalAction === "login";
         const data = isLoginForm ? loginObject : registrationObject;
         isLoginForm 
-            ?  signin(data, errorsExist, handleCompletion, () => setIsFetching(false))
-            :  register(data, errorsExist, handleCompletion, () => setIsFetching(false))
+            ?  signin(data, errorsExist, handleCompletion, () => setIsLoading(NOT_LOADING))
+            :  register(data, errorsExist, handleCompletion, () => setIsLoading(NOT_LOADING))
     };
 
     const divKeyPressEvent = (event, formType) => {
@@ -90,7 +89,7 @@ const Home = ({setIsFetching, modalAction, setModalAction, setModalBody, closeMo
     };
     
     const handleCompletion = (status) => {
-        setIsFetching(false);
+        setIsLoading(NOT_LOADING);
         if(status === OKAY_STATUS)
             closeModal();
     };

@@ -82,6 +82,7 @@ public class DocumentService {
         and deletes the one that were deleted on the client side
      */
     public void deleteOldFileIfNecessary(Trial trial){
+        System.out.println("deleting old files if necessary..");
         String trialId = trial.getId();
         List<Document> documentsFromRequest = trial.getDocuments();
         ArrayList<Document> existingDocs = docRepo.findAllByTrialId(trialId);
@@ -98,7 +99,8 @@ public class DocumentService {
                 }else{
                     System.out.println("Could not delete file " + existingDoc.getName());
                 }
-            }
+            }else
+                System.out.println("No files to delete.");
         }
     }
 

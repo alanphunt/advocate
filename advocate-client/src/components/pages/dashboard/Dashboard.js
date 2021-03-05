@@ -10,7 +10,7 @@ import Profile from "components/pages/profile/Profile";
 import Test from "components/pages/Test/Test"
 import DashNav from 'components/molecules/DashNav';
 
-const Dashboard = ({modalAction, setModalAction, setModalBody, setToasterText, closeModal}) => {
+const Dashboard = ({modalAction, setModalAction, setModalBody, setToasterText, closeModal, isLoading, setIsLoading}) => {
   const [expanded, setExpanded] = useState(true);
   
   return (
@@ -29,6 +29,8 @@ const Dashboard = ({modalAction, setModalAction, setModalBody, setToasterText, c
               setModalBody={setModalBody}
               setToasterText={setToasterText}
               closeModal={closeModal}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
             />
           </Route>
           <Route path="/dashboard/progressreport" exact>
@@ -44,6 +46,8 @@ const Dashboard = ({modalAction, setModalAction, setModalBody, setToasterText, c
               setModalBody={setModalBody}
               setToasterText={setToasterText}
               closeModal={closeModal}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
             />
           </Route>
           <Route path="/dashboard/profile" exact>

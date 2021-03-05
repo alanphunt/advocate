@@ -1,12 +1,14 @@
 package com.structure.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.structure.models.Baseline;
 import com.structure.models.Tracking;
+import com.structure.models.TrackingMeta;
 import com.structure.models.Trial;
-import com.structure.models.TrialTemplates;
 import com.structure.utilities.Constants;
 import com.structure.utilities.Utils;
+import com.structure.utilities.constants.TrialTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,20 +23,24 @@ public class TrackingService {
     @Autowired
     private Utils utilService;
 
-    public void setTrackingInfo(List<Tracking> tracks, String id, Class<?> clazz){
+    public void setTrackingInfo(Tracking tracking, String parentId, Class<?> clazz){
         System.out.println("Setting tracking info..");
-        for(Tracking t : tracks){
-            System.out.println(t.toString());
-            if(t.getId() == null || t.getId().isBlank()){
-                t.setId(utilService.generateUniqueId());
-                if(clazz == Baseline.class){
-                    t.setTrialId(null);
-                    t.setBaselineId(id);
-                }else if(clazz == Trial.class) {
-                    t.setBaselineId(null);
-                    t.setTrialId(id);
-                }
-                t.setEnabled(1);
+        tracking.setId(utilService.generateUniqueId());
+        if(clazz == Baseline.class){
+            tracking.setBaselineId(parentId);
+            tracking.setTrialId(null);
+        }else{
+            tracking.setBaselineId(null);
+            tracking.setTrialId(parentId);
+        }
+        tracking.setEnabled(1);
+    }
+
+    public void setTrackingMetaInfo(String trackingId, List<TrackingMeta> meta){
+        for(TrackingMeta tm : meta){
+            if(tm.getId().isBlank()){
+                tm.setEnabled(1);
+                tm.setId(trackingId);
             }
         }
     }
@@ -42,7 +48,7 @@ public class TrackingService {
     public ArrayList<Tracking> determineTrackingErrors(Map<String, String> errors, String trackings, String template) {
         ArrayList<Tracking> tracks = new ArrayList<>();
         try {
-            if(template.equals(TrialTemplates.SCORE_BASIC.name()))
+            if(template.equals(TrialTemplate.SCORE_BASIC))
                 tracks = utilService.fromJSON(new TypeReference<>() {}, trackings);
             else{
                 Tracking t = utilService.fromJSON(new TypeReference<>() {}, trackings);
@@ -52,12 +58,12 @@ public class TrackingService {
             System.out.println(e.getMessage());
         }
 
-        if (template.equals(TrialTemplates.SCORE_BASIC.name())) {
+        if (template.equals(TrialTemplate.SCORE_BASIC)) {
             for(Tracking t : tracks) {
                 if (t.getLabel().isBlank())
                     errors.put("label", Constants.EMPTY_TRACK_LABEL_RESPONSE);
             }
-        } else if (template.equals(TrialTemplates.SCORE_BEST_OUT_OF.name())) {
+        } else if (template.equals(TrialTemplate.SCORE_BEST_OUT_OF)) {
             for(Tracking t : tracks) {
                 try {
                     if (t.getBest() < 0 || t.getOutOf() <= 0)

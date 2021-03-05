@@ -46,7 +46,9 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
   
   const [trialId, setTrialId] = useState("");
   const trial = teacher.trials[trialId];
-  const trackings = trial?.trackingIds.map(id => teacher.trackings[id]);
+  const tracking = teacher.trackings[trial?.trackingId];
+  const trackingMeta = tracking?.trackingMetaIds.map(id => teacher.trackingMeta[id]);
+  
   const documents = trial?.documentIds.map(id => teacher.documents[id]);
   
   const [mutableGoal, setMutableGoal] = useState(new Goal());
@@ -79,8 +81,6 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
     if(benchmarkId)
       setTrialId("");
   }, [benchmarkId]);
-  
-  useEffect(() => {}, [])
   
   useEffect(() => {
     setModalBody(determineModalChild());
@@ -311,7 +311,15 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
   
   return (
     <DashCard fitOnPage>
-      <GoalCenterTopRow baseline={baseline} setBaseline={setBaseline} setMutableBaseline={setMutableBaseline} teacher={teacher} student={student} setStudentId={setStudentId} setModalAction={setModalAction}/>
+      <GoalCenterTopRow
+        baseline={baseline}
+        setBaseline={setBaseline}
+        setMutableBaseline={setMutableBaseline}
+        teacher={teacher}
+        student={student}
+        setStudentId={setStudentId}
+        setModalAction={setModalAction}
+      />
       <div className={"goalcenter-row goalcenter-row-bottom"}>
         <div className={"drilldownwrapper"}>
           <div className={"drilldown"}>
@@ -328,6 +336,7 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
               trials={trials}
               allDocuments={teacher.documents}
               allTrackings={teacher.trackings}
+              allTrackingMeta={teacher.trackingMeta}
               benchmark={benchmark}
               trialId={trialId}
               setTrialId={setTrialId}
@@ -336,7 +345,8 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
             />
             <TrialDrilldown
               trial={trial}
-              trackings={trackings}
+              tracking={tracking}
+              trackingMeta={trackingMeta}
               documents={documents}
             />
           </div>

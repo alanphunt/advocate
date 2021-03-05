@@ -4,8 +4,8 @@ import {FaMinus as MinusIcon, FaPlus as PlusIcon} from "react-icons/fa";
 import TrialChart from "components/atoms/TrialChart";
 import {GraphDataPoint} from "utils/models";
 
-const BasicScoreTrialDisplay = ({trackings}) => {
-  const results = (trackings?.length ? determineScoreTrialAccuracy(trackings) : null);
+const BasicScoreTrialDisplay = ({trackingMeta}) => {
+  const results = (trackingMeta?.length ? determineScoreTrialAccuracy(trackingMeta) : null);
   
   let dataPoints = [];
   let test = [];
@@ -27,7 +27,7 @@ const BasicScoreTrialDisplay = ({trackings}) => {
         <p><strong>Trial Accuracy: </strong>{results.accuracy}%</p>
         <div>
           {
-            trackings.map(track => {
+            trackingMeta.map(track => {
               return (
                 <p key={`tracklabel${track.label.toUpperCase()}`}>
                   <strong>Label: </strong>

@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface TrialRepo extends CrudRepository<Trial, String> {
 
-    @Modifying
+/*    @Modifying
     @Transactional(timeout = 5)
     @Query("UPDATE Trial t SET t.enabled = 0 WHERE t.benchmarkId = ?1")
-    int softDeleteAllByBenchmarkId(String id);
+    int softDeleteAllByBenchmarkId(String id);*/
 
     @Query("FROM Trial t WHERE t.benchmarkId = ?1 ORDER BY t.trialNumber ASC")
     List<Trial> findAllByBenchmarkId(String benchmarkId);

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeacherRepo extends CrudRepository<Teacher, String> {
-    Teacher findTeacherByUsername(String username);
+//    Teacher findTeacherByUsername(String username);
 }

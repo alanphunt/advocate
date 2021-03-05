@@ -6,13 +6,22 @@ import Section from "components/atoms/Section";
 import FormElement from "components/atoms/FormElement";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import RequiredField from "components/atoms/RequiredField";
-import {Tracking} from "utils/classes/ContextModels";
+import {Tracking, TrackingMeta} from "utils/classes/ContextModels";
 
-const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
+const BasicScoreTrialForm = ({labelError, updateTracks, trackingMeta}) => {
 
-  const handleTrackingsUpdate = (key, index, value) => {
+/*  const handleTrackingsUpdate = (key, index, value) => {
     let newTrackings = [...trackings];
     let track = {...newTrackings[index]};
+    
+    Object.assign(track, (key === "correct" ? {correct: track.correct ? 0 : 1} : {[key]: value}))
+    newTrackings.splice(index, 1, track);
+    updateTracks(newTrackings);
+  };*/
+  
+  const handleTrackingsUpdate = (key, index, value) => {
+    let newTrackings = [...trackingMeta];
+    let track = {...trackingMeta[index]};
     
     Object.assign(track, (key === "correct" ? {correct: track.correct ? 0 : 1} : {[key]: value}))
     newTrackings.splice(index, 1, track);
@@ -20,7 +29,8 @@ const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
   };
   
   const handleTrackDeletion = (index) => {
-    const newTracks = [...trackings];
+    const newTracks = [...trackingMeta];
+    // const newTracks = [...trackings];
     newTracks.splice(index, 1);
     updateTracks(newTracks);
   };
@@ -60,7 +70,7 @@ const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
   };
   
   const renderTableInputs = () => {
-    return trackings.map((track, index) => {
+    return trackingMeta.map((track, index) => {
       return tableInputs(track, index);
     });
   }
@@ -72,13 +82,13 @@ const BasicScoreTrialForm = ({trackings, labelError, updateTracks}) => {
           <h3 className={"i-bottom"}>Track Count</h3>
           <NumberPicker
             updateState={updateTracks}
-            object={new Tracking()}
-            objectArray={trackings}
+            object={new TrackingMeta()}
+            objectArray={trackingMeta}
           />
         </Section>
         {labelError ? <ErrorLabel text={labelError}/> : <></>}
         {
-         trackings.length >= 0 ? (
+         trackingMeta?.length >= 0 ? (
            <Table
              columnSize={{0: "flex-quarter"}}
              headers={[<>Action</>, <><RequiredField/>Item Label<p>(press Tab for next item)</p></>, <>Correct/Incorrect<p>(press Enter to toggle)</p></>]}

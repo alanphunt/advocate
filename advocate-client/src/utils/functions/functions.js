@@ -216,3 +216,9 @@ export const arrayToObject = (array) => {
     array.forEach((obj, ind) => Object.assign(newObject, {[obj.id]: {...obj[ind]}}));
     return newObject;
 };
+
+export const blobifyJson = (json) => {
+    return new Blob([JSON.stringify(json)], {
+        type: "application/json"
+    });
+};

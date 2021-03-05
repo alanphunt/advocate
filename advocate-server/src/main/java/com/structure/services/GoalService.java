@@ -10,6 +10,7 @@ import com.structure.repositories.GoalRepo;
 import com.structure.utilities.Constants;
 import com.structure.utilities.Utils;
 
+import com.structure.utilities.constants.Format;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ public class GoalService {
             try{
                 potentialMasteryDate = sdf.parse(goalString.get("masteryDate"));
                 potentialStartDate = sdf.parse(goalString.get("startDate"));
+
             }catch(Exception e){
                 System.out.println(e.getMessage());
             }
@@ -133,9 +135,9 @@ public class GoalService {
 
         for (String key : goalString.keySet()){
             String val = goalString.get(key);
-            if(key.equals("masteryDate") && !val.matches(Constants.DATE_REGEX))
+            if(key.equals("masteryDate") && !val.matches(Format.DATE))
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
-            else if(key.equals("startDate") && (!val.equals("null") && !val.isBlank() && !val.matches(Constants.DATE_REGEX))) {
+            else if(key.equals("startDate") && (!val.equals("null") && !val.isBlank() && !val.matches(Format.DATE))) {
                 errors.put(key, Constants.INVALID_DATE_FORMAT);
             }else if(val.isBlank() && !key.equals("benchmarkIds") && !key.equals("process") && !key.equals("benchmarks") && !key.equals("startDate"))
                 errors.put(key, Constants.EMPTY_FIELD_RESPONSE);

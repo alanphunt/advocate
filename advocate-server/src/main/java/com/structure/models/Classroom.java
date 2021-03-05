@@ -1,8 +1,12 @@
 package com.structure.models;
 
+import com.structure.constraints.OneOrMoreConstraint;
+import com.structure.constraints.RequiredFieldConstraint;
+import com.structure.utilities.constants.Error;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,6 +24,7 @@ public class Classroom {
     private int enabled;
 
     @Column(name = "class_name")
+    @RequiredFieldConstraint(key = "className")
     private String className;
     
     @Column(name = "teacher_id")
@@ -27,6 +32,8 @@ public class Classroom {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "classroom", cascade = {CascadeType.ALL})
+    @Valid
+    @OneOrMoreConstraint(key = "students", message = Error.NO_STUDENTS)
     private List<Student> students = new ArrayList<>();
 
     @JsonIgnore

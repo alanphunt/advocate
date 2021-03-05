@@ -9,7 +9,6 @@ Props:
  */
 const NumberPicker = ({limit = 100, object, objectArray, updateState}) => {
     const [amount, setAmount] = useState(-1);
-
     const change = (num, object, objArr) => {
         setAmount(num);
         let newObjArr = [...objArr];
@@ -30,7 +29,9 @@ const NumberPicker = ({limit = 100, object, objectArray, updateState}) => {
         return newObjArr;
     };
 
-    useEffect(() => setAmount(objectArray.length), [objectArray])
+    useEffect(() => {
+      setAmount(objectArray.length);
+    }, [objectArray]);
 
     return (
         <div className={"numberpickerwrapper"}>

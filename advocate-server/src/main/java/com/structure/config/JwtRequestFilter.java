@@ -9,6 +9,7 @@ import com.structure.utilities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,7 +39,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwtCookie.isPresent()) {
                 jwt = jwtCookie.get().getValue();
                 username = jwtService.extractUsername(jwt);
-
             }
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -53,7 +53,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } catch(Exception e){
             System.out.println(e.getMessage());
-            httpServletResponse.sendError(Constants.HTTP_UNAUTHORIZED);
         }
     }
 }

@@ -19,6 +19,10 @@ public class AccountDetailsService implements UserDetailsService{
         return adr.findByUsername(username);
     }
 
+    public AccountDetails refreshAccountDetailsWithUsername(String username){
+        return adr.findByUsername(username);
+    };
+
     public AccountDetails saveAccountDetails(AccountDetails accountDetails){
         return adr.save(accountDetails);
     }

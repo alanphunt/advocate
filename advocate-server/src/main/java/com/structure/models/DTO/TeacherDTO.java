@@ -1,9 +1,11 @@
-package com.structure.models;
+package com.structure.models.DTO;
+
+import com.structure.models.*;
 
 import java.util.Map;
 
 public class TeacherDTO {
-
+    private AccountDetails accountDetails;
     private Teacher teacher;
     private Map<String, Classroom> classrooms;
     private Map<String, Student> students;
@@ -12,9 +14,18 @@ public class TeacherDTO {
     private Map<String, Benchmark> benchmarks;
     private Map<String, Trial> trials;
     private Map<String, Tracking> trackings;
+    private Map<String, TrackingMeta> trackingMeta;
     private Map<String, Document> documents;
 
     public TeacherDTO() {
+    }
+
+    public AccountDetails getAccountDetails() {
+        return accountDetails;
+    }
+
+    public void setAccountDetails(AccountDetails accountDetails) {
+        this.accountDetails = accountDetails;
     }
 
     public void setTeacher(Teacher teacher){
@@ -81,6 +92,14 @@ public class TeacherDTO {
         this.trackings = trackings;
     }
 
+    public Map<String, TrackingMeta> getTrackingMeta() {
+        return trackingMeta;
+    }
+
+    public void setTrackingMeta(Map<String, TrackingMeta> trackingMeta) {
+        this.trackingMeta = trackingMeta;
+    }
+
     public Map<String,Document> getDocuments() {
         return this.documents;
     }
@@ -89,18 +108,4 @@ public class TeacherDTO {
         this.documents = documents;
     }
 
-    @Override
-    public String toString() {
-        return "TeacherDTO{" +
-                "teacher=" + teacher +
-                ", classrooms=" + classrooms +
-                ", students=" + students +
-                ", baselines=" + baselines +
-                ", goals=" + goals +
-                ", benchmarks=" + benchmarks +
-                ", trials=" + trials +
-                ", trackings=" + trackings +
-                ", documents=" + documents +
-                '}';
-    }
 }

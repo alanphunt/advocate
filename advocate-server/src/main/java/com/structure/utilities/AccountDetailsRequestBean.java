@@ -11,7 +11,6 @@ public class AccountDetailsRequestBean {
 
     private AccountDetails accountDetails;
 
-
     public AccountDetailsRequestBean() {
     }
 

@@ -25,7 +25,7 @@ const DashMain = () => {
         <DashCard>
             <div className={"cardwrapperrow"}>
                 <DashWidget flexSize={1}>
-                    <ProfileCard teacher={teacher.teacher}/>
+                    <ProfileCard teacher={{...teacher.teacher, dateCreated: teacher.accountDetails.dateCreated}}/>
                 </DashWidget>
                 {
                     Object.values(classrooms).length === 0

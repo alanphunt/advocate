@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface TrackingRepo extends CrudRepository<Tracking, String> {
 
-    @Modifying
+/*    @Modifying
     @Transactional
-    @Query("UPDATE Tracking t SET t.enabled = 0 WHERE t.trialId = ?1")
-    int softDeleteAllByTrialId(String id);
+    @Query("UPDATE Tracking t SET t.enabled = 0 WHERE t.id = ?1")
+    int softDeleteAllByTrialId(String id);*/
 
 }

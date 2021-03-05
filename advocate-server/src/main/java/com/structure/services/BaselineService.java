@@ -32,18 +32,19 @@ public class BaselineService {
     @Autowired
     private TrackingService ts;
 
-    public ResponseEntity<?> handleBaselineCreation(String startDateString, String label, String trackings, String baselineString, List<MultipartFile> documents, HttpServletRequest req){
+    public ResponseEntity<?> handleBaselineCreation(Baseline baseline, List<MultipartFile> documents, HttpServletRequest req){
+//    public ResponseEntity<?> handleBaselineCreation(String startDateString, String label, String trackings, String baselineString, List<MultipartFile> documents, HttpServletRequest req){
         Map<String, String> errors = new HashMap<>();
-        Baseline baseline = null;
+/*        Baseline baseline = null;
         System.out.println("Begin baseline creation");
         try {
             baseline = utilService.fromJSON(new TypeReference<>() {}, baselineString);
         }catch (Exception e){
             System.out.println(e.getMessage());
-        }
-        if(baseline != null) {
+        }*/
+//        if(baseline != null) {
             System.out.println("Baseline successfully parsed");
-            ArrayList<Tracking> tracks = ts.determineTrackingErrors(errors, trackings, baseline.getBaselineTemplate());
+ /*           ArrayList<Tracking> tracks = ts.determineTrackingErrors(errors, trackings, baseline.getBaselineTemplate());
             Optional<Date> startDate = utilService.parseDate(startDateString);
 
             if(startDate.isEmpty())
@@ -54,22 +55,25 @@ public class BaselineService {
             if(label.isBlank())
                 errors.put("baselineLabel", Constants.EMPTY_FIELD_RESPONSE);
             else
-                baseline.setLabel(label);
+                baseline.setLabel(label);*/
 
-            if(errors.isEmpty()){
+//            if(errors.isEmpty()){
                 String baselineId = utilService.generateUniqueId();
-                ts.setTrackingInfo(tracks, baselineId, Baseline.class);
-                baseline.setTrackings(tracks);
+//                ts.setTrackingInfo(tracks, baselineId, Baseline.class);
+//                baseline.setTrackings(tracks);
 
+                ts.setTrackingInfo(baseline.getTracking(), baseline.getId(), Baseline.class);
+
+//                ts.setTrackingInfo(baseline.getTrackings(), baselineId, Baseline.class);
                 docService.handleDocuments(baseline.getDocuments(), baselineId, Baseline.class, documents, req);
 
                 baseline.setId(baselineId);
                 baseline.setEnabled(1);
                 br.save(baseline);
                 return ls.handleTeacherRehydration();
-            }
-        }
-        return ResponseEntity.badRequest().body(errors);
+//            }
+//        }
+//        return ResponseEntity.badRequest().body(errors);
     }
 
     public ResponseEntity<?> handleBaselineDeletion(HttpServletRequest request, String id){

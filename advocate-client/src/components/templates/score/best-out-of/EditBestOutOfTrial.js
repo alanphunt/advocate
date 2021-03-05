@@ -1,7 +1,12 @@
 import React, {useState} from "react";
 import BestOutOfTrialForm from "./BestOutOfTrialForm";
 import TemplateFrame from "components/templates/TemplateFrame";
-import {crudFetch, mapFileMetaDataToDocument, prepareEditorStateForRequest} from "utils/functions/functions";
+import {
+  blobifyJson,
+  crudFetch,
+  mapFileMetaDataToDocument,
+  prepareEditorStateForRequest
+} from "utils/functions/functions";
 import {trialErrorsModel} from "utils/models";
 import ConfirmOrCancelButtons from "components/molecules/ConfirmOrCancelButtons";
 import {FaCheck as CheckIcon} from "react-icons/fa";
@@ -38,16 +43,11 @@ const EditBestOutOfTrial = ({closeModal, studentName, goalName, benchmark, mutab
       console.log("Editor state was not updated, preparing raw state.");
       comments = prepareEditorStateForRequest(mutableTrial.comments);
     }
-    fd.append("trial", JSON.stringify({
+    fd.append("trial", blobifyJson({
       ...mutableTrial,
-      trackings: [],
-      documents: [],
-      trackingIds: [],
-      documentIds: [],
+      documents: fileMeta,
       comments: comments
     }));
-    fd.append("trackings", JSON.stringify(mutableTrial.trackings));
-    fd.append("documentMeta", JSON.stringify(fileMeta));
     return fd;
   };
   
@@ -66,9 +66,9 @@ const EditBestOutOfTrial = ({closeModal, studentName, goalName, benchmark, mutab
         setTrial={setMutableTrial}
       >
         <BestOutOfTrialForm
-          track={mutableTrial.trackings}
-          setTrack={(newTrack) => setMutableTrial(prev => ({...prev, trackings: {...prev.trackings, ...newTrack}}))}
-          error={requestErrors.bestOutOf}
+          track={mutableTrial.tracking}
+          setTrack={(newTrack) => setMutableTrial(prev => ({...prev, tracking: {...prev.tracking, ...newTrack}}))}
+          error={requestErrors.tracking}
         />
       </TemplateFrame>
       <ConfirmOrCancelButtons

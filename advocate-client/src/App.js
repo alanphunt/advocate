@@ -9,11 +9,12 @@ import { useLocation } from 'react-router';
 import Loading from 'components/atoms/Loading';
 import Modal from "components/molecules/Modal";
 import Toaster from "components/atoms/Toaster";
+import {HOME_LOADING, NOT_LOADING} from "utils/constants";
 
 const App = () => {
   const {teacher, refreshTeacher} = useAuth();
   const location = useLocation();
-  const [isFetching, setIsFetching] = useState(false);
+  const [isLoading, setIsLoading] = useState({"":false});
   const [modalAction, setModalAction] = useState("");
   const [modalBody, setModalBody] = useState(null);
   const [toasterText, setToasterText] = useState("");
@@ -34,8 +35,8 @@ const App = () => {
   
   useEffect(() => {
     if(!teacher?.teacher && location.pathname.includes("/dashboard/")){
-      setIsFetching(true);
-      refreshTeacher(() => setIsFetching(false)).catch(e => {setIsFetching(false);alert(e);});
+      setIsLoading(HOME_LOADING);
+      refreshTeacher(() => setIsLoading(NOT_LOADING)).catch(e => {setIsLoading(NOT_LOADING);alert(e);});
     }
     if(!teacher && (modalBody || modalAction)){
       setModalAction("");
@@ -47,7 +48,7 @@ const App = () => {
   return (
     <div className={`App${modalBody ? " modal-opened" : ""}`}>
       {
-        isFetching
+        isLoading.home
           ? <Loading/>
           : <></>
       }
@@ -57,7 +58,7 @@ const App = () => {
       <Switch>
         <Route path="/" exact >
           <Home
-            setIsFetching={setIsFetching}
+            setIsLoading={setIsLoading}
             modalAction={modalAction}
             setModalAction={setModalAction}
             setModalBody={setModalBody}
@@ -71,6 +72,8 @@ const App = () => {
             setModalBody={setModalBody}
             setToasterText={setToasterText}
             closeModal={closeModal}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
           />
         </ProtectedRoute>
         <ProtectedRoute path="/dashboard">

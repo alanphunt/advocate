@@ -1,5 +1,7 @@
 package com.structure.models;
 
+import com.structure.constraints.RequiredFieldConstraint;
+import com.structure.utilities.constants.Error;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -31,8 +33,9 @@ public class Student {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Baseline> baselines = new ArrayList<>();
 
-    private String name, grade, age;
-    
+    @RequiredFieldConstraint(key = "students", message = Error.STUDENT_FIELD_EMPTY)
+    private String name, age, grade;
+
     @Column(name = "classroom_id")
     private String classroomId;
 

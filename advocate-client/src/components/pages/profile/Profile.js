@@ -18,7 +18,7 @@ const Profile = () => {
         <DashCard>
             <div className={"cardwrapperrow"}>
                 <DashWidget flexSize={1}>
-                    <ProfileCard editable={true} teacher={teacher.teacher}/>
+                    <ProfileCard editable={true} teacher={{...teacher.teacher, dateCreated: teacher.accountDetails.dateCreated}}/>
                 </DashWidget>
                 <DashWidget className="infocard" flexSize={1}>
                     <h2>Edit Profile</h2>

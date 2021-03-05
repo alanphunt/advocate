@@ -20,13 +20,12 @@ state:
 */
 
 const ClassroomForm = ({
-  students,
   updateStudents,
   classroom,
   updateClassroom,
   errors
 }) => {
-
+  const students = classroom.students || [];
   const [warning, setWarning] = useState("");
   const warningMessage = "You've deleted a student which will also delete associated goals, benchmarks, trials, and tracking data. Clicking confirm will make these changes permanent. Click cancel to undo."
   
@@ -74,7 +73,7 @@ const ClassroomForm = ({
         icon={<BookIcon/>}
         label={"Class Name"}
         onChange={e => updateClassroom(e.currentTarget.value)}
-        value={classroom?.className}
+        value={classroom.className}
         placeholder={"Class Name"}
         errorMessage={errors.className}
         required
@@ -94,7 +93,7 @@ const ClassroomForm = ({
       <Table
         hideSearchAndSort
         headers={["Delete", ...BASIC_STUDENT_TABLE_HEADERS]}
-        tableData={students.map((student, index) => renderStudentRow(student, index))}
+        tableData={students?.map((student, index) => renderStudentRow(student, index))}
         columnSize={{0: "flex-quarter"}}
       />
     </Section>

@@ -16,7 +16,7 @@ public class TeacherService {
         return teacherRepo.save(teacher);
     }
 
-    public Teacher findTeacherByUsername(String username){
+/*    public Teacher findTeacherByUsername(String username){
         return teacherRepo.findTeacherByUsername(username);
-    }
+    }*/
 }

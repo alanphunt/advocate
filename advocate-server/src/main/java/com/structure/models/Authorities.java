@@ -1,10 +1,6 @@
 package com.structure.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -17,20 +13,22 @@ import org.springframework.security.core.GrantedAuthority;
 public class Authorities implements GrantedAuthority {
     
     @Id
-    private String username;
+    private String id;
+    @Column(name = "account_id")
+    private String accountId;
     private String authority;
     private int enabled;
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "username", insertable = false, updatable = false)
+    @JoinColumn(name = "account_id", insertable = false, updatable = false)
     private AccountDetails accountDetails;
 
-    public Authorities() {
-    }
+    public Authorities() {}
 
-    public Authorities(String username, String authority, String accountDetailsId) {
-        this.username = username;
+    public Authorities(String id, String accountId, String authority) {
+        this.id = id;
+        this.accountId = accountId;
         this.authority = authority;
         this.enabled = 1;
     }
@@ -44,12 +42,12 @@ public class Authorities implements GrantedAuthority {
         this.authority = authority;
     }
 
-    public String getUsername() {
-        return this.username;
+    public String getAccountId() {
+        return this.accountId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
     }
 
     public int getEnabled() {
@@ -60,13 +58,11 @@ public class Authorities implements GrantedAuthority {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-            " username='" + getUsername() + "'" +
-            ", authority='" + getAuthority() + "'" +
-            ", enabled='" + getEnabled() + "'" +
-            "}";
+    public String getId() {
+        return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
 }

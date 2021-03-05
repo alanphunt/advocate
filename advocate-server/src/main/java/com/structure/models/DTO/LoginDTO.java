@@ -1,14 +1,19 @@
-package com.structure.models;
+package com.structure.models.DTO;
 
 
+import com.structure.constraints.RequiredFieldConstraint;
+import com.structure.utilities.constants.Error;
 
-public class AuthRequest {
-    
-    private String username, password;
+public class LoginDTO {
 
-    public AuthRequest () {}
+    @RequiredFieldConstraint(key = "login", message = Error.LOGIN_INCORRECT)
+    private String username;
+    @RequiredFieldConstraint(key = "login", message = Error.LOGIN_INCORRECT)
+    private String password;
 
-    public AuthRequest(String username, String password) {
+    public LoginDTO() {}
+
+    public LoginDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -31,7 +36,7 @@ public class AuthRequest {
 
     @Override
     public String toString() {
-        return "AuthRequest{" +
+        return "LoginDTO{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';

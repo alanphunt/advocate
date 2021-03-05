@@ -9,7 +9,7 @@ import {FaPlus as PlusIcon} from "react-icons/fa";
 import BaselineDrilldown from "components/molecules/drilldown/BaselineDrilldown";
 
 const GoalCenterTopRow = ({baseline, setBaseline, setMutableBaseline, teacher, student, setStudentId, setModalAction}) => {
-  const {students, classrooms, baselines, goals, benchmarks, trackings, documents} = teacher;
+  const {students, classrooms, baselines, goals, benchmarks, trackings, documents, trackingMeta} = teacher;
   const hasClassroomsWithStudents = !!Object.keys(students).length;
   const tableHeaders = ["Name", "Goal Count", "Goal Completion %"];
   const studentBaselines = Object.keys(baselines)
@@ -88,6 +88,7 @@ const GoalCenterTopRow = ({baseline, setBaseline, setMutableBaseline, teacher, s
               allBaselines={studentBaselines}
               documents={documents}
               trackings={trackings}
+              trackingMeta={trackingMeta}
               baseline={baseline}
               setBaseline={setBaseline}
               setMutableBaseline={setMutableBaseline}

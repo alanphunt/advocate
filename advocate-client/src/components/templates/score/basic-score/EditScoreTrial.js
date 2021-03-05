@@ -1,6 +1,11 @@
 import React, {useState} from "react";
 import BasicScoreTrialForm from "components/templates/score/basic-score/BasicScoreTrialForm";
-import {crudFetch, mapFileMetaDataToDocument, prepareEditorStateForRequest} from "utils/functions/functions";
+import {
+  blobifyJson,
+  crudFetch,
+  mapFileMetaDataToDocument,
+  prepareEditorStateForRequest
+} from "utils/functions/functions";
 import {FaCheck as CheckIcon} from "react-icons/fa";
 import {SERVER_ERROR} from "utils/constants";
 import {trialErrorsModel} from "utils/models";
@@ -22,10 +27,12 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
       path: "edittrial",
       method: "POST",
       body: formData,
-      success: (data) =>
-        completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated {mutableTrial.label}</>),
+      success: (data) => completeCrudOp(data, <><CheckIcon className="i-right"/>Successfully updated {mutableTrial.label}</>),
       error: (res) => { setRequestErrors(res); setIsLoading({"":false});},
-      serverError: () => alert(SERVER_ERROR)
+      serverError: () => {
+        alert(SERVER_ERROR);
+        setIsLoading({"":false});
+      }
     });
   };
   
@@ -38,16 +45,12 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
       console.log("Editor state was not updated, preparing raw state.");
       comments = prepareEditorStateForRequest(mutableTrial.comments);
     }
-    fd.append("trial", JSON.stringify({
+    fd.append("trial",blobifyJson({
       ...mutableTrial,
-      trackings: [],
-      documents: [],
-      trackingIds: [],
-      documentIds: [],
       comments: comments
     }));
-    fd.append("trackings", JSON.stringify(mutableTrial.trackings));
-    fd.append("documentMeta", JSON.stringify(fileMeta));
+    // fd.append("trackings", JSON.stringify(mutableTrial.trackings));
+    // fd.append("documentMeta", JSON.stringify(fileMeta));
     return fd;
   };
   
@@ -66,9 +69,9 @@ const EditScoreTrial = ({closeModal, studentName, goalName, benchmark, mutableTr
         setTrial={setMutableTrial}
       >
         <BasicScoreTrialForm
-          trackings={mutableTrial.trackings}
-          labelError={requestErrors.label}
-          updateTracks={(newTracks) => setMutableTrial(prev => ({...prev, trackings: newTracks}))}
+          labelError={requestErrors.tracking}
+          updateTracks={(newTracks) => setMutableTrial(prev => ({...prev, tracking: {...prev.tracking, trackingMeta: newTracks}}))}
+          trackingMeta={mutableTrial.tracking.trackingMeta}
         />
       </TemplateFrame>
       <ConfirmOrCancelButtons

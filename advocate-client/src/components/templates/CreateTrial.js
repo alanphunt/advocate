@@ -7,8 +7,8 @@ import {Tracking, Trial} from "utils/classes/ContextModels";
 import {EditorState} from "draft-js";
 import {trialErrorsModel} from "utils/models";
 import {
+  blobifyJson,
   crudFetch,
-  formifyObject,
   mapFileMetaDataToDocument,
   prepareEditorStateForRequest
 } from "utils/functions/functions";
@@ -23,7 +23,8 @@ const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoadin
   const [trialTemplate, setTrialTemplate] = useState("");
   
   const [newTrial, setNewTrial] = useState(new Trial());
-  const [trackings, setTrackings] = useState(new Tracking());
+  const [tracking, setTracking] = useState(new Tracking());
+  const [trackingMeta, setTrackingMeta] = useState([]);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [requestErrors, setRequestErrors] = useState(trialErrorsModel);
   const [trialFiles, setTrialFiles] = useState([]);
@@ -33,7 +34,7 @@ const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoadin
   const goBack = () => {
     setTrialTemplate("");
     setNewTrial(new Trial());
-    setTrackings(new Tracking());
+    setTracking(new Tracking());
     setEditorState(EditorState.createEmpty());
     setRequestErrors(trialErrorsModel);
     setTrialFiles([]);
@@ -43,29 +44,39 @@ const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoadin
     return () => goBack();
   }, [])
   
-  useEffect(() => {
+/*  useEffect(() => {
     if(trialTemplate) {
       if (trialTemplate === TEMPLATE_TYPES.SCORE_BASIC)
-        setTrackings([]);
+        setTracking([]);
     }
-  }, [trialTemplate]);
+  }, [trialTemplate]);*/
   
   const createTrial = () => {
     setIsLoading({"createTrial": true});
     const trialNumber = benchmark.trialIds.length + 1;
-    let formData = formifyObject({
+/*    let formData = formifyObject({
       "trialTemplate": trialTemplate,
       "dateStarted": newTrial.dateStarted || "",
       "comments": prepareEditorStateForRequest(editorState.getCurrentContent()),
       "trialNumber": trialNumber,
-      "trackings": JSON.stringify(trackings),
+      "tracking": JSON.stringify(tracking),
       "benchmarkId": benchmark.id,
       "documentMeta": JSON.stringify(fileMetaData)
-    });
-    
+    });*/
+    const formData = new FormData();
     for(let i = 0; i < trialFiles.length; i++){
       formData.append("documents", trialFiles[i]);
     }
+    const blob = blobifyJson({
+      ...newTrial,
+      trialTemplate: trialTemplate,
+      trialNumber: trialNumber,
+      comments: prepareEditorStateForRequest(editorState.getCurrentContent()),
+      tracking: {...tracking, trackingMeta: trackingMeta},
+      benchmarkId: benchmark.id,
+      documents: fileMetaData
+    });
+    formData.append("trial", blob);
     
     crudFetch({
       path: "createtrial",
@@ -110,16 +121,17 @@ const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoadin
     switch(trialTemplate){
       case TEMPLATE_TYPES.SCORE_BASIC:
         return (
-          trackings === null ? (
+          tracking === null ? (
             <></>
             ) : (
+              //todo - will probably need to update this labelError
               renderTemplate(
               `Create Basic Score Trial for ${studentName}`,
               `Create a Basic Score Trial`,
               <BasicScoreTrialForm
-                trackings={trackings}
-                labelError={requestErrors.label}
-                updateTracks={setTrackings}
+                trackingMeta={trackingMeta}
+                labelError={requestErrors.tracking}
+                updateTracks={setTrackingMeta}
               />
             )
           )
@@ -129,9 +141,9 @@ const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoadin
           `Create Best Out Of Score Trial for ${studentName}`,
           `Create a Best Out Of Score Trial`,
           <BestOutOfTrialForm
-            track={trackings}
-            setTrack={(val) => setTrackings(prev => ({...prev, ...val}))}
-            error={requestErrors.bestOutOf}
+            track={tracking}
+            setTrack={(val) => setTracking(prev => ({...prev, ...val}))}
+            error={requestErrors.tracking}
           />
         )
       default: return (
