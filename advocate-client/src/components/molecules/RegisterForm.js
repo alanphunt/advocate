@@ -12,7 +12,7 @@ import {
 
 */
 
-const RegisterForm = ({errors, register, updateFormValues}) => {
+const RegisterForm = ({errors, register, updateRegistrationValues}) => {
     
 
     return(
@@ -25,7 +25,7 @@ const RegisterForm = ({errors, register, updateFormValues}) => {
                     placeholder={"First Name"}
                     name={"firstName"}
                     errorMessage={errors.firstName}
-                    onChange={(e) => {updateFormValues(e, "firstName")}}
+                    onChange={(e) => {updateRegistrationValues(e, "firstName")}}
                     autoFocus
                     required
                 />
@@ -38,7 +38,7 @@ const RegisterForm = ({errors, register, updateFormValues}) => {
                     placeholder={"Last Name"}
                     name={"lastName"}
                     errorMessage={errors.lastName}
-                    onChange={(e) => {updateFormValues(e, "lastName")}}
+                    onChange={(e) => {updateRegistrationValues(e, "lastName")}}
                     required
                 />
             </div>
@@ -50,14 +50,14 @@ const RegisterForm = ({errors, register, updateFormValues}) => {
                     placeholder={"Email"}
                     name={"username"}
                     errorMessage={errors.username}
-                    onChange={(e) => {updateFormValues(e, "username")}}
+                    onChange={(e) => {updateRegistrationValues(e, "username")}}
                     required
                 />
             </div>
             <div className="marg-bot">
                 <FormElement
                     label="Password"
-                    onChange={(e) => {updateFormValues(e, "password")}}
+                    onChange={(e) => {updateRegistrationValues(e, "password")}}
                     value={register.password}
                     icon={<PassIcon/>}
                     type={"password"}

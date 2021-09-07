@@ -4,6 +4,8 @@ public class Constants {
 
     public static final String API_PATH = "/api";
     public static final String DATE_FORMAT = "MM/dd/yy";
+    public static final String DATE_TIME_FORMAT = "MM/dd/yy HH:mm:ss";
+    public static final String JWT_ID = "9HnygWT4eibVaEp";
     //REGEXS
     public static final String GENERIC_BAD_TEXT_REGEX = "[^a-zA-Z0-9-_@.!?*#\\s]+";
     public static final String EMAIL_REGEX = "[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?";

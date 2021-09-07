@@ -1,4 +1,4 @@
-package com.structure.models;
+package com.structure.models.DTOs;
 
 
 

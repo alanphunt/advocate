@@ -1,19 +1,18 @@
 package com.structure.models;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.structure.utilities.Constants;
 import org.hibernate.annotations.Where;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -33,13 +32,17 @@ public class AccountDetails implements UserDetails{
     private boolean enabled;
     @Column(name = "teacher_id")
     private String teacherId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_TIME_FORMAT)
+    @Column(name = "date_created")
+    private LocalDateTime dateCreated;
 
     @JsonIgnore
     @OneToMany(mappedBy = "accountDetails", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Collection<Authorities> authorities;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "accountDetails", fetch = FetchType.LAZY)
+    @JoinColumn(name="teacher_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(cascade = {CascadeType.ALL})
     private Teacher teacher;
  
     public AccountDetails() {
@@ -54,6 +57,7 @@ public class AccountDetails implements UserDetails{
         this.isCredentialsNonExpired = true;
         this.enabled = true;
         this.authorities = authorities;
+        this.dateCreated = LocalDateTime.now();
     }
 
     public String getUsername() {
@@ -128,6 +132,14 @@ public class AccountDetails implements UserDetails{
         this.authorities = authorities;
     }
 
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -138,6 +150,7 @@ public class AccountDetails implements UserDetails{
             ", isAccountNonLocked='" + isAccountNonLocked() + "'" +
             ", isCredentialsNonExpired='" + isCredentialsNonExpired() + "'" +
             ", enabled='" + isEnabled() + "'" +
+            ", dateCreated=" + getDateCreated() +
             ", authorities='" + getAuthorities() + "'" +
             "}";
     }

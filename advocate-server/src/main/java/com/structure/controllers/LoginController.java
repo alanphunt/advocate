@@ -1,6 +1,6 @@
 package com.structure.controllers;
 
-import com.structure.models.AuthRequest;
+import com.structure.models.DTOs.AuthRequest;
 import com.structure.services.LoginService;
 import com.structure.utilities.Constants;
 

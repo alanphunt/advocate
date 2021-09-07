@@ -17,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class Authorities implements GrantedAuthority {
     
     @Id
+    private String id;
     private String username;
     private String authority;
     private int enabled;
@@ -29,7 +30,8 @@ public class Authorities implements GrantedAuthority {
     public Authorities() {
     }
 
-    public Authorities(String username, String authority, String accountDetailsId) {
+    public Authorities(String id, String username, String authority) {
+        this.id = id;
         this.username = username;
         this.authority = authority;
         this.enabled = 1;
@@ -62,11 +64,11 @@ public class Authorities implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return "{" +
-            " username='" + getUsername() + "'" +
-            ", authority='" + getAuthority() + "'" +
-            ", enabled='" + getEnabled() + "'" +
-            "}";
+        return "Authorities{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", authority='" + authority + '\'' +
+                ", enabled=" + enabled +
+                '}';
     }
-
 }

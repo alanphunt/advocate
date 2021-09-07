@@ -1,13 +1,8 @@
 package com.structure.models;
 
 import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.structure.utilities.Constants;
-
 import java.util.*;
 
 @Entity
@@ -22,25 +17,18 @@ public class Teacher {
 
     private int enabled;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
-    @Column(name = "date_created")
-    private Date dateCreated;
-
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
     
-    private String description;
-
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = {CascadeType.ALL})
     private List<Classroom> classrooms = new ArrayList<>();
 
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name="username", insertable = false, updatable = false)
+    @OneToOne(mappedBy = "teacher")
     private AccountDetails accountDetails;
 
     @Transient
@@ -54,8 +42,6 @@ public class Teacher {
         this.lastName = lastName;
         this.username = username;
         this.enabled = 1;
-        this.dateCreated = new Date();
-        this.description = "";
     }
 
     public String getId() {
@@ -82,14 +68,6 @@ public class Teacher {
         this.enabled = enabled;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -104,14 +82,6 @@ public class Teacher {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public List<Classroom> getClassrooms() {
@@ -144,11 +114,8 @@ public class Teacher {
                 "id=" + id +
                 ", enabled=" + enabled +
                 ", username=" + username +
-                ", dateCreated=" + dateCreated +
                 ", firstName=" + firstName +
                 ", lastName=" + lastName +
-                ", description=" + description +
-                ", accountDetails=" + accountDetails +
                 ", classroomIds=" + classroomIds +
                 ", classrooms=" + Arrays.toString(classrooms.toArray()) +
                 '}';

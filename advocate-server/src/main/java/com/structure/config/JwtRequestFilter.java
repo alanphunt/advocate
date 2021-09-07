@@ -38,7 +38,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwtCookie.isPresent()) {
                 jwt = jwtCookie.get().getValue();
                 username = jwtService.extractUsername(jwt);
-
             }
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

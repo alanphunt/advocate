@@ -1,6 +1,5 @@
 package com.structure.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -9,16 +8,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.structure.models.AuthRequest;
-import com.structure.models.Benchmark;
-import com.structure.models.Classroom;
-import com.structure.models.Document;
-import com.structure.models.Goal;
-import com.structure.models.Student;
+import com.structure.models.DTOs.AuthRequest;
 import com.structure.models.Teacher;
-import com.structure.models.TeacherDTO;
-import com.structure.models.Tracking;
-import com.structure.models.Trial;
 import com.structure.utilities.AccountDetailsRequestBean;
 import com.structure.utilities.Constants;
 
@@ -56,30 +47,32 @@ public class LoginService {
     }
 
     public ResponseEntity<?> handleLogin(AuthRequest authRequest, HttpServletResponse resp){
-        Authentication auth = null;
-        try {
-            auth = authMan.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(determineLoginErrors(authRequest));
-        }
+      System.out.println("Handling login request..");
+      Authentication auth = null;
+      try {
+          auth = authMan.authenticate(
+                  new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+      } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest().body(determineLoginErrors());
+      }
         // AccountDetails details = (AccountDetails) auth.getPrincipal();
-        Teacher teacher = teacherService.findTeacherByUsername(auth.getName());
-        jwtUtil.createAndAddJwtToCookie(jwtUtil.generateToken(auth.getName()), resp);
-        return ResponseEntity.ok(utilService.mapTeacherToTeacherDTO(teacher));
+      Teacher teacher = teacherService.findTeacherByUsername(auth.getName());
+      jwtUtil.createAndAddJwtToCookie(jwtUtil.generateToken(auth.getName()), resp);
+      return ResponseEntity.ok(utilService.mapTeacherToTeacherDTO(teacher));
     }
 
-    public void handleLogout(HttpServletRequest req, HttpServletResponse res){
-        try {
-            Cookie jwtCookie = jwtUtil.extractJwtFromCookie(req).orElseThrow();
-            jwtCookie.setMaxAge(0);
-            res.addCookie(jwtCookie);
-        } catch (NoSuchElementException e) {
-            System.out.println(e.getMessage());
-        }
+  public void handleLogout(HttpServletRequest req, HttpServletResponse res){
+    try {
+      Cookie jwtCookie = jwtUtil.extractJwtFromCookie(req).orElseThrow();
+      jwtCookie.setMaxAge(0);
+      res.addCookie(jwtCookie);
+    } catch (NoSuchElementException e) {
+      System.out.println(e.getMessage());
     }
+  }
 
-    private Map<String, String> determineLoginErrors(AuthRequest auth) {
+    private Map<String, String> determineLoginErrors() {
         Map<String, String> errors = new HashMap<>();
         errors.put("login", "Username or password is incorrect.");
         return errors;

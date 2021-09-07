@@ -28,7 +28,7 @@ public class JWTService {
     private JwtKeyRepo jkr;
 
     private String retrieveKey() {
-        return jkr.getById("1").getKey();
+        return jkr.getById(Constants.JWT_ID).getKey();
     }
 
     public String extractUsername(String token){
@@ -88,6 +88,7 @@ public class JWTService {
     }
 
     public Optional<Cookie> extractJwtFromCookie (HttpServletRequest request) throws NoSuchElementException {
+        System.out.println("Extracting JWT from cookie..");
         if(request.getCookies() == null)
             return Optional.empty();
 

@@ -11,15 +11,14 @@ import FormElement from "components/atoms/FormElement";
 
 */
 
-const LoginForm = ({login, errors, updateFormValues}) => {
-    
+const LoginForm = ({login, errors, updateLoginValues}) => {
 
     return(
         <>
             <div className="marg-bot">
                 <FormElement
                     label="Email"
-                    onChange={(e) => updateFormValues(e, "username")}
+                    onChange={(e) => updateLoginValues(e, "username")}
                     value={login.username}
                     icon={<EmailIcon/>}
                     placeholder={"Email"}
@@ -35,7 +34,7 @@ const LoginForm = ({login, errors, updateFormValues}) => {
                     type={"password"}
                     placeholder={"Password"}
                     name={"password"}
-                    onChange={(e) => updateFormValues(e, "password")}
+                    onChange={(e) => updateLoginValues(e, "password")}
                 />
             </div>
             {

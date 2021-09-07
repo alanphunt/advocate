@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.structure.models.AccountDetails;
 import com.structure.models.Authorities;
+import com.structure.models.DTOs.RegistrationRequestDTO;
 import com.structure.models.Teacher;
 import com.structure.utilities.Constants;
 import com.structure.utilities.Utils;
@@ -25,17 +26,16 @@ public class RegistrationService {
     @Autowired private JWTService jwtService;
     @Autowired private Utils utils;
     @Autowired private AccountDetailsService ads;
-    
-    public ResponseEntity<?> handleRegistration(Map<String, String> body, HttpServletResponse response, HttpServletRequest req){
+
+    public ResponseEntity<?> handleRegistration(RegistrationRequestDTO body, HttpServletResponse response, HttpServletRequest req){
         Map<String, String> errors = determineRegistrationError(body);
         if(errors.size() == 0) {
-            String username = body.get("username");
-            String accountDetailsId = utils.generateUniqueId();
-            ArrayList<Authorities> auths = new ArrayList<Authorities>();
-            auths.add(new Authorities(utils.generateUniqueId(), Constants.ROLE_USER, accountDetailsId));
+            String username = body.getUsername();
+            ArrayList<Authorities> auths = new ArrayList<>();
+            auths.add(new Authorities(utils.generateUniqueId(), username, Constants.ROLE_USER));
             String teacherId = utils.generateUniqueId();
-            AccountDetails accountDetails = new AccountDetails(username, pe.encode(body.get("password")), teacherId, auths);
-            Teacher teacher = new Teacher(teacherId, body.get( "firstName"), body.get("lastName"), username);
+            AccountDetails accountDetails = new AccountDetails(username, pe.encode(body.getPassword()), teacherId, auths);
+            Teacher teacher = new Teacher(teacherId, body.getFirstName(), body.getLastName(), username);
             teacher.setClassrooms(new ArrayList<>());
             ads.saveAccountDetails(accountDetails);
             //teacher.setAccountDetails(accountDetails);
@@ -47,18 +47,16 @@ public class RegistrationService {
 
     }
 
-    private Map<String, String> determineRegistrationError(Map<String, String> body){
+    private Map<String, String> determineRegistrationError(RegistrationRequestDTO body){
         Map<String, String> errors = new HashMap<>();
-        String val;
-        for(String key : body.keySet()){
-            val = body.get(key);
-            if(key.equals("password") && !val.matches(Constants.PASSWORD_REGEX))
-                errors.put(key, Constants.INSECURE_PASSWORD_RESPONSE);
-            else if(key.equals("username") && !val.matches(Constants.EMAIL_REGEX))
-                errors.put(key, Constants.INVALID_EMAIL_RESPONSE);
-            else if(val.isBlank())
-                errors.put(key, Constants.EMPTY_FIELD_RESPONSE);
-        }
+        if(!body.getPassword().matches(Constants.PASSWORD_REGEX))
+            errors.put("password", Constants.INSECURE_PASSWORD_RESPONSE);
+        if(!body.getUsername().matches(Constants.EMAIL_REGEX))
+            errors.put("username", Constants.INVALID_EMAIL_RESPONSE);
+        if(body.getFirstName().isBlank())
+            errors.put("firstName", Constants.EMPTY_FIELD_RESPONSE);
+        if(body.getLastName().isBlank())
+            errors.put("lastName", Constants.EMPTY_FIELD_RESPONSE);
         return errors;
     }
 }

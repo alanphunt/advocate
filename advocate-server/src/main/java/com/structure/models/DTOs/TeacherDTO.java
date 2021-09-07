@@ -1,4 +1,6 @@
-package com.structure.models;
+package com.structure.models.DTOs;
+
+import com.structure.models.*;
 
 import java.util.Map;
 
