@@ -29,7 +29,7 @@ public class ClassroomController {
 
     @PostMapping(value="/createclassroom")
     public ResponseEntity<?> createClassroom(@Valid @RequestBody Classroom classroom){
-        classroom.setTeacherId(detailsBean.getAccountDetails().getId());
+        classroom.setTeacherId(detailsBean.getAccountDetails().getTeacherId());
         crs.handleClassroomCreation(classroom);
         return ls.handleTeacherRehydration();
     }

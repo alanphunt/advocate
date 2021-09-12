@@ -3,16 +3,11 @@ import Section from "components/atoms/Section";
 import Table from "components/molecules/table/Table";
 import FormElement from "components/atoms/FormElement";
 import NumberPicker from "components/atoms/NumberPicker";
-import { BASIC_STUDENT_TABLE_HEADERS} from "utils/constants";
 import {FaAddressBook as BookIcon, FaRegTrashAlt as TrashIcon} from "react-icons/fa";
 import RequiredField from "components/atoms/RequiredField";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import {Student} from "utils/classes/ContextModels";
-import TableRow from "components/atoms/table/TableRow";
-import TableCell from "components/atoms/table/TableCell";
-import TableHeaderRow from "components/atoms/table/TableHeaderRow";
-import TableHeaderCell from "components/atoms/table/TableHeaderCell";
-import TableBody from "components/molecules/table/TableBody";
+
 
 /*
 props:
@@ -47,8 +42,7 @@ const ClassroomForm = ({
 
   const adjustStudentCount = (studentArray) => {
     students.forEach((student, index) => {
-    //if the ID is of type number then it hasn't been processed
-    //on the back end and it won't have goals/benchmarks
+    //if the ID is of type number then it hasn't been processed on the back end and it won't have goals/benchmarks
     if(student.id !== "" && studentArray[index]?.id !== student.id)
       setWarning(warningMessage);
     });
@@ -92,7 +86,7 @@ const ClassroomForm = ({
       }
       <Table
         hideSearchAndSort
-        headers={["Delete", ...BASIC_STUDENT_TABLE_HEADERS]}
+        headers={["Action", <>Name<RequiredField/></>, <>Age<RequiredField/></>, <>Grade<RequiredField/></>]}
         tableData={students?.map((student, index) => renderStudentRow(student, index))}
         columnSize={{0: "flex-quarter"}}
       />

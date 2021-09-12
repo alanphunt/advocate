@@ -35,6 +35,7 @@ const CreateTrial = ({benchmark, studentName, completeCrudOp, goalName, isLoadin
     setTrialTemplate("");
     setNewTrial(new Trial());
     setTracking(new Tracking());
+    setTrackingMeta([]);
     setEditorState(EditorState.createEmpty());
     setRequestErrors(trialErrorsModel);
     setTrialFiles([]);

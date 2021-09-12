@@ -20,8 +20,11 @@ public class AccountDetails implements UserDetails{
 
     @Id
     @JsonIgnore
-    private String id;
     private String username;
+
+    @Column(name = "teacher_id")
+    private String teacherId;
+
     @JsonIgnore
     private String password;
     @Column(name = "account_non_expired")
@@ -40,8 +43,9 @@ public class AccountDetails implements UserDetails{
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Authorities> authorities;
 
-    @OneToOne(mappedBy = "accountDetails", cascade = CascadeType.ALL, optional = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
+    @JoinColumn(name="teacher_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(cascade = {CascadeType.ALL})
     private Teacher teacher;
 
     @Transient
@@ -50,8 +54,7 @@ public class AccountDetails implements UserDetails{
     public AccountDetails() {
     }
 
-    public AccountDetails(String id, String username, String password, List<Authorities> authorities) {
-        this.id = id;
+    public AccountDetails(String username, String password, List<Authorities> authorities, String teacherId) {
         this.username = username;
         this.password = password;
         this.isAccountNonExpired = true;
@@ -59,14 +62,7 @@ public class AccountDetails implements UserDetails{
         this.isCredentialsNonExpired = true;
         this.enabled = true;
         this.authorities = authorities;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.teacherId = teacherId;
     }
 
     @Override
@@ -132,13 +128,13 @@ public class AccountDetails implements UserDetails{
         this.authorities = authorities;
     }
 
-/*    public List<Teacher> getTeacher() {
-        return teacher;
+    public String getTeacherId() {
+        return teacherId;
     }
 
-    public void setTeacher(List<Teacher> teacher) {
-        this.teacher = teacher;
-    }*/
+    public void setTeacherId(String teacherId) {
+        this.teacherId = teacherId;
+    }
 
     public Teacher getTeacher() {
         return teacher;

@@ -15,9 +15,6 @@ public class Teacher {
 
     @Id
     private String id;
-
-    @Column(name = "account_id")
-    private String accountId;
     
     private int enabled;
 
@@ -26,17 +23,15 @@ public class Teacher {
 
     @Column(name = "last_name")
     private String lastName;
-    
-    private String description;
+
+    private String username;
 
     @OneToMany(mappedBy = "teacher", cascade = {CascadeType.ALL})
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Classroom> classrooms = new ArrayList<>();
 
     @JsonIgnore
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
+    @OneToOne(mappedBy = "teacher")
     private AccountDetails accountDetails;
 
     @Transient
@@ -44,13 +39,11 @@ public class Teacher {
 
     public Teacher(){}
 
-    public Teacher(String id, String firstName, String lastName, String accountId) {
+    public Teacher(String id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.accountId = accountId;
         this.enabled = 1;
-        this.description = "";
     }
 
     public String getId() {
@@ -85,12 +78,12 @@ public class Teacher {
         this.lastName = lastName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getUsername() {
+        return username;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public List<Classroom> getClassrooms() {
@@ -122,10 +115,9 @@ public class Teacher {
         return "Teacher{" +
                 "id=" + id +
                 ", enabled=" + enabled +
-                ", accountId=" + accountId +
                 ", firstName=" + firstName +
                 ", lastName=" + lastName +
-                ", description=" + description +
+                ", username=" + username +
                 ", accountDetails=" + accountDetails +
                 ", classroomIds=" + classroomIds +
                 ", classrooms=" + Arrays.toString(classrooms.toArray()) +

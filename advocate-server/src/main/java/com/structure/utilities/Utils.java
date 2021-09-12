@@ -9,24 +9,11 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintValidatorContext;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
 public class Utils {
-
-    public boolean acceptableInput(String[] input){
-        for (String s : input) {
-            if (!s.replaceAll("[^a-zA-Z0-9-_@.!?*#]", "").equals(s))
-                return true;
-        }
-        return false;
-    }
-
-    public boolean isEmpty( Object object ){
-        return object == null;
-    }
 
     public void paramMap(HttpServletRequest req){
         Enumeration<String> params = req.getParameterNames();

@@ -14,21 +14,20 @@ public class Authorities implements GrantedAuthority {
     
     @Id
     private String id;
-    @Column(name = "account_id")
-    private String accountId;
+    private String username;
     private String authority;
     private int enabled;
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "account_id", insertable = false, updatable = false)
+    @JoinColumn(name = "username", insertable = false, updatable = false)
     private AccountDetails accountDetails;
 
     public Authorities() {}
 
-    public Authorities(String id, String accountId, String authority) {
+    public Authorities(String id, String username, String authority) {
         this.id = id;
-        this.accountId = accountId;
+        this.username = username;
         this.authority = authority;
         this.enabled = 1;
     }
@@ -42,12 +41,12 @@ public class Authorities implements GrantedAuthority {
         this.authority = authority;
     }
 
-    public String getAccountId() {
-        return this.accountId;
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
+    public void setAccountId(String username) {
+        this.username = username;
     }
 
     public int getEnabled() {

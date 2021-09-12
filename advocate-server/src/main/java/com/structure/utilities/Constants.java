@@ -6,6 +6,7 @@ public class Constants {
 
     public static final String API_PATH = "/api";
     public static final String DATE_FORMAT = "MM/dd/yy";
+    public static final String JWT_ID = "9HnygWT4eibVaEp";
 
     //ERROR RESPONSES
     public static final String SERVER_ERROR = "Authentication failed, please log back in to continue.";

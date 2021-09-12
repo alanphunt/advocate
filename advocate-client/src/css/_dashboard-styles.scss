@@ -50,17 +50,19 @@
 
 .sideitemwrapper a:hover, .sidebarfooter .sideitem:hover{
   color: $white;
-  border-top: 1px solid $lig-gra;
-  border-bottom: 1px solid $lig-gra;
+  background: $white-op;
 }
 
 a.active{
+}
+
+.sidebarmain a.active {
   color: $white;
+  background: $white-op-med;
 }
 
 a.active-border{
-  border-top: 1px solid $lig-gra;
-  border-bottom: 1px solid $lig-gra;
+  background: $white-op;
 }
 
 a.active.active-border:hover{
@@ -69,8 +71,6 @@ a.active.active-border:hover{
 
 .itemmain{
   text-transform: uppercase;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
 }
 
 .itemmaininner svg{
@@ -89,6 +89,9 @@ a.active.active-border:hover{
   height: 4%;
   font-size: 1.1em;
   @include flex($ali-ite: center, $jus-con: space-between);
+  &__profile a.active{
+    color: $primary;
+  }
 }
 
 .overflow-auto{

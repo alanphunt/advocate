@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -27,8 +28,12 @@ public class JWTService {
     @Autowired
     private JwtKeyRepo jkr;
 
+    @Value("${JWT_VAL}")
+    private String jwtKey;
+
     private String retrieveKey() {
-        return jkr.getById("1").getKey();
+//        return jkr.getById(Constants.JWT_ID).getKey();
+        return jwtKey;
     }
 
     public String extractUsername(String token){
