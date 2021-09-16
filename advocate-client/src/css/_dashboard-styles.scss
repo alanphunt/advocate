@@ -275,11 +275,10 @@ a.active.active-border:hover{
 .cardheader{
   margin-bottom: 1rem;
   border-bottom: 1px solid $lig-gra;
-}
-
-.cardheader h2{
-  font-weight: bold;
-  margin-bottom: 8px;
+  & h2{
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
 }
 
 /*************TABLE STYLES**************/
@@ -295,6 +294,7 @@ a.active.active-border:hover{
   display: flex;
   width: 100%;
   border-bottom: 1px solid $dar-whi;
+  background: $white;
 }
 
 /* .tbody .tr:last-of-type{
@@ -318,24 +318,25 @@ a.active.active-border:hover{
 }
 
 .th, .td{
-  flex: 1;
-  padding: 1rem 5px;
+  //flex: 1;
+  padding: 1rem;
   display: flex;
   border-left: 1px solid $dar-whi;
   position: relative;
 }
 
 .th{
-  flex-flow: column;
+  justify-content: space-between;
+  //flex-flow: column;
 }
 
 .th h3, .th p{
-    user-select: none;
+  user-select: none;
 }
 
 .td{
-  align-items: center;
-  justify-content: space-between;
+  //align-items: center;
+  //justify-content: space-between;
 }
 
 .td-icon-cell{
@@ -351,10 +352,10 @@ a.active.active-border:hover{
 .table input, .table select{
   @include bor-rad;
   padding: 10px 10px 10px 5px;
-  width: 90%;
+  //width: 90%;
 }
 
-.table input:focus, select:focus        {
+.table input:focus, select:focus{
   border-color: $primary;
 }
 
@@ -775,4 +776,32 @@ a.active.active-border:hover{
 .selectedcard{
   border: 1px solid $primary;
   @include box-sha;
+}
+
+.divider{
+  border-right: 1px solid $dar-gra;
+  height: 100%;
+}
+
+.tooltip{
+  color: $white;
+  &-inner{
+    z-index: 1111;
+    position: absolute;
+    display: none;
+    background: $opacity-bg;
+    padding: 10px 1rem;
+    border-radius: $rad8px;
+    width: max-content;
+  }
+  &-wrapper{
+    position: relative;
+    display: inline-flex;
+    overflow: visible;
+  }
+}
+
+.arrow-div{
+  border: 10px solid $opacity-bg;
+  position: absolute;
 }

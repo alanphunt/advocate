@@ -10,6 +10,7 @@ import {
     FaCommentDots as DotsIcon
 } from "react-icons/fa";
 import { useAuth } from "utils/auth/AuthHooks";
+import H2 from "../../atoms/H2";
 
 const Profile = () => {
     const {teacher} = useAuth();
@@ -21,7 +22,7 @@ const Profile = () => {
                     <ProfileCard editable={true} teacher={{...teacher.teacher, dateCreated: teacher.accountDetails.dateCreated}}/>
                 </DashWidget>
                 <DashWidget className="infocard" flexSize={1}>
-                    <h2>Edit Profile</h2>
+                    <H2>Edit Profile</H2>
                     <form>
                         <label htmlFor={"regfirst"}>
                             <NameIcon className={"label-i"}/>

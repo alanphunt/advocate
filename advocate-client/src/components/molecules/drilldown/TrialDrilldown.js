@@ -5,6 +5,7 @@ import BasicScoreTrialDisplay from "components/templates/score/basic-score/Basic
 import BestOutOfTrialDisplay from "components/templates/score/best-out-of/BestOutOfTrialDisplay";
 import Strong from "components/atoms/Strong";
 import FileChipWrapper from "components/molecules/FileChipWrapper";
+import H2 from "../../atoms/H2";
 
 const TrialDrilldown = ({trial, tracking, documents, trackingMeta}) => {
   
@@ -24,7 +25,7 @@ const TrialDrilldown = ({trial, tracking, documents, trackingMeta}) => {
   
   return (
     <div className={"drilldown-trialmeta"}>
-      <h2 className={"marg-bot-2"}>{trial ? trial.label : "Trial ..."}</h2>
+      <H2 classes={"marg-bot-2"}>{trial ? trial.label : "Trial ..."}</H2>
       {
         trial ?
           <div>

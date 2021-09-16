@@ -1,12 +1,13 @@
 import React from "react";
 import Modal from "./Modal";
 import ConfirmOrCancelButtons from "./ConfirmOrCancelButtons";
+import H2 from "../atoms/H2";
 
 const CompletionModal = ({displayed, closeModal, successMessage, confirmCallback, children}) => {
     return (
         <Modal displayed={displayed} closeModal={closeModal}>
             <>
-                <h2 className={"marg-bot"}>Success!</h2>
+                <H2 margin>Success!</H2>
                 <p className={"marg-bot"}>{successMessage}</p>
                 {
                     confirmCallback

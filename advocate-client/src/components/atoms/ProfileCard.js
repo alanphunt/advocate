@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import imgph from "images/imgph-sm.png";
 import {FaPlus as PlusIcon} from "react-icons/fa";
+import H2 from "./H2";
 
 const ProfileCard = ({teacher, editable}) => {
 
@@ -18,7 +19,7 @@ const ProfileCard = ({teacher, editable}) => {
                                 </label>
                     }
                 </div>
-                <h2>{teacher.firstName.charAt(0).toUpperCase()+teacher.firstName.substring(1) + " " + teacher.lastName.charAt(0).toUpperCase()+teacher.lastName.substring(1)}</h2>
+                <H2>{teacher.firstName.charAt(0).toUpperCase()+teacher.firstName.substring(1) + " " + teacher.lastName.charAt(0).toUpperCase()+teacher.lastName.substring(1)}</H2>
             </div>
             <div className={"piccardinfo"}>
                 <p className={"quote"}>{teacher.description === "" ? "Tell us about yourself!" : teacher.description}</p>

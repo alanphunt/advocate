@@ -13,6 +13,7 @@ import ImmutableTextArea from "components/molecules/ImmutableTextArea";
 import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
 import Strong from "components/atoms/Strong";
+import H2 from "../../atoms/H2";
 
 const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchmarkId, setMutableGoal, setModalAction}) => {
     const [selectedBenchmarkId, setSelectedBenchmarkId] = useState("");
@@ -76,7 +77,7 @@ const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchma
     return (
         <div className={"drilldown-goals"}>
             <div className={"marg-bot-2 flex-center-between"}>
-                <h2>Goals for {studentName ? studentName.charAt(0).toUpperCase() + studentName.substring(1) : "..."}</h2>
+                <H2>Goals for {studentName ? studentName.charAt(0).toUpperCase() + studentName.substring(1) : "..."}</H2>
                 <div>
                     <Button
                         text="Create Goal"

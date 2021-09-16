@@ -1,4 +1,5 @@
 import React from "react";
+import H2 from "../atoms/H2";
 
 const DashWidget = ({className, flexSize, cardMainHeight, children, header}) => {
     return (
@@ -6,7 +7,7 @@ const DashWidget = ({className, flexSize, cardMainHeight, children, header}) => 
             <div className={`${cardMainHeight ? "height-100" : ""}`}>
                 {
                     header
-                    ? <div className="cardheader"><h2>{header}</h2></div>
+                    ? <div className="cardheader"><H2>{header}</H2></div>
                     : <></>
                 }
                 {children}

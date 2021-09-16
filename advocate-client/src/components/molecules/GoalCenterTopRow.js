@@ -7,6 +7,7 @@ import Box from "components/atoms/Box";
 import Button from "components/atoms/Button";
 import {FaPlus as PlusIcon} from "react-icons/fa";
 import BaselineDrilldown from "components/molecules/drilldown/BaselineDrilldown";
+import H2 from "../atoms/H2";
 
 const GoalCenterTopRow = ({baseline, setBaseline, setMutableBaseline, teacher, student, setStudentId, setModalAction}) => {
   const {students, classrooms, baselines, goals, benchmarks, trackings, documents, trackingMeta} = teacher;
@@ -42,7 +43,7 @@ const GoalCenterTopRow = ({baseline, setBaseline, setMutableBaseline, teacher, s
   return (
     <div className={"goalcenter-row goalcenter-row-top"}>
       <div className={"drilldown-classroom flex-1"}>
-        <h2 className={"marg-bot"}>Select a student to begin</h2>
+        <H2 margin>Select a student to begin</H2>
         {
           hasClassroomsWithStudents
             ? (
@@ -72,7 +73,7 @@ const GoalCenterTopRow = ({baseline, setBaseline, setMutableBaseline, teacher, s
       </div>
       <div className={"drilldown-baseline flex-1"}>
         <div className={"marg-bot-2 flex-center-between"}>
-          <h2>Summary for {student ? student.name : "..."}</h2>
+          <H2>Summary for {student ? student.name : "..."}</H2>
           <Button
             text="Create Baseline"
             icon={<PlusIcon className={"i-right"}/>}

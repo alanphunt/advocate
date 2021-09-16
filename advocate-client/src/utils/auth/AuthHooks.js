@@ -2,7 +2,7 @@ import {useState, useContext, createContext, useMemo} from "react";
 import {JWT_ERROR, SERVER_ERROR, JSON_HEADER} from "utils/constants";
 import { useHistory, useLocation } from 'react-router';
 import {ContextModel} from "utils/classes/ContextModels";
-export const TeacherContext = createContext();
+export const TeacherContext = createContext(undefined);
 
 export const useProvideAuth = () => {
     const [teacher, setTeacher] = useState(new ContextModel());
@@ -58,14 +58,14 @@ export const useProvideAuth = () => {
         history.replace("/", {from: "/"});
         setTeacher(null);
     };
-
     return {
         ...memoizedTeacher,
         setTeacher,
         signin,
         signout,
         refreshTeacher,
-        register
+        register,
+        hasClassroomWithStudents: teacher.students ? Boolean(Object.keys(teacher?.students).length) : false
     };
     
 };

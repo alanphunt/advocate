@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {FaChartPie as PieIcon} from "react-icons/fa";
 import {TemplateList} from "components/templates/TemplateList"
+import H2 from "../atoms/H2";
 
 const TrialTemplateCards = ({trackingType, setTrialTemplate}) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -21,10 +22,10 @@ const TrialTemplateCards = ({trackingType, setTrialTemplate}) => {
                               onClick={() => {setSelectedIndex(index); setTrialTemplate(template.key);}}
                             >
                                 <div className={"itemcardhead"}>
-                                    <h2>
+                                    <H2>
                                         <PieIcon className="itemcard-i"/>
                                         {template.title}
-                                    </h2>
+                                    </H2>
                                 </div>
                                 <div className={"itemcardmain"}>
                                     <p>{template.description}</p>

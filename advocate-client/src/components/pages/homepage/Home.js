@@ -19,6 +19,7 @@ import { homepageErrorModel, loginModel, registrationModel } from 'utils/models'
 import { useAuth } from 'utils/auth/AuthHooks';
 import ModalBody from 'components/molecules/ModalBody';
  import {OKAY_STATUS, NOT_LOADING, HOME_LOADING} from "utils/constants";
+ import H2 from "../../atoms/H2";
 
 const Home = ({setIsLoading, modalAction, setModalAction, setModalBody, closeModal}) => {
     const {signin, register} = useAuth();
@@ -123,7 +124,7 @@ const Home = ({setIsLoading, modalAction, setModalAction, setModalBody, closeMod
                 <div className={"hero-overlay"}/>
                 <div className={"herotext"}>
                     <h1>Advocate IEP</h1>
-                    <h2>The modern standard of monitoring student progress.</h2>
+                    <H2>The modern standard of monitoring student progress.</H2>
                     <p>See how Advocate IEP meets teachers where they're at to help ensure consistent student achievement.</p>
                     <Button className={"margin-auto"} text={"Get Started Now"} icon={<PlaneIcon/>}/>
                 </div>
@@ -131,7 +132,7 @@ const Home = ({setIsLoading, modalAction, setModalAction, setModalBody, closeMod
             <section className={"summary-wrapper"}>
                 <div className={"summary-inner"}>
                     <div className={"summary-section"}>
-                        <h2 className={"marg-bot"}>Centralized & Persistent</h2>
+                        <H2 margin>Centralized & Persistent</H2>
                         <p>
                             All your IEPs, data points, and progress reports in one place that follows the student from teacher to teacher.
                             No more shuffling between documents and spreadsheets to format your data how you want it. Gone are the days
@@ -141,7 +142,7 @@ const Home = ({setIsLoading, modalAction, setModalAction, setModalBody, closeMod
                         <BriefcaseIcon className={"summary-bg-icon"}/>
                     </div>
                     <div className={"summary-section"}>
-                        <h2 className={"marg-bot"}>Simple & Fast</h2>
+                        <H2 margin>Simple & Fast</H2>
                         <p>
                             Advocate IEP doesn't dictate how you should work and makes recording data painless.
                             You can choose from many different trial templates for various ways of tracking or
@@ -152,7 +153,7 @@ const Home = ({setIsLoading, modalAction, setModalAction, setModalBody, closeMod
                         <HourglassIcon className={"summary-bg-icon"}/>
                     </div>
                     <div className={"summary-section"}>
-                        <h2 className={"marg-bot"}>Visual & Informative</h2>
+                        <H2 margin>Visual & Informative</H2>
                         <p>
                             Choose how you want to graph your students' goal, benchmark, and trial summaries to
                             gain insight into risk patterns, help you make data-driven decisions, and ensure consistent
@@ -165,7 +166,7 @@ const Home = ({setIsLoading, modalAction, setModalAction, setModalBody, closeMod
             </section>
             <section className={"benefits-wrapper"}>
                 <div className={"benefits-inner"}>
-                    <h2>Why is Advocate IEP the new standard?</h2>
+                    <H2>Why is Advocate IEP the new standard?</H2>
                     <p className={"marg-bot-3"}>
                         We're teachers advocating for other teachers. We understand recording data isn't glamorous and can be downright tedious.
                         Advocate IEP is packed full of intuitive features that expedite the process of taking data and covers all your bases.
@@ -197,7 +198,7 @@ const Home = ({setIsLoading, modalAction, setModalAction, setModalBody, closeMod
             <section className={"beta-wrapper"}>
                 <div className={"beta-overlay"}/>
                 <div className={"beta-inner"}>
-                    <h2>Become an Advocate for Advocate IEP</h2>
+                    <H2>Become an Advocate for Advocate IEP</H2>
                     <p className={"marg-bot"}>
                         Advocate IEP is still in beta, which means we need early testers that are eager to give feedback
                         and help make the platform the best it can be. This means you get Advocate IEP free for one year,

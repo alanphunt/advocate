@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {FaCaretDown as CaretIcon} from "react-icons/fa";
+import H2 from "./H2";
 
 /*
      props:
@@ -26,13 +27,13 @@ const AccordionItem = ({header, icons, iconClickedCallback, preOpened, children}
         <div className={"acc-item"}>
             {/*<div className={"acc-item-head"} onClick={()=>{modifyOpen(index);}}>*/}
             <div className={"acc-item-head"} onClick={()=>{setOpen(prevState => !prevState)}}>
-                <h2 className={"flex-center-vert"}>
-                    <CaretIcon className={`${open ? "caretflip" : ""} i-right transition`}/>
-                    {header}
-                </h2>
+              <H2 classes={"flex-center-cert"}>
+                <CaretIcon className={`${open ? "caretflip" : ""} i-right transition`}/>
+                {header}
+              </H2>
                 {
                     icons &&
-                    <h2>
+                    <H2>
                         {
                             Object.keys(icons).map((key, index) => {
                                 return <span key={`iconaction-${key}-${index}`} onClick={(e) => {
@@ -42,7 +43,7 @@ const AccordionItem = ({header, icons, iconClickedCallback, preOpened, children}
                                 }}>{icons[key]}</span>;
                             })
                         }
-                    </h2>
+                    </H2>
                 }
             </div>
             <div className={openClass}>

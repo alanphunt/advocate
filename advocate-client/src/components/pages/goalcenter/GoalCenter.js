@@ -3,7 +3,7 @@ import GoalDrilldown from "components/molecules/drilldown/GoalDrilldown";
 import BenchmarkDrilldown from "components/molecules/drilldown/BenchmarkDrilldown";
 import TrialDrilldown from "components/molecules/drilldown/TrialDrilldown";
 import DashCard from "components/molecules/DashCard";
-import {crudFetch} from "utils/functions/functions";
+import {crudFetch, mapStudentGoalMeta} from "utils/functions/functions";
 import { useAuth } from "utils/auth/AuthHooks";
 import GoalCenterTopRow from "components/molecules/GoalCenterTopRow";
 import CreateGoal from "components/molecules/CreateGoal";
@@ -18,6 +18,14 @@ import CopyGoal from "components/molecules/CopyGoal";
 import {TEMPLATE_TYPES} from "components/templates/TemplateList";
 import TemplateLoadingPlaceholder from "components/atoms/TemplateLoadingPlaceholder";
 import CreateBaseline from "components/molecules/CreateBaseline";
+import Row from "../../atoms/Row";
+import Col from "../../atoms/Col";
+import TableAccordionGroup from "../../molecules/table/TableAccordionGroup";
+import AccordionItem from "../../atoms/AccordionItem";
+import Table from "../../molecules/table/Table";
+import Box from "../../atoms/Box";
+import H2 from "../../atoms/H2";
+import ColDivider from "../../atoms/ColDivider";
 
 const EditBestOutOf = React.lazy(() => import("components/templates/score/best-out-of/EditBestOutOfTrial"));
 const EditBasicScore = React.lazy(() => import("components/templates/score/basic-score/EditScoreTrial"));
@@ -28,21 +36,22 @@ const EditBasicScore = React.lazy(() => import("components/templates/score/basic
     local state will stay the same.
 */
 const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setToasterText}) =>{
-  const {teacher, setTeacher, signout} = useAuth();
-  
+  const {teacher, setTeacher, signout, hasClassroomWithStudents} = useAuth();
+  const {students, classrooms, baselines, goals, benchmarks} = teacher;
+
   const [isLoading, setIsLoading] = useState({"": false});
   
   const [studentId, setStudentId] = useState("");
   const student = teacher.students[studentId];
-  const goals = student?.goalIds.map(id => teacher.goals[id]);
+  const selectedStudentGoals = student?.goalIds.map(id => teacher.goals[id]);
   
   const [goalId, setGoalId] = useState("");
   const goal = teacher.goals[goalId];
-  const benchmarks = goal?.benchmarkIds.map(id => teacher.benchmarks[id]);
+  const selectedBenchmarkGoals = goal?.benchmarkIds.map(id => teacher.benchmarks[id]);
   
   const [benchmarkId, setBenchmarkId] = useState("");
   const benchmark = teacher.benchmarks[benchmarkId];
-  const trials = benchmark?.trialIds.map(id => teacher.trials[id]);
+  const selectedBenchmarkTrials = benchmark?.trialIds.map(id => teacher.trials[id]);
   
   const [trialId, setTrialId] = useState("");
   const trial = teacher.trials[trialId];
@@ -223,7 +232,7 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
           <CompleteBenchmark
             goalId={goalId}
             benchmark={benchmark}
-            goalBenchmarks={benchmarks}
+            goalBenchmarks={selectedBenchmarkGoals}
             completeCrudOp={completeCrudOp}
             closeModal={closeModal}
             isLoading={isLoading.masterBenchmark}
@@ -308,10 +317,77 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
       serverError: signout
     });
   }
-  
+
+  const tableHeaders = ["Name", "Goal Count", "Goal Completion %"];
+
+  const handleSelectedStudent = (student, studentIndex, classroomIndex) => {
+    setStudentId(student.id);
+  };
+
   return (
     <DashCard fitOnPage>
-      <GoalCenterTopRow
+      <Row gap={[0, "1rem"]} wrap={false} height={"100%"}>
+        <Col span={8}>
+          <H2 margin>Select a student to begin</H2>
+          {
+            hasClassroomWithStudents
+              ? (
+                <TableAccordionGroup>
+                  {
+                    Object.values(classrooms).map((classroom, classroomIndex) => {
+                      return (
+                        <AccordionItem header={`${classroom.className} - (${classroom.studentIds.length})`} preOpened key={`accItem-${classroom.className}`}>
+                          <Table
+                            headers={tableHeaders}
+                            tableData={
+                              classroom.studentIds.map(id => mapStudentGoalMeta(students[id],
+                                students[id].goalIds.map(goalId => goals[goalId])
+                                  .map(goal => ({...goal, benchmarks: goal.benchmarkIds.map(bmId => benchmarks[bmId])}
+                                  ))))
+                            }
+                            selectedCallback={(student, studentIndex) => handleSelectedStudent(student, studentIndex, classroomIndex)}
+                            selectedRowId={student?.id}
+                          />
+                        </AccordionItem>
+                      )
+                    })
+                  }
+                </TableAccordionGroup>
+              ) : <Box text={"No classrooms. Visit the classroom page to create a classroom."}/>
+          }
+        </Col>
+        <ColDivider/>
+        <Col span={16}>
+          <H2 margin>Goal Summary</H2>
+          <GoalDrilldown
+            studentName={student?.name}
+            goals={goals}
+            allBenchmarks={teacher.benchmarks}
+            setGoalId={setGoalId}
+            setBenchmarkId={setBenchmarkId}
+            setMutableGoal={setMutableGoal}
+            setModalAction={setModalAction}
+          />
+          <BenchmarkDrilldown
+            trials={selectedBenchmarkTrials}
+            allDocuments={teacher.documents}
+            allTrackings={teacher.trackings}
+            allTrackingMeta={teacher.trackingMeta}
+            benchmark={benchmark}
+            trialId={trialId}
+            setTrialId={setTrialId}
+            setMutableTrial={setMutableTrial}
+            setModalAction={setModalAction}
+          />
+          <TrialDrilldown
+            trial={trial}
+            tracking={tracking}
+            trackingMeta={trackingMeta}
+            documents={documents}
+          />
+        </Col>
+      </Row>
+{/*      <GoalCenterTopRow
         baseline={baseline}
         setBaseline={setBaseline}
         setMutableBaseline={setMutableBaseline}
@@ -323,15 +399,7 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
       <div className={"goalcenter-row goalcenter-row-bottom"}>
         <div className={"drilldownwrapper"}>
           <div className={"drilldown"}>
-            <GoalDrilldown
-              studentName={student?.name}
-              goals={goals}
-              allBenchmarks={teacher.benchmarks}
-              setGoalId={setGoalId}
-              setBenchmarkId={setBenchmarkId}
-              setMutableGoal={setMutableGoal}
-              setModalAction={setModalAction}
-            />
+
             <BenchmarkDrilldown
               trials={trials}
               allDocuments={teacher.documents}
@@ -351,7 +419,7 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
             />
           </div>
         </div>
-      </div>
+      </div>*/}
     </DashCard>
   )
 };

@@ -12,6 +12,7 @@ import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
 import {TEMPLATE_TYPES} from "components/templates/TemplateList";
 import Strong from "components/atoms/Strong";
+import H2 from "../../atoms/H2";
 
 const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, trialId, setTrialId, setMutableTrial, setModalAction, allTrackingMeta}) => {
 
@@ -53,7 +54,7 @@ const BenchmarkDrilldown = ({trials, allDocuments, allTrackings, benchmark, tria
   return (
       <div className={"drilldown-trials"}>
           <div className={"marg-bot-2 flex-center-between"}>
-              <h2>{benchmark ? benchmark.label : "Benchmark ..."}</h2>
+              <H2>{benchmark ? benchmark.label : "Benchmark ..."}</H2>
               <Button
                   icon={<PlusIcon className={"i-right"}/>}
                   text={"Create Trial"}

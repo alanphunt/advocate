@@ -54,7 +54,7 @@ const Dashboard = ({modalAction, setModalAction, setModalBody, setToasterText, c
             <Profile/>
           </Route>
           <Route path="/dashboard/test" exact>
-            <Test />
+            <Test/>
           </Route>
           <Route path="/dashboard/main" exact>
             <DashMain/>

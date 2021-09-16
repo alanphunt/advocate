@@ -1,39 +1,59 @@
-import React from 'react';
-// import {FaPlus as PlusIcon, FaMinus as MinusIcon, FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon, FaCheck as CheckIcon} from "react-icons/fa";
+import React, {useState} from 'react';
+import TableTest from "../../molecules/table/TableTest";
+import {mapStudentGoalMeta} from "../../../utils/functions/functions";
+import {useAuth} from "../../../utils/auth/AuthHooks";
+import {FaPlus as PlusIcon, FaMinus as MinusIcon, FaRegTrashAlt as TrashIcon, FaRegEdit as EditIcon, FaCheck as CheckIcon} from "react-icons/fa";
 /*
     Props:
         
     State:
         
 */
-const Test = ({teacher, updateTeacher, logout}) => {
-    const trial = teacher.classrooms[0].students[0].goals[0].benchmarks[0].trials[0];
+const Test = () => {
+  const {teacher} = useAuth();
+  const {students} = teacher;
 
-     const renderDocLinks = (path, name, type) => {
-        const qry = `?downloadPath=${path}&filename=${name}&fileType=${type}`;
-        fetch(`/api/retrievedocument${qry}`)
-        .then(resp => Promise.all([resp.ok, resp.ok ? resp.blob() : resp.json(), resp.status]))
-        .then(([ok, body, status]) => {
-            let url = URL.createObjectURL(body, {type: type});
-            const link = document.createElement('a');
-            if (link.download !== undefined) {
-                link.setAttribute('href', url);
-                link.setAttribute("target", "_blank");
-                // link.setAttribute('download', name);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        });
-    };
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      width: "20%",
+      sort: () => {},
+      search: () => {}
+    },
+    {
+      title: "Age",
+      dataIndex: "age",
+      width: "30%",
+      sort: () => {},
+      search: () => {}
+    },
+    {
+      title: "Grade",
+      dataIndex: "grade",
+      width: "30%",
+      sort: () => {},
+      search: () => {}
+    },
+    {
+      title: "Actions",
+      dataIndex: "actions",
+      width: "20%",
+      render: (id) => {return <><TrashIcon className={"i-right i-hover"} onClick={(e) => iconClick(e, id)}/><EditIcon className={"i-hover"} onClick={(e) => iconClick(e, id)}/></>}
+    }];
+
+  const iconClick = (e, id) => {
+    e.stopPropagation();
+    alert(id);
+  };
+  const data = Object.values(students).map(stu => ({id: stu.id, name: stu.name, age: stu.age, grade: stu.grade, actions: stu.id}))
 
     return(
-        <div>
-            {
-                trial.documents.map(doc => <button key={doc.id} onClick={() => renderDocLinks(doc.downloadPath, doc.filename, doc.fileType)}>get doc</button>)
-            }
-        </div>
+      <TableTest
+        columns={columns}
+        data={data}
+        selectedCallback={(obj) => alert(obj.id)}
+      />
     );
 };
 
