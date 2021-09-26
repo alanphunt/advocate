@@ -39,8 +39,6 @@ public class TrialService {
     @Autowired
     private BenchmarkService bs;
 
-    @Autowired
-    private TrackingRepo trackingRepo;
 
     public void handleTrialCreation(Trial trial, List<MultipartFile> docFiles, HttpServletRequest req){
         createTrialLabel(trial);
@@ -80,6 +78,7 @@ public class TrialService {
         docService.handleDocuments(trial.getDocuments(), trial.getId(), Trial.class, documents, req);
         createTrialLabel(trial);
         if(trial.getTrialTemplate().equals(TrialTemplate.SCORE_BASIC)){
+            //idk if this is right
             ts.setTrackingMetaInfo(trial.getId(), trial.getTracking().getTrackingMeta());
         }
         docService.deleteOldFileIfNecessary(trial);

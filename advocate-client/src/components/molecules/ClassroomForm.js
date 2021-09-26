@@ -1,18 +1,14 @@
 import React, {useState} from "react";
 import Section from "components/atoms/Section";
-import Table from "components/molecules/table/Table";
 import FormElement from "components/atoms/FormElement";
 import NumberPicker from "components/atoms/NumberPicker";
 import {FaAddressBook as BookIcon, FaRegTrashAlt as TrashIcon} from "react-icons/fa";
 import RequiredField from "components/atoms/RequiredField";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import {Student} from "utils/classes/ContextModels";
+import TableTest from "components/molecules/table/TableTest";
+import H3 from "../atoms/H3";
 
-
-/*
-props:
-state:
-*/
 
 const ClassroomForm = ({
   updateStudents,
@@ -50,15 +46,40 @@ const ClassroomForm = ({
   };
 
   const renderStudentRow = (student, index) => {
-  const editColumn = {'delete': <TrashIcon onClick={() => deleteSpecificStudent(index)} className="selectable hover-color"/>};
-  const row = {
-    name: <input onChange={(event)=>handleUpdateStudent(index, event, "name")} key={`name${index}`} placeholder='Name' value={student.name} maxLength={50}/>,
-    age: <input onChange={(event)=>handleUpdateStudent(index, event, "age")} key={`age${index}`} placeholder='Age' value={student.age} maxLength={2}/>,
-    grade: <input onChange={(event)=>handleUpdateStudent(index, event, "grade")} key={`grade${index}`} placeholder='Grade' value={student.grade} maxLength={10}/>
+    return {
+      name: <input onChange={(event) => handleUpdateStudent(index, event, "name")} key={`name${index}`}
+                   placeholder='Name' value={student.name} maxLength={50}/>,
+      age: <input onChange={(event) => handleUpdateStudent(index, event, "age")} key={`age${index}`} placeholder='Age'
+                  value={student.age} maxLength={2}/>,
+      grade: <input onChange={(event) => handleUpdateStudent(index, event, "grade")} key={`grade${index}`}
+                    placeholder='Grade' value={student.grade} maxLength={10}/>,
+      actions: null
+    };
   };
-    Object.assign(editColumn, row)
-    return editColumn;
-  };
+
+  const columns = [
+    {
+      title: <span>Name<RequiredField/></span>,
+      dataIndex: "name",
+      width: "30%",
+    },
+    {
+      title: <span>Age<RequiredField/></span>,
+      dataIndex: "age",
+      width: "30%",
+    },
+    {
+      title: <span>Grade<RequiredField/></span>,
+      dataIndex: "grade",
+      width: "30%",
+    },
+    {
+      title: "Actions",
+      dataIndex: "actions",
+      width: "10%",
+      render: (content, ind) => {return <H3><TrashIcon onClick={() => deleteSpecificStudent(ind)} className="selectable hover-color"/></H3>}
+    }
+  ];
 
   return(
     <>
@@ -75,7 +96,7 @@ const ClassroomForm = ({
       />
     </Section>
     <Section>
-      <h3 className={"i-bottom"}><RequiredField/>Number of students</h3>
+      <H3 classes={"i-bottom"}>Number of students<RequiredField/></H3>
       <NumberPicker updateState={adjustStudentCount} object={new Student()} objectArray={students}/>
     </Section>
     <Section>
@@ -84,11 +105,9 @@ const ClassroomForm = ({
           ? <ErrorLabel text={errors.students}/>
           : <></>
       }
-      <Table
-        hideSearchAndSort
-        headers={["Action", <>Name<RequiredField/></>, <>Age<RequiredField/></>, <>Grade<RequiredField/></>]}
-        tableData={students?.map((student, index) => renderStudentRow(student, index))}
-        columnSize={{0: "flex-quarter"}}
+      <TableTest
+        columns={columns}
+        data={students?.map((student, index) => renderStudentRow(student, index))}
       />
     </Section>
     { warning === "" ? <></> : <p className="incomp-color marg-bot">{warning}</p>}

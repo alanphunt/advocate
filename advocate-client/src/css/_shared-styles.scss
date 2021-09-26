@@ -176,10 +176,14 @@
   @include bor-rad;
 }
 
-.disabled, .disabled-a{
+.button.disabled, .disabled-a{
   pointer-events: none;
   background-color: $lig-gra;
   color: $dar-gra;
+}
+
+.button span.i-right{
+  line-height: 0;
 }
 
 .button-a{

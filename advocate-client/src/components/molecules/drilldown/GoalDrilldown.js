@@ -1,104 +1,137 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import Button from "components/atoms/Button";
 import {
-    FaCheck as CheckIcon,
-    FaPlus as PlusIcon,
-    FaRegCopy as CopyIcon,
-    FaRegEdit as EditIcon,
-    FaRegTrashAlt as TrashIcon
+  FaCheck as CheckIcon,
+  FaPlus as PlusIcon,
+  FaRegCopy as CopyIcon,
+  FaRegEdit as EditIcon,
+  FaRegTrashAlt as TrashIcon
 } from "react-icons/fa";
 import TableAccordionGroup from "components/molecules/table/TableAccordionGroup";
 import AccordionItem from "components/atoms/AccordionItem";
 import ImmutableTextArea from "components/molecules/ImmutableTextArea";
-import Table from "components/molecules/table/Table";
 import Box from "components/atoms/Box";
-import Strong from "components/atoms/Strong";
-import H2 from "../../atoms/H2";
+import H2 from "components/atoms/H2";
+import HRDiv from "components/atoms/HRDiv";
+import DataDisplay from "../DataDisplay";
+import Secondary from "components/atoms/table/Secondary";
+import TableTest from "../table/TableTest";
+import Row from "components/atoms/Row";
+import Col from "components/atoms/Col";
 
-const GoalDrilldown = ({studentName, goals, allBenchmarks, setGoalId, setBenchmarkId, setMutableGoal, setModalAction}) => {
-    const [selectedBenchmarkId, setSelectedBenchmarkId] = useState("");
+const GoalDrilldown = ({studentIsPresent, goals, allBenchmarks, setGoalId, benchmarkId, setBenchmarkId,  setMutableGoal, setModalAction}) => {
 
-    useEffect(() => {
-        setSelectedBenchmarkId("");
-    }, [studentName]);
+/*  useEffect(() => {
+    setSelectedBenchmarkId("");
+  }, [student]);*/
 
-    const selectedBenchmarkCallback = (benchmark, benchmarkIndex, goal, goalIndex) => {
-        setSelectedBenchmarkId(benchmark.id);
-        setBenchmarkId(benchmark.id);
-        setGoalId(goal.id);
-    };
+  const selectedBenchmarkCallback = (benchmark, benchmarkIndex, goal, goalIndex) => {
+    setBenchmarkId(benchmark.id);
+    setGoalId(goal.id);
+  };
 
-    const handleGoalIconAction = (action, goal) => {
-        setMutableGoal({...goal, benchmarks: goal.benchmarkIds.map(id => allBenchmarks[id])});
-        setModalAction(action);
-    };
+  const handleGoalIconAction = (action, goal) => {
+    setMutableGoal({...goal, benchmarks: goal.benchmarkIds.map(id => allBenchmarks[id])});
+    setModalAction(action);
+  };
 
-    const goalIconSet = {
-        'editGoal': <EditIcon className={"i-right hover-color selectable"}/>,
-        'copyGoal': <CopyIcon className={"i-right hover-color selectable"}/>,
-        'deleteGoal': <TrashIcon className={"hover-color selectable"}/>
-    };
+  const goalIconSet = {
+    'editGoal': <EditIcon className={"i-right hover-color selectable"}/>,
+    'copyGoal': <CopyIcon className={"i-right hover-color selectable"}/>,
+    'deleteGoal': <TrashIcon className={"hover-color selectable"}/>
+  };
 
-    const renderAccordionGroupBody = () => {
-        return goals.map((goal, goalIndex) => {
-                return (
-                    <AccordionItem key={`benchmarkAccItem-${goalIndex}`} header={goal.goalName} iconClickedCallback={(key) => handleGoalIconAction(key, goal)} icons={goalIconSet}>
-                        <div key={`goaldrilldowntable-${goal.id}`}>
-                            <Strong text={"Goal: "}/>
-                            <ImmutableTextArea rawData={goal.goal} />
-                            <Strong text={"Start date: "}>{goal.startDate || 'N/A'}</Strong>
-                            <Strong text={"Projected mastery date: "}>{goal.masteryDate}</Strong>
-                            <Strong text={"Actual mastery date: "}>{goal.complete ? goal.completionDate : "N/A"}</Strong>
-                            <Strong className={"marg-bot"} text={"Monitor after mastery: "}>{goal.monitor === 0 ? "No" : "Yes"}</Strong>
-                        </div>
-                        {
-                            //a goal can have no benchmarks if it was copied from another student
-                            goal.benchmarkIds.length ? (
-                                <Table
-                                    tableData={goal.benchmarkIds.map(bmId => allBenchmarks[bmId]).map(bm => {
-                                        return {id: bm.id, label: <span className={"flex-center-between width-100"}>{bm.label}{bm.complete ? <CheckIcon className={"success"}/> : <></>}</span>}
-                                    })}
-                                    headers={[`Benchmarks - (${goal.benchmarkIds.length})`]}
-                                    selectedCallback = {(benchmark, bmIndex) => selectedBenchmarkCallback(benchmark, bmIndex, goal, goalIndex)}
-                                    selectedRowId={selectedBenchmarkId}
-                                    hideSearchAndSort
-                                />
-                            ) : (
-                                <Box text={"Edit goal to add benchmarks."}/>
-                            )
-                        }
+  const columns = (length) => [{
+    title: `Benchmarks - (${length})`,
+    dataIndex: "label"
+  }];
 
-                    </AccordionItem>
-                )
-            }
+  const tableData = (goal) => {
+    if(goal.benchmarkIds.length)
+      return goal.benchmarkIds.map(bmId => allBenchmarks[bmId]).map(bm => ({
+        id: bm.id,
+        label: (
+          <span className={"flex-center-between width-100"}>
+            {bm.label}
+            {bm.complete ? <CheckIcon className={"success"}/> : <></>}
+          </span>
         )
-    };
+      }))
+    else
+      return [{id: null, label: "Edit goal to add benchmarks."}]
+  }
 
-    return (
-        <div className={"drilldown-goals"}>
-            <div className={"marg-bot-2 flex-center-between"}>
-                <H2>Goals for {studentName ? studentName.charAt(0).toUpperCase() + studentName.substring(1) : "..."}</H2>
-                <div>
-                    <Button
-                        text="Create Goal"
-                        icon={<PlusIcon className={"i-right"}/>}
-                        className={studentName ? "enabled" : "disabled"}
-                        onClick={() =>  setModalAction("createGoal")}
-                    />
-                </div>
+  const renderAccordionGroupBody = () => {
+    return goals.map((goal, goalIndex) => {
+      const hasBenchmarks = Boolean(goal.benchmarkIds.length);
+
+        return (
+          <AccordionItem key={`benchmarkAccItem-${goalIndex}`} header={goal.goalName} iconClickedCallback={(key) => handleGoalIconAction(key, goal)} icons={goalIconSet}>
+            <div className={"marg-bot"}>
+              <Secondary>Goal</Secondary>
+              <ImmutableTextArea rawData={goal.goal} />
             </div>
-            {
-                goals?.length && studentName
-                    ? <TableAccordionGroup>
-                        { renderAccordionGroupBody() }
-                    </TableAccordionGroup>
-                    : !goals?.length && studentName
-                        ? <Box text={"No goals! Click create goal to add goal to student."}/>
-                        : <></>
-            }
-        </div>
+            <Row width={"100%"}>
+              <Col span={12}>
+                <div>
+                  <DataDisplay
+                    classes={"marg-bot"}
+                    labels={["Start date", "Projected mastery date", "Actual mastery date", "Monitor after mastery"]}
+                    data={[goal.startDate || 'N/A', goal.masteryDate, goal.completionDate || 'N/A', goal.monitor ? "Yes":"No"]}
+                  />
+                </div>
+              </Col>
+              <Col span={12}>
+                <div>
+                  <TableTest
+                    columns={columns(goal.benchmarkIds.length)}
+                    data={tableData(goal)}
+                    selectedCallback = {!hasBenchmarks ? null : (benchmark, bmIndex) => selectedBenchmarkCallback(benchmark, bmIndex, goal, goalIndex)}
+                    selectedId={benchmarkId}
+                  />
+                </div>
+              </Col>
+            </Row>
+          </AccordionItem>
+        )
+      }
+    )
+  };
 
-    );
+  return (
+    <div className={"drilldown-goals"}>
+      <HRDiv classes={"marg-bot"}>
+        <div className={"flex-center-between"}>
+          <H2>Goals</H2>
+          <div>
+            <Button
+              plain
+              text="Create Baseline"
+              icon={<PlusIcon/>}
+              className={studentIsPresent ? "enabled" : "disabled"}
+              onClick={() =>  setModalAction("createBaseline")}
+            />
+            <Button
+              plain
+              text="Create Goal"
+              icon={<PlusIcon/>}
+              className={studentIsPresent ? "enabled" : "disabled"}
+              onClick={() =>  setModalAction("createGoal")}
+            />
+          </div>
+        </div>
+      </HRDiv>
+      {
+        goals?.length && studentIsPresent
+          ? <TableAccordionGroup>
+            { renderAccordionGroupBody() }
+          </TableAccordionGroup>
+          : !goals?.length && studentIsPresent
+          ? <Box text={"No goals! Click create goal to add goal to student."}/>
+          : <></>
+      }
+    </div>
+  );
 };
 
 export default GoalDrilldown;

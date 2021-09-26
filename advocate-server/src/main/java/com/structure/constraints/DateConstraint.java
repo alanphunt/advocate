@@ -12,6 +12,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 public @interface DateConstraint {
     String key() default "";
+    boolean allowNull() default false;
     String message() default "";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

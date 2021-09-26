@@ -318,8 +318,7 @@ a.active.active-border:hover{
 }
 
 .th, .td{
-  //flex: 1;
-  padding: 1rem;
+  padding: 10px;
   display: flex;
   border-left: 1px solid $dar-whi;
   position: relative;
@@ -372,40 +371,19 @@ a.active.active-border:hover{
   text-align: center;
 }
 
-.drilldownwrapper{
-  height: 100%;
-}
-
 .drilldown{
   @include flex($jus-con: space-between);
   height: 100%;
 }
 
+.drilldown-goals{
+  //overflow: auto;
+  //max-height: 40%;
+}
+
 .drilldown-goals, .drilldown-trials, .drilldown-trialmeta, .drilldown-baseline, .drilldown-classroom {
-  flex: 1;
-  margin-right: 1rem;
-  @include lig-bor;
-  @include bor-rad;
-  padding: 10px 1rem 1rem 1rem;
-  overflow: auto;
-}
-
-.drilldown-baseline, .drilldown-trialmeta{
-  margin: 0;
-}
-
-.goalcenter-row{
-  overflow: auto;
-  &-top{
-    //@include lig-bor;
-    //@include bor-rad;
-    //padding: 10px 1rem;
-    height: 39%;
-    @include flex;
-  }
-  &-bottom{
-    height: 60%;
-  }
+  padding: 0 1rem;
+  margin-bottom: 3rem;
 }
 
 .row-wrapper{
@@ -474,7 +452,7 @@ a.active.active-border:hover{
 
 .acc-item-head{
   @include cur-poi;
-  padding: 1rem 10px;
+  padding: 10px;
   @include flex($jus-con: space-between);
 }
 
@@ -779,7 +757,7 @@ a.active.active-border:hover{
 }
 
 .divider{
-  border-right: 1px solid $dar-gra;
+  border-right: 1px solid $gray;
   height: 100%;
 }
 
@@ -804,4 +782,36 @@ a.active.active-border:hover{
 .arrow-div{
   border: 10px solid $opacity-bg;
   position: absolute;
+}
+
+.flex{
+  display: flex;
+}
+
+.hr-div{
+  border-bottom: 1px solid $gray;
+}
+
+.public-DraftStyleDefault-block {
+  margin: 0 !important;
+}
+
+.col-padding{
+  padding-bottom: 5rem;
+}
+
+.secondary{
+  color: $gray-3;
+}
+
+.max-content{
+  width: max-content;
+}
+
+.border-left-none{
+   border-left: none;
+}
+
+.rdw-editor-main{
+  padding: 1rem;
 }

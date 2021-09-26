@@ -1,8 +1,15 @@
 package com.structure.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.structure.config.DateDeserializer;
+import com.structure.constraints.DateConstraint;
+import com.structure.constraints.OneOrMoreConstraint;
+import com.structure.constraints.RequiredFieldConstraint;
+import com.structure.utilities.constants.Error;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,169 +25,178 @@ import java.util.List;
 @Where(clause = "enabled=1")
 public class Goal {
 
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    private String goal;
-    
-    @Column(name = "goal_name")
-    private String goalName;
+  @RequiredFieldConstraint(key = "goal")
+  private String goal;
 
-    private int enabled, monitor;
+  @Column(name = "goal_name")
+  @RequiredFieldConstraint(key = "goalName")
+  private String goalName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
-    @Column(name = "start_date")
-    private Date startDate;
+  private int enabled, monitor;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
-    @Column(name = "mastery_date")
-    private Date masteryDate;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
+  @Column(name = "start_date")
+  @JsonDeserialize(using = DateDeserializer.class)
+  @DateConstraint(key = "startDate", allowNull = true)
+  private Date startDate;
 
-    @Column(name = "student_id")
-    private String studentId;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
+  @Column(name = "mastery_date")
+  @JsonDeserialize(using = DateDeserializer.class)
+  @DateConstraint(key = "masteryDate")
+  private Date masteryDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
-    @Column(name = "completion_date")
-    private Date completionDate;
+  @Column(name = "student_id")
+  private String studentId;
 
-    private int complete;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
+  @Column(name = "completion_date")
+  private Date completionDate;
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "student_id", insertable = false, updatable = false)
-    private Student student;
+  private int complete;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "goal", cascade = {CascadeType.ALL})
-    @OrderBy("label ASC")
-    private List<Benchmark> benchmarks = new ArrayList<>();
+  @ManyToOne
+  @JsonIgnore
+  @JoinColumn(name = "student_id", insertable = false, updatable = false)
+  private Student student;
 
-    @Transient
-    private ArrayList<String> benchmarkIds = new ArrayList<>();
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @OneToMany(mappedBy = "goal", cascade = {CascadeType.ALL})
+  @OrderBy("label ASC")
+  @Valid
+  @OneOrMoreConstraint(key = "benchmarks", message = Error.NO_BENCHMARKS)
+  private List<Benchmark> benchmarks = new ArrayList<>();
 
-    public Goal(){}
+  @Transient
+  private ArrayList<String> benchmarkIds = new ArrayList<>();
 
-    public Goal(String id, String goal, String goalName, String studentId, Date startDate, Date masteryDate, int monitor) {
-        this.id = id;
-        this.goal = goal;
-        this.goalName = goalName;
-        this.studentId = studentId;
-        this.startDate = startDate;
-        this.masteryDate = masteryDate;
-        this.monitor = monitor;
-        this.complete = 0;
-        this.enabled = 1;
-    }
+  public Goal() {
+  }
 
-    public String getGoal() {
-        return goal;
-    }
+  public Goal(String id, String goal, String goalName, String studentId, Date startDate, Date masteryDate, int monitor) {
+    this.id = id;
+    this.goal = goal;
+    this.goalName = goalName;
+    this.studentId = studentId;
+    this.startDate = startDate;
+    this.masteryDate = masteryDate;
+    this.monitor = monitor;
+    this.complete = 0;
+    this.enabled = 1;
+  }
 
-    public void setGoal(String goal) {
-        this.goal = goal;
-    }
+  public String getGoal() {
+    return goal;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public void setGoal(String goal) {
+    this.goal = goal;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public String getGoalName() {
-        return goalName;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setGoalName(String goalName) {
-        this.goalName = goalName;
-    }
+  public String getGoalName() {
+    return goalName;
+  }
 
-    public int getEnabled() {
-        return enabled;
-    }
+  public void setGoalName(String goalName) {
+    this.goalName = goalName;
+  }
 
-    public void setEnabled(int enabled) {
-        this.enabled = enabled;
-    }
+  public int getEnabled() {
+    return enabled;
+  }
 
-    public int getMonitor() {
-        return monitor;
-    }
+  public void setEnabled(int enabled) {
+    this.enabled = enabled;
+  }
 
-    public void setMonitor(int monitor) {
-        this.monitor = monitor;
-    }
+  public int getMonitor() {
+    return monitor;
+  }
 
-    public Date getStartDate() {
-        return startDate;
-    }
+  public void setMonitor(int monitor) {
+    this.monitor = monitor;
+  }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
+  public Date getStartDate() {
+    return startDate;
+  }
 
-    public Date getMasteryDate() {
-        return masteryDate;
-    }
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
 
-    public void setMasteryDate(Date masteryDate) {
-        this.masteryDate = masteryDate;
-    }
+  public Date getMasteryDate() {
+    return masteryDate;
+  }
 
-    public String getStudentId() {
-        return studentId;
-    }
+  public void setMasteryDate(Date masteryDate) {
+    this.masteryDate = masteryDate;
+  }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
+  public String getStudentId() {
+    return studentId;
+  }
 
-    public void setBenchmarks(List<Benchmark> benchmarks) {
-        this.benchmarks = benchmarks;
-    }
+  public void setStudentId(String studentId) {
+    this.studentId = studentId;
+  }
 
-    public List<Benchmark> getBenchmarks () {
-        return benchmarks;
-    }
+  public void setBenchmarks(List<Benchmark> benchmarks) {
+    this.benchmarks = benchmarks;
+  }
 
-    public int getComplete(){
-        return this.complete;
-    }
+  public List<Benchmark> getBenchmarks() {
+    return benchmarks;
+  }
 
-    public void setComplete(int complete){
-        this.complete = complete;
-    }
+  public int getComplete() {
+    return this.complete;
+  }
 
-    public Date getCompletionDate() {
-        return completionDate;
-    }
+  public void setComplete(int complete) {
+    this.complete = complete;
+  }
 
-    public void setCompletionDate(Date completionDate) {
-        this.completionDate = completionDate;
-    }
+  public Date getCompletionDate() {
+    return completionDate;
+  }
 
-    public ArrayList<String> getBenchmarkIds() {
-        return benchmarkIds;
-    }
+  public void setCompletionDate(Date completionDate) {
+    this.completionDate = completionDate;
+  }
 
-    public void setBenchmarkIds(ArrayList<String> benchmarkIds) {
-        this.benchmarkIds = benchmarkIds;
-    }
+  public ArrayList<String> getBenchmarkIds() {
+    return benchmarkIds;
+  }
 
-    @Override
-    public String toString() {
-        return "Goal{" +
-                "id='" + id + '\'' +
-                ", goalName='" + goalName + '\'' +
-                ", enabled=" + enabled +
-                ", monitor=" + monitor +
-                ", startDate=" + startDate +
-                ", masteryDate=" + masteryDate +
-                ", complete=" + complete +
-                ", benchmarkIds=" + benchmarkIds +
-                ", benchmarks=" + benchmarks +
-                ", studentId='" + studentId + '\'' +
-                '}';
-    }
+  public void setBenchmarkIds(ArrayList<String> benchmarkIds) {
+    this.benchmarkIds = benchmarkIds;
+  }
+
+  @Override
+  public String toString() {
+    return "Goal{" +
+        "id='" + id + '\'' +
+        ", goalName='" + goalName + '\'' +
+        ", enabled=" + enabled +
+        ", monitor=" + monitor +
+        ", startDate=" + startDate +
+        ", masteryDate=" + masteryDate +
+        ", complete=" + complete +
+        ", benchmarkIds=" + benchmarkIds +
+        ", benchmarks=" + benchmarks +
+        ", studentId='" + studentId + '\'' +
+        '}';
+  }
 }

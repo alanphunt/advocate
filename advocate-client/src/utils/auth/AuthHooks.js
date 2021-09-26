@@ -5,71 +5,75 @@ import {ContextModel} from "utils/classes/ContextModels";
 export const TeacherContext = createContext(undefined);
 
 export const useProvideAuth = () => {
-    const [teacher, setTeacher] = useState(new ContextModel());
-    const memoizedTeacher = useMemo(() => ({teacher}), [teacher]);
-    const history = useHistory();
-    const location = useLocation();
+  const [teacher, setTeacher] = useState(new ContextModel());
+  const memoizedTeacher = useMemo(() => ({teacher}), [teacher]);
+  const history = useHistory();
+  const location = useLocation();
 
-    const _completeFetch = (body, path, callback) => {
-        setTeacher(body);
-        history.replace(path);
-        callback && callback();
-    };
+  const _completeFetch = (body, path, callback) => {
+    setTeacher(body);
+    history.replace(path);
+    callback && callback();
+  };
 
-    const signin = (data, errorHandler, callback, handleServerError) => {
-        fetch(`/api/authenticate`, {method: "POST", body: JSON.stringify(data), headers: JSON_HEADER})
-        .then(response => Promise.all([response.ok, response.json(), response.status]))
-        .then(([ok, body, status]) => {
-            if(ok)
-                _completeFetch(body, "/dashboard/main");
-            else
-                errorHandler(body);
-            callback && callback(status);
-        })
-        .catch(() => {alert(SERVER_ERROR); handleServerError();});
-    };
-
-    const register = (data, errorHandler, callback) => {
-        fetch(`/api/createuser`, {method: "POST", body: JSON.stringify(data), headers: JSON_HEADER})
-        .then(response => Promise.all([response.ok, response.json()]))
-        .then(([ok, body]) => {
-            console.log(body)
-            if(ok)
-                _completeFetch(body, "/dashboard/main");
-            else
-                errorHandler(body);
-            callback && callback();
-        })
-        .catch(() => alert(SERVER_ERROR));
-    };
-
-    const refreshTeacher = async (callback) => {
-        let resp = await fetch("/api/teacher");
-        if (!resp.ok)
-            throw new Error(JWT_ERROR);
+  const signin = (data, errorHandler, callback, handleServerError) => {
+    fetch(`/api/authenticate`, {method: "POST", body: JSON.stringify(data), headers: JSON_HEADER})
+      .then(response => Promise.all([response.ok, response.json(), response.status]))
+      .then(([ok, body, status]) => {
+        if(ok)
+          _completeFetch(body, "/dashboard/main");
         else
-            await resp.json().then(body => {
-                _completeFetch(body, location.pathname, callback);
-            });
-    };
+          errorHandler(body);
+        callback && callback(status);
+      })
+      .catch(() => {alert(SERVER_ERROR); handleServerError();});
+  };
 
-    const signout = () => {
-        fetch("/api/logout");
+  const register = (data, errorHandler, callback) => {
+    fetch(`/api/createuser`, {method: "POST", body: JSON.stringify(data), headers: JSON_HEADER})
+      .then(response => Promise.all([response.ok, response.json()]))
+      .then(([ok, body]) => {
+        console.log(body)
+        if(ok)
+          _completeFetch(body, "/dashboard/main");
+        else
+          errorHandler(body);
+        callback && callback();
+      })
+      .catch(() => alert(SERVER_ERROR));
+  };
+
+  const refreshTeacher = async (callback) => {
+    let resp = await fetch("/api/teacher");
+    if (!resp.ok)
+      throw new Error(JWT_ERROR);
+    else
+      await resp.json().then(body => {
+        _completeFetch(body, location.pathname, callback);
+      });
+  };
+
+  const signout = () => {
+    fetch("/api/logout")
+      .then(response => response)
+      .then(data => {
         history.replace("/", {from: "/"});
         setTeacher(null);
-    };
-    return {
-        ...memoizedTeacher,
-        setTeacher,
-        signin,
-        signout,
-        refreshTeacher,
-        register,
-        hasClassroomWithStudents: teacher.students ? Boolean(Object.keys(teacher?.students).length) : false
-    };
-    
+      })
+  };
+
+  return {
+    ...memoizedTeacher,
+    setTeacher,
+    signin,
+    signout,
+    refreshTeacher,
+    register,
+    hasClassroomWithStudents: teacher?.students ? Boolean(Object.keys(teacher?.students).length) : false
+  };
+
 };
 
 export const useAuth = () => {
-    return useContext(TeacherContext);
+  return useContext(TeacherContext);
 };

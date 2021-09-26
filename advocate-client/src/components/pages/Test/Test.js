@@ -18,22 +18,22 @@ const Test = () => {
       title: "Name",
       dataIndex: "name",
       width: "20%",
-      sort: () => {},
-      search: () => {}
+      sort: true,
+      search: true
     },
     {
       title: "Age",
       dataIndex: "age",
       width: "30%",
-      sort: () => {},
+      sort: true,
       search: () => {}
     },
     {
       title: "Grade",
       dataIndex: "grade",
       width: "30%",
-      sort: () => {},
-      search: () => {}
+      sort: true,
+      search: true
     },
     {
       title: "Actions",

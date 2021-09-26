@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -28,7 +29,7 @@ public interface BenchmarkRepo extends CrudRepository<Benchmark, String> {
     int softDeleteAllBenchmarksByGoalId(String id);*/
 
     @Modifying
-    @Transactional(timeout = 5)
+    @Transactional(timeout = 5, propagation = Propagation.REQUIRES_NEW)
     @Query("UPDATE Benchmark bm SET bm.trialAverage = ?1 WHERE bm.id = ?2")
     int updateBenchmarkTrialAverage(double trialAverage, String id);
 }

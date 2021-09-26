@@ -6,8 +6,9 @@ import BestOutOfTrialDisplay from "components/templates/score/best-out-of/BestOu
 import Strong from "components/atoms/Strong";
 import FileChipWrapper from "components/molecules/FileChipWrapper";
 import H2 from "../../atoms/H2";
+import HRDiv from "../../atoms/HRDiv";
 
-const TrialDrilldown = ({trial, tracking, documents, trackingMeta}) => {
+const TrialDrilldown = ({trial, tracking, trackingMeta, documents}) => {
   
   const determineTrialTemplate = () => {
     switch(trial.trialTemplate){
@@ -25,7 +26,9 @@ const TrialDrilldown = ({trial, tracking, documents, trackingMeta}) => {
   
   return (
     <div className={"drilldown-trialmeta"}>
-      <H2 classes={"marg-bot-2"}>{trial ? trial.label : "Trial ..."}</H2>
+      <HRDiv classes={"marg-bot"}>
+        <H2>{trial ? trial.label : "Trial ..."}</H2>
+      </HRDiv>
       {
         trial ?
           <div>

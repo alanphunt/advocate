@@ -15,7 +15,7 @@ import {SERVER_ERROR} from "utils/constants";
 const EditBestOutOfTrial = ({closeModal, studentName, goalName, benchmark, mutableTrial, setMutableTrial, completeCrudOp, isLoading, setIsLoading}) => {
   const [trialFiles, setTrialFiles] = useState([]);
   const [requestErrors, setRequestErrors] = useState(trialErrorsModel);
-  let fileMeta = mapFileMetaDataToDocument(trialFiles, mutableTrial.documents);
+  let fileMeta = mutableTrial.documents ? mapFileMetaDataToDocument(trialFiles, mutableTrial.documents) : null;
   
   const editTrial = () => {
     setIsLoading({"editTrial": true});

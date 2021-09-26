@@ -25,34 +25,34 @@ import java.util.Optional;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired private JWTService jwtService;
-    @Autowired private AccountDetailsService ads;
-    @Autowired private AccountDetailsRequestBean detailsBean;
+  @Autowired private JWTService jwtService;
+  @Autowired private AccountDetailsService ads;
+  @Autowired private AccountDetailsRequestBean detailsBean;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("Filtering incoming request..");
-        Optional<Cookie> jwtCookie = jwtService.extractJwtFromCookie(httpServletRequest);
-        String username = null;
-        String jwt = null;
-        try {
-            if (jwtCookie.isPresent()) {
-                jwt = jwtCookie.get().getValue();
-                username = jwtService.extractUsername(jwt);
-            }
+  @Override
+  protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+    System.out.println("Filtering incoming request..");
+    Optional<Cookie> jwtCookie = jwtService.extractJwtFromCookie(httpServletRequest);
+    String username = null;
+    String jwt = null;
+    try {
+      if (jwtCookie.isPresent()) {
+        jwt = jwtCookie.get().getValue();
+        username = jwtService.extractUsername(jwt);
+      }
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                AccountDetails accountDetails = (AccountDetails) ads.loadUserByUsername(username);
-                if (jwtService.validateToken(jwt, accountDetails)) {
-                    UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(accountDetails, null, accountDetails.getAuthorities());
-                    upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                    SecurityContextHolder.getContext().setAuthentication(upat);
-                    detailsBean.setAccountDetails(accountDetails);
-                }
-            }
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-        } catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+      if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        AccountDetails accountDetails = (AccountDetails) ads.loadUserByUsername(username);
+        if (jwtService.validateToken(jwt, accountDetails)) {
+          UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(accountDetails, null, accountDetails.getAuthorities());
+          upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+          SecurityContextHolder.getContext().setAuthentication(upat);
+          detailsBean.setAccountDetails(accountDetails);
+        } else detailsBean.setAccountDetails(null);
+      }
+      filterChain.doFilter(httpServletRequest, httpServletResponse);
+    } catch(Exception e){
+      System.out.println(e.getMessage());
     }
+  }
 }

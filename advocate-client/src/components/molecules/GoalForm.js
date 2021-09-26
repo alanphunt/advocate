@@ -8,7 +8,6 @@ import {
 import NumberPicker from "components/atoms/NumberPicker";
 import FormElement from "components/atoms/FormElement";
 import Section from "components/atoms/Section";
-import Table from "./table/Table";
 import TextArea from "./TextArea";
 import {benchmarkModel, templateOptionsModel} from "utils/models";
 import RequiredField from "components/atoms/RequiredField";
@@ -16,9 +15,9 @@ import ErrorLabel from "components/atoms/ErrorLabel";
 import TextAreaForTable from "./TextAreaForTable";
 import { convertFromRaw, EditorState } from 'draft-js';
 import Checkbox from "./Checkbox";
-import TableCell from "components/atoms/table/TableCell";
-import TableRow from "components/atoms/table/TableRow";
 import Select from "components/atoms/Select";
+import TableTest from "./table/TableTest";
+import H3 from "components/atoms/H3";
 
 const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
   useEffect(() => {
@@ -77,6 +76,73 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
       setMutableGoal({...mutableGoal, goal: e});
     }
   };
+
+  const columns = [
+    {
+      title: <>Label</>,
+      dataIndex: "label",
+    },
+    {
+      title: <>Benchmark<RequiredField/></>,
+      dataIndex: "benchmark",
+    },
+    {
+      title: <>Mastery Date<RequiredField/></>,
+      dataIndex: "masteryDate",
+    },
+    {
+      title: <>Tracking Type<RequiredField/></>,
+      dataIndex: "trackingType",
+    },
+    {
+      title: "Actions",
+      dataIndex: "actions",
+      width: "10%",
+      render: (benchmark, ind) => (
+        <div>
+          <CopyIcon
+            className={"selectable hover-color i-right"}
+            onClick={() => {
+              copySpecificBenchmark({...benchmark, label: `Benchmark ${alphabet[mutableGoal.benchmarks.length]}`, id: "", metDate: "", complete: 0});
+            }}/>
+          <TrashIcon
+            className={"selectable hover-color"}
+            onClick={() => {
+              deleteSpecificBenchmark(ind);
+            }}/>
+        </div>
+      )
+    }
+  ];
+
+  const renderTableData = (benchmark, ind) => ({
+    label: `Benchmark ${alphabet[ind]}`,
+    benchmark: (
+      <TextAreaForTable
+        placeholder="Benchmark Description"
+        editorState={benchmark.description}
+        setEditorState={(es) => updateBenchmark(ind, es, "description")}
+        focused={focused === ind}
+        index={ind}
+        setFocused={setFocused}
+      />
+    ),
+    masteryDate: (
+      <FormElement
+        onChange={(e) => updateBenchmark(ind, e, "masteryDate")}
+        placeholder='MM/DD/YY'
+        value={benchmark.masteryDate}
+      />
+    ),
+    trackingType: (
+      <Select
+        value={benchmark.tracking}
+        onChange={(e) => updateBenchmark(ind, e, "tracking")}
+        mapping={templateOptionsModel}
+      />
+    ),
+    actions: benchmark
+  })
   
   return (
     <div>
@@ -94,7 +160,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
       </Section>
       
       <Section>
-        <h3 className={"i-bottom"}><RequiredField/>Goal</h3>
+        <H3 classes={"i-bottom"}>Goal<RequiredField/></H3>
         {
           typeof mutableGoal.goal === "string"
             ? <></>
@@ -138,7 +204,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
       </Section>
       
       <Section>
-        <h3 className={"i-bottom"}>Benchmarks</h3>
+        <H3>Benchmarks<RequiredField/></H3>
         <Section>
           <NumberPicker
             updateState={adjustBenchmarkCount}
@@ -147,59 +213,10 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
             objectArray={mutableGoal.benchmarks}
           />
         </Section>
-        <Table
-          columnSize={{0: "flex-half"}}
-          hideSearchAndSort
-          headers={[<span><RequiredField/>Label</span>, <span><RequiredField/>Benchmark</span>, <span><RequiredField/>Mastery Date</span>, <span><RequiredField/>Tracking Type</span>]}>
-          {
-            mutableGoal.benchmarks?.map((benchmark, ind) => {
-              let label = `Benchmark ${alphabet[ind]}`;
-              return (
-                <TableRow key={"benchmark"+ind}>
-                  <TableCell classes="flex-half">
-                    <strong>{label}</strong>
-                    <div>
-                      <CopyIcon
-                        className={"selectable hover-color i-right"}
-                        onClick={() => {
-                          copySpecificBenchmark({...benchmark, label: `Benchmark ${alphabet[mutableGoal.benchmarks.length]}`, id: "", metDate: "", complete: 0});
-                        }}/>
-                      <TrashIcon
-                        className={"selectable hover-color"}
-                        onClick={() => {
-                          deleteSpecificBenchmark(ind);
-                        }}/>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <TextAreaForTable
-                      placeholder="Benchmark Description"
-                      editorState={benchmark.description}
-                      setEditorState={(es) => updateBenchmark(ind, es, "description")}
-                      focused={focused === ind}
-                      index={ind}
-                      setFocused={setFocused}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <FormElement
-                      onChange={(e) => updateBenchmark(ind, e, "masteryDate")}
-                      placeholder='MM/DD/YY'
-                      value={benchmark.masteryDate}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Select
-                      value={benchmark.tracking}
-                      onChange={(e) => updateBenchmark(ind, e, "tracking")}
-                      mapping={templateOptionsModel}
-                    />
-                  </TableCell>
-                </TableRow>
-              )
-            })
-          }
-        </Table>
+        <TableTest
+          columns={columns}
+          data={mutableGoal.benchmarks?.map((benchmark, ind) => renderTableData(benchmark, ind))}
+        />
         <ErrorLabel text={formErrors?.benchmarks}/>
       </Section>
       

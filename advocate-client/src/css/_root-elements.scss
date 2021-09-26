@@ -41,24 +41,8 @@ label{
   position: relative;
 }
 
-button{
-  padding: .65rem 1rem;
-  @include lig-bor;
-  border-radius: 25px;
-  @include transition;
-  @include cur-poi;
-  background: none;
-  color: inherit;
-  outline: none;
-  display: inline-flex;
-  justify-content: center;
-  &:hover, &:focus{
-    background-color: $primary;
-    color: $white;
-  }
-  &:active{
-    background-color: #51b7d5;
-  }
+svg{
+  height: 100%;
 }
 
 label:focus-within svg{
@@ -96,4 +80,25 @@ input, select, textarea{
 input{
   width: 100%;
   max-width: 225px;
+}
+
+::-webkit-scrollbar{
+  width: 9px;
+  background: $dar-whi;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-button{
+  color: transparent;
+  background: transparent;
+  display: none;
+}
+
+::-webkit-scrollbar-track{
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb{
+  background: $opacity-bg-med;
+  border-radius: 10px;
 }

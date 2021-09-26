@@ -7,6 +7,7 @@ import FormElement from "components/atoms/FormElement";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import RequiredField from "components/atoms/RequiredField";
 import {Tracking, TrackingMeta} from "utils/classes/ContextModels";
+import H3 from "../../../atoms/H3";
 
 const BasicScoreTrialForm = ({labelError, updateTracks, trackingMeta}) => {
 
@@ -79,7 +80,7 @@ const BasicScoreTrialForm = ({labelError, updateTracks, trackingMeta}) => {
     <>
       <Section>
         <Section>
-          <h3 className={"i-bottom"}>Track Count</h3>
+          <H3 classes={"i-bottom"}>Track Count</H3>
           <NumberPicker
             updateState={updateTracks}
             object={new TrackingMeta()}
@@ -91,7 +92,7 @@ const BasicScoreTrialForm = ({labelError, updateTracks, trackingMeta}) => {
          trackingMeta?.length >= 0 ? (
            <Table
              columnSize={{0: "flex-quarter"}}
-             headers={[<>Action</>, <><RequiredField/>Item Label<p>(press Tab for next item)</p></>, <>Correct/Incorrect<p>(press Enter to toggle)</p></>]}
+             headers={[<>Action</>, <>Item Label<RequiredField/><p>(press Tab for next item)</p></>, <>Correct/Incorrect<p>(press Enter to toggle)</p></>]}
              tableData={renderTableInputs()}
              hideSearchAndSort
            />

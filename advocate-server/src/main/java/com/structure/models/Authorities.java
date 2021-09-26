@@ -64,4 +64,14 @@ public class Authorities implements GrantedAuthority {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Authorities{" +
+            "id='" + id + '\'' +
+            ", username='" + username + '\'' +
+            ", authority='" + authority + '\'' +
+            ", enabled=" + enabled +
+            '}';
+    }
 }

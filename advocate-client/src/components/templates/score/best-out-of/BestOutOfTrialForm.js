@@ -4,12 +4,13 @@ import Section from "components/atoms/Section";
 import Box from "components/atoms/Box";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import RequiredField from "components/atoms/RequiredField";
+import H3 from "components/atoms/H3";
 
 const BestOutOfTrialForm = ({track, setTrack, error}) => {
   return (
     <>
       <Section>
-        <h3 className={"i-bottom"}><RequiredField/>Inputs</h3>
+        <H3 classes={"i-bottom"}>Inputs<RequiredField/></H3>
         <Box classes={"flex-center bestoutofcontainer"}>
           <FormElement
             type={"number"}

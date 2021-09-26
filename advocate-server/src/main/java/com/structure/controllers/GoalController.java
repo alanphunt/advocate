@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.text.ParseException;
-import java.util.*;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path=Constants.API_PATH, method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
@@ -19,14 +17,9 @@ public class GoalController {
     @Autowired
     private GoalService goalService;
 
-    /*
-        We keep the payload as a Map so that we can test each individual value. If you try to send the payload
-        as a whole object then you can't determine what value throws an error during deserialization. I just spent
-        2 hours trying to redo this, so don't think you can make the process more efficient.
-     */
     @PostMapping(value = "/creategoal")
-    public ResponseEntity<?>createGoal(@RequestParam Map<String, String> body) throws ParseException {
-        return goalService.handleGoalCreation(body);
+    public ResponseEntity<?>createGoal(@Valid @RequestBody Goal goal) {
+        return goalService.handleGoalCreation(goal);
     }
 
     @DeleteMapping(value = "/deletegoal")
@@ -52,7 +45,7 @@ public class GoalController {
     }
 
     @PostMapping(value = "/editgoal")
-    public ResponseEntity<?> editGoal(@RequestParam Map<String, String> body){
+    public ResponseEntity<?> editGoal(@Valid @RequestBody Goal body){
         return goalService.handleGoalUpdate(body);
     }
 

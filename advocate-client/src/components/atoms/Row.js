@@ -1,6 +1,6 @@
 import React from "react";
 
-const Row = ({vertical, horizontal, gap = [0,0], wrap = true, children, width = "100%", height = "auto"}) => {
+const Row = ({classes = "", vertical, horizontal, gap = [0,0], wrap = true, children, width = "100%", height = "auto"}) => {
   const styles = {
     display: "flex",
     "flex-flow": `row ${wrap ? "wrap" : "nowrap"}`,
@@ -13,7 +13,7 @@ const Row = ({vertical, horizontal, gap = [0,0], wrap = true, children, width = 
   }
   
   return (
-    <div style={styles}>
+    <div className={classes} style={styles}>
       {children}
     </div>
   );

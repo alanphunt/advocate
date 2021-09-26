@@ -159,4 +159,19 @@ public class AccountDetails implements UserDetails{
     public void setRole(String role) {
         this.role = role;
     }
+
+    @Override
+    public String toString() {
+        return "AccountDetails{" +
+            "username='" + username + '\'' +
+            ", teacherId='" + teacherId + '\'' +
+            ", isAccountNonExpired=" + isAccountNonExpired +
+            ", isAccountNonLocked=" + isAccountNonLocked +
+            ", isCredentialsNonExpired=" + isCredentialsNonExpired +
+            ", enabled=" + enabled +
+            ", dateCreated=" + dateCreated +
+            ", authorities=" + authorities +
+            ", role='" + role + '\'' +
+            '}';
+    }
 }

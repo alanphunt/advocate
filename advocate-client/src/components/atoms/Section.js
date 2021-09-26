@@ -5,10 +5,10 @@ import React from 'react';
         children: objects- the children to render
         classes: string: optional- additional classes        
 */
-const Section = ({children, classes}) => {
+const Section = ({children, classes= ""}) => {
     
     return(
-        <div className={`marg-bot-2 ${classes || ""}`}>
+        <div className={`marg-bot-2 ${classes}`}>
             {children}
         </div>
     );

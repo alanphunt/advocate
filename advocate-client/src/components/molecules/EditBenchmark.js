@@ -4,6 +4,7 @@ import {
     FaCommentDots as DotsIcon,
     FaRulerCombined as RulerIcon
 } from "react-icons/fa";
+import H3 from "../atoms/H3";
 
 const EditBenchmark = ({benchmark, updateBenchmark}) => {
 
@@ -14,7 +15,7 @@ const EditBenchmark = ({benchmark, updateBenchmark}) => {
     return (
         <div className={""}>
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom"}>Description</h3>
+                <H3 classes={"i-bottom"}>Description</H3>
                 <label>
                     <DotsIcon className={"label-i"}/>
                     <input placeholder={"Benchmark"} type={"text"} value={benchmark.description} onChange={(e) => {editBenchmark(e, "description")}}/>
@@ -22,7 +23,7 @@ const EditBenchmark = ({benchmark, updateBenchmark}) => {
             </div>
 
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom"}>Projected mastery date</h3>
+                <H3 classes={"i-bottom"}>Projected mastery date</H3>
                 <label>
                     <CalCheckIcon className={"label-i"}/>
                     <input placeholder={"MM/DD/YYYY"} type={"text"} value={benchmark.masteryDate} onChange={(e) => {editBenchmark(e, "masteryDate")}}/>
@@ -30,7 +31,7 @@ const EditBenchmark = ({benchmark, updateBenchmark}) => {
             </div>
 
             <div className={"marg-bot-2"}>
-                <h3 className={"i-bottom"}>Tracking Type</h3>
+                <H3 classes={"i-bottom"}>Tracking Type</H3>
                 <label>
                     <RulerIcon className={"label-i"}/>
                     <select value={benchmark.tracking} onChange={(e) => {editBenchmark(e, "tracking")}}>

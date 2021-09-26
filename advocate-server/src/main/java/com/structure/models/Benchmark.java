@@ -1,5 +1,10 @@
 package com.structure.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.structure.config.DateDeserializer;
+import com.structure.constraints.DateConstraint;
+import com.structure.constraints.RequiredFieldConstraint;
+import com.structure.utilities.constants.Error;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -30,15 +35,16 @@ public class Benchmark {
     private Goal goal;
 
     private int enabled, complete;
-    
+
     private String label;
 
-    private String description;
-
-    private String tracking;
+    @RequiredFieldConstraint(key = "benchmarks", message = Error.BENCHMARK_FIELD_EMPTY)
+    private String description, tracking;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
     @Column(name = "mastery_date")
+    @JsonDeserialize(using = DateDeserializer.class)
+    @DateConstraint(key = "benchmarks")
     private Date masteryDate;
 
     @Column(name = "met_date")

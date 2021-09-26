@@ -10,10 +10,12 @@ import java.util.Date;
 public class DateValidator implements ConstraintValidator<DateConstraint, Date> {
 
     String key;
+    boolean allowNull;
 
     @Override
     public void initialize(DateConstraint annotation) {
         key = annotation.key();
+        allowNull = annotation.allowNull();
     }
 
     @Override
@@ -21,7 +23,7 @@ public class DateValidator implements ConstraintValidator<DateConstraint, Date> 
         try {
             if(value.getTime() == -1)
                 throw new Exception(Error.INVALID_DATE);
-            else if(value.getTime() == 0)
+            else if(value.getTime() == 0 && !allowNull)
                 throw new Exception(Error.EMPTY_FIELD);
         } catch (Exception npe) {
             String mapString = key + ":" + npe.getMessage();

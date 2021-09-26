@@ -35,3 +35,23 @@ export const DELETE_BASELINE_LOADING = {"deleteBaseline":true};
 export const TRIAL_LOADING = {"createTrial":true};
 export const EDIT_TRIAL_LOADING = {"editTrial":true};
 export const DELETE_TRIAL_LOADING = {"deleteTrial":true};
+
+export const STUDENT_COLUMNS = [
+  {
+    title: "Name",
+    dataIndex: "name",
+    sort: true,
+    search: true
+  },
+  {
+    title: "Age",
+    dataIndex: "age",
+    sort: true,
+    search: true
+  },
+  {
+    title: "Grade",
+    dataIndex: "grade",
+    sort: true,
+    search: true
+  }];

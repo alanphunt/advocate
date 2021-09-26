@@ -11,7 +11,6 @@ import com.structure.utilities.Constants;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.Date;

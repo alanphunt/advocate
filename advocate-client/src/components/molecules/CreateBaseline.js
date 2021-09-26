@@ -18,6 +18,7 @@ import BasicScoreTrialForm from "components/templates/score/basic-score/BasicSco
 import BestOutOfTrialForm from "components/templates/score/best-out-of/BestOutOfTrialForm";
 import FormElement from "components/atoms/FormElement";
 import {FaRegListAlt as LabelIcon} from "react-icons/fa"
+import H3 from "../atoms/H3";
 
 
 const CreateBaseline = ({closeModal, student, goal, completeCrudOp, isLoading, setIsLoading, signout}) => {
@@ -109,7 +110,7 @@ const CreateBaseline = ({closeModal, student, goal, completeCrudOp, isLoading, s
                     <></>
                   ) : (
                     <>
-                      <h3 className={"i-bottom"}>Next, choose your tracking template</h3>
+                      <H3 classes={"i-bottom"}>Next, choose your tracking template</H3>
                       <TrialTemplateCards trackingType={trackingType} setTrialTemplate={(val) => setBaseline(prev => ({...prev, baselineTemplate: val}))}/>
                     </>
                   )

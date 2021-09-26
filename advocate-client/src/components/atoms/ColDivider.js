@@ -1,15 +1,3 @@
 import React from "react";
-import Col from "./Col";
-
-const ColDivider = () => {
-  
-  return (
-    <Col span={0}>
-      <div className="divider">
-
-      </div>
-    </Col>
-  );
-};
-
+const ColDivider = () =>  <div className="divider"/>
 export default ColDivider;

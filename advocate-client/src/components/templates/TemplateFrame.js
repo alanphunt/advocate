@@ -8,6 +8,7 @@ import TextArea from "components/molecules/TextArea";
 import {convertFromRaw, EditorState} from "draft-js";
 import FormElement from "components/atoms/FormElement";
 import {FaCalendarPlus as CalPlusIcon} from "react-icons/fa";
+import H3 from "../atoms/H3";
 
 const TemplateFrame = ({
   children,
@@ -48,7 +49,7 @@ const TemplateFrame = ({
           {children}
           
           <Section>
-            <h3 className={"i-bottom"}>Comments</h3>
+            <H3 classes={"i-bottom"}>Comments</H3>
             <TextArea
               editorState={typeof comments === "string" ? EditorState.createWithContent(convertFromRaw(JSON.parse(comments))) : comments}
               setEditorState={handleComments}

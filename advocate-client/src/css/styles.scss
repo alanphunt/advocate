@@ -115,6 +115,7 @@ first 3 letters concatenated with hyphens
   color: $primary;
   @include cur-poi;
   @include transition;
+  height: unset;
   &:hover{
     color: $dar-gra;
   }
@@ -225,4 +226,47 @@ first 3 letters concatenated with hyphens
   padding: 1rem;
   background-color: $dar-gra;
   text-align: center;
+}
+
+.button{
+  padding: .65rem 1rem;
+  @include lig-bor;
+  border-radius: 25px;
+  @include transition;
+  @include cur-poi;
+  background: none;
+  color: inherit;
+  outline: none;
+  display: inline-flex;
+  justify-content: center;
+  &.cancelButton:hover{
+    color: $white;
+    background-color: $incomplete;
+  }
+  &:hover, &:focus{
+    background-color: $primary;
+    color: $white;
+  }
+  &:active{
+    background-color: #51b7d5;
+  }
+  &-plain{
+    border: none;
+    padding: 0 8px;
+    border-radius: 0;
+    border-left: 1px solid $gray;
+    border-right: 1px solid $gray;
+    &:hover, &:focus{
+      color: $primary;
+      background-color: transparent;
+    }
+    &:active{
+      background-color: transparent;
+    }
+  }
+}
+
+.button-plain.disabled {
+  color: $gray-3;
+  background-color: transparent;
 }

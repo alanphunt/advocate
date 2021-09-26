@@ -20,47 +20,47 @@ import Table from "./Table";
 */
 
 const TableAccordionGroup = ({allOpen, openIndex, children, accordionHeaders, tableHeaders, tableData, dataKeys, accordionIcons, selectedCallback, tableChildren, iconClickedCallback}) => {
-     
-    const [selectedRowId, setSelectedRowId] = useState("");
-    const [selectedAccordionIndex, setSelectedAccordionIndex] = useState(-1);
 
-    const callbackWrapper = (object, rowIndex, accordionIndex) => {
-        setSelectedRowId(object.id);
-        setSelectedAccordionIndex(accordionIndex);
-        selectedCallback(object, rowIndex, accordionIndex);
-    };
+  const [selectedRowId, setSelectedRowId] = useState("");
+  const [selectedAccordionIndex, setSelectedAccordionIndex] = useState(-1);
 
-    return (
-        <div className="accordion">
-            {
-                children ? (
-                    children
-                ) : (
-                    accordionHeaders.map((header, accordionIndex) => {
-                        return (
-                            <AccordionItem
-                                key={`accordionHeader-${accordionIndex}`}
-                                iconClickedCallback={iconClickedCallback}
-                                preOpened={allOpen || openIndex === accordionIndex}
-                                header={header}
-                                cons={accordionIcons}
-                            >
-                                <Table
-                                    tableData={tableChildren ? null : tableData[accordionIndex]}
-                                    headers={tableHeaders}
-                                    dataKeys={dataKeys}
-                                    selectedCallback={(rowObject, rowIndex) => callbackWrapper(rowObject, rowIndex, accordionIndex)}
-                                    selectedRowId={ selectedAccordionIndex === accordionIndex ? selectedRowId : ""}
-                                >
-                                    {tableChildren ? tableChildren : null}
-                                </Table>
-                            </AccordionItem>
-                        )
-                    })
-                )
-            }
-        </div>
-    );
+  const callbackWrapper = (object, rowIndex, accordionIndex) => {
+    setSelectedRowId(object.id);
+    setSelectedAccordionIndex(accordionIndex);
+    selectedCallback(object, rowIndex, accordionIndex);
+  };
+
+  return (
+    <div className="accordion">
+      {
+        children ? (
+          children
+        ) : (
+          accordionHeaders.map((header, accordionIndex) => {
+            return (
+              <AccordionItem
+                key={`accordionHeader-${accordionIndex}`}
+                iconClickedCallback={iconClickedCallback}
+                preOpened={allOpen || openIndex === accordionIndex}
+                header={header}
+                cons={accordionIcons}
+              >
+                <Table
+                  tableData={tableChildren ? null : tableData[accordionIndex]}
+                  headers={tableHeaders}
+                  dataKeys={dataKeys}
+                  selectedCallback={(rowObject, rowIndex) => callbackWrapper(rowObject, rowIndex, accordionIndex)}
+                  selectedRowId={ selectedAccordionIndex === accordionIndex ? selectedRowId : ""}
+                >
+                  {tableChildren ? tableChildren : null}
+                </Table>
+              </AccordionItem>
+            )
+          })
+        )
+      }
+    </div>
+  );
 };
 
 export default TableAccordionGroup;

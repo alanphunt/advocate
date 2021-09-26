@@ -1,5 +1,6 @@
 import React from "react";
 import RequiredField from "components/atoms/RequiredField";
+import H3 from "./H3";
 
 /*
      props:
@@ -14,7 +15,7 @@ const Select = ({mapping, onChange, value, icon, label, required}) => {
     <div className="form-element-wrapper">
       {
         label ? (
-          <h3 className={"i-bottom"}>{required ? <RequiredField/> : ""}{label}</h3>
+          <H3 classes={"i-bottom"}>{label}{required ? <RequiredField/> : ""}</H3>
         ) : <></>
       }
       <label>

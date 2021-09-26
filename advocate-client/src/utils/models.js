@@ -115,9 +115,11 @@ export const goalModel = {
   goalName: "",
   startDate: "",
   masteryDate: "",
+  completionDate: "",
   monitor: 0,
   benchmarks: [],
   studentId: "",
+  enabled: 0,
   goal: EditorState.createEmpty()
 };
 

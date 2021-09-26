@@ -9,28 +9,28 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class AccountDetailsRequestBean {
 
-    private AccountDetails accountDetails;
+  private AccountDetails accountDetails;
 
-    public AccountDetailsRequestBean() {
-    }
+  public AccountDetailsRequestBean() {
+  }
 
-    public AccountDetailsRequestBean(AccountDetails accountDetails) {
-        this.accountDetails = accountDetails;
-    }
+  public AccountDetailsRequestBean(AccountDetails accountDetails) {
+    this.accountDetails = accountDetails;
+  }
 
-    public AccountDetails getAccountDetails() {
-        return this.accountDetails;
-    }
+  public AccountDetails getAccountDetails() {
+    return this.accountDetails;
+  }
 
-    public void setAccountDetails(AccountDetails accountDetails) {
-        this.accountDetails = accountDetails;
-    }
+  public void setAccountDetails(AccountDetails accountDetails) {
+    this.accountDetails = accountDetails;
+  }
 
-    @Override
-    public String toString() {
-        return "{" +
-            " accountDetails='" + getAccountDetails() + "'" +
-            "}";
-    }
+  @Override
+  public String toString() {
+    return "{" +
+        " accountDetails='" + getAccountDetails().toString() + "'" +
+        "}";
+  }
 
 }
