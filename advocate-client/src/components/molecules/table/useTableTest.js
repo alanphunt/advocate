@@ -8,10 +8,13 @@ const useTableTest = ({data, selectedCallback, selectedId}) => {
   const reversed = "reversed";
 
   useEffect(() => {
-    if(selectedId && !data.find(obj => obj.id === selectedId))
+    const containsId = data.find(obj => obj.id === selectedId);
+    if(selectedId && !containsId)
       setSelectedRowId("");
-    else if (selectedId && selectedId !== selectedRowId)
+    else if (selectedId && containsId && selectedId !== selectedRowId)
       setSelectedRowId(selectedId);
+    else if(!selectedId && selectedRowId)
+      setSelectedRowId("");
   }, [selectedId]);
 
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -98,7 +101,8 @@ const useTableTest = ({data, selectedCallback, selectedId}) => {
       let key = Object.keys(searchValue)[0];
       let val = searchValue[key];
       setFilteredData(data.filter(obj => obj[key].toString().toLowerCase().includes(val)));
-    }
+    } else if(!data[0].id)
+      setSelectedRowId("");
   }, [data]);
 
   const searchInput = (dataIndex) => {

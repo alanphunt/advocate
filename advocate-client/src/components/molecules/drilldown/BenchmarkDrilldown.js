@@ -101,7 +101,6 @@ const BenchmarkDrilldown = ({
                     columns={[{title: `Trials - (${trials.length})`, dataIndex: "label"}]}
                     data={renderTableData()}
                     selectedCallback={trials.length ? (trial) => handleTrialSelect(trial.id) : null}
-                    selectedId={trialId}
                   />
                 </Col>
               </Row>

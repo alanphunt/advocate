@@ -26,7 +26,7 @@ public class GoalService {
   public ResponseEntity<?> handleGoalCreation(Goal goal) {
     String goalId = goal.getId().isBlank() ? utilService.generateUniqueId() : goal.getId();
     goal.setId(goalId);
-
+    goal.setEnabled(1);
     populateBenchmarkAttributes(goal.getBenchmarks(), goal);
     goalRepo.save(goal);
     return ResponseEntity.ok(mapGoalToGoalDTO(goal));

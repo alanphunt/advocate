@@ -9,7 +9,7 @@ import NumberPicker from "components/atoms/NumberPicker";
 import FormElement from "components/atoms/FormElement";
 import Section from "components/atoms/Section";
 import TextArea from "./TextArea";
-import {benchmarkModel, templateOptionsModel} from "utils/models";
+import {templateOptionsModel} from "utils/models";
 import RequiredField from "components/atoms/RequiredField";
 import ErrorLabel from "components/atoms/ErrorLabel";
 import TextAreaForTable from "./TextAreaForTable";
@@ -18,6 +18,7 @@ import Checkbox from "./Checkbox";
 import Select from "components/atoms/Select";
 import TableTest from "./table/TableTest";
 import H3 from "components/atoms/H3";
+import {Benchmark} from "utils/classes/ContextModels";
 
 const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
   useEffect(() => {
@@ -209,7 +210,7 @@ const GoalForm = ({mutableGoal, setMutableGoal, formErrors}) => {
           <NumberPicker
             updateState={adjustBenchmarkCount}
             limit={26}
-            object={benchmarkModel}
+            object={new Benchmark()}
             objectArray={mutableGoal.benchmarks}
           />
         </Section>

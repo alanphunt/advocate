@@ -1,24 +1,24 @@
 import React, {useEffect, useRef, useState} from "react";
 import {FaCheck as CheckIcon, FaRegHandPointRight as RedirectIcon, FaRegCopy as CopyIcon, FaUndo as NewGoalIcon, FaTimes as XIcon} from "react-icons/fa";
 import GoalForm from "components/molecules/GoalForm";
+import {Goal} from "utils/classes/ContextModels"
 import {
   BAD_REQUEST_STATUS,
-  BASIC_STUDENT_TABLE_HEADERS,
   FORBIDDEN_STATUS, JSON_HEADER, NOT_LOADING, STUDENT_COLUMNS,
   UNAUTHORIZED_STATUS
 } from "utils/constants";
 import Button from "components/atoms/Button";
 import Section from "components/atoms/Section";
-import {goalFormErrorModel, goalModel} from "utils/models";
+import {goalFormErrorModel} from "utils/models";
 import ModalBody from "components/molecules/ModalBody";
-import {prepareEditorStateForRequest, formatStudentObject, editDeleteIcons} from "utils/functions/functions";
+import {prepareEditorStateForRequest, formatStudentObject} from "utils/functions/functions";
 import TableAccordionGroup from "components/molecules/table/TableAccordionGroup";
 import AccordionItem from "../atoms/AccordionItem";
 import TableTest from "./table/TableTest";
 
 const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId, signout, closeModal}) => {
   const { id, name } = student;
-  const [goal, setGoal] = useState({...goalModel, studentId: id});
+  const [goal, setGoal] = useState(new Goal());
   const [formErrors, setFormErrors] = useState(goalFormErrorModel);
   const [displayTable, setDisplayTable] = useState(false);
   const [isLoading, setIsLoading] = useState(NOT_LOADING);
@@ -35,6 +35,7 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
 
     const payload = JSON.stringify({
       ...goal,
+      studentId: id,
       goal: (goalEditorState.hasText() ? prepareEditorStateForRequest(goalEditorState) : ""),
       benchmarks: goal.benchmarks.map(bm => {
         let bmEditorState = bm.description.getCurrentContent();
@@ -62,7 +63,7 @@ const CreateGoal = ({student, completeCrudOp, classrooms, students, setStudentId
   };
 
   const createNewGoalForNewStudent = () => {
-    setGoal({...goalModel});
+    setGoal(new Goal());
     setDisplayTable(true);
   };
 

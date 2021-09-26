@@ -1,3 +1,5 @@
+import {EditorState} from "draft-js";
+
 export class AccountDetails{
   constructor(username = "", dateCreated = "", accountNonExpired = 0, accountNonLocked = 0, credentialsNonExpired = 0, role = ""){
     this.username = username;
@@ -68,8 +70,9 @@ export class Baseline{
 }
 
 export class Goal {
-  constructor (id = "", goalName = "", enabled = 0, monitor = 0, startDate = "", masteryDate = "", studentId = "", completionDate = "", complete = 0, benchmarkIds = []) {
+  constructor (id = "", goal = EditorState.createEmpty(), goalName = "", enabled = 0, monitor = 0, startDate = "", masteryDate = "", studentId = "", completionDate = "", complete = 0, benchmarkIds = [], benchmarks = []) {
     this.id = id;
+    this.goal = goal;
     this.goalName = goalName;
     this.enabled = enabled;
     this.monitor = monitor;
@@ -79,11 +82,12 @@ export class Goal {
     this.completionDate = completionDate;
     this.complete = complete;
     this.benchmarkIds = benchmarkIds;
+    this.benchmarks = benchmarks;
   }
 }
 
 export class Benchmark {
-  constructor (id = "", goalId = "", enabled = 0, complete = 0, label = "", description = "", tracking = "", masteryDate = "", metDate = "", trialIds = [], trialAverage = 0.0) {
+  constructor (id = "", goalId = "", enabled = 0, complete = 0, label = "", description =  EditorState.createEmpty(), tracking = "", masteryDate = "", metDate = "", trialIds = [], trialAverage = 0.0) {
     this.id = id;
     this.enabled = enabled;
     this.complete = complete;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Button from "components/atoms/Button";
 import {
   FaCheck as CheckIcon,
@@ -19,11 +19,8 @@ import TableTest from "../table/TableTest";
 import Row from "components/atoms/Row";
 import Col from "components/atoms/Col";
 
-const GoalDrilldown = ({studentIsPresent, goals, allBenchmarks, setGoalId, benchmarkId, setBenchmarkId,  setMutableGoal, setModalAction}) => {
-
-/*  useEffect(() => {
-    setSelectedBenchmarkId("");
-  }, [student]);*/
+const GoalDrilldown = ({studentId, goals, allBenchmarks, setGoalId, benchmarkId, setBenchmarkId, setMutableGoal, setModalAction}) => {
+  const studentIsPresent = Boolean(studentId);
 
   const selectedBenchmarkCallback = (benchmark, benchmarkIndex, goal, goalIndex) => {
     setBenchmarkId(benchmark.id);

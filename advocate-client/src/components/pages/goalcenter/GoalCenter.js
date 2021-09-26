@@ -12,7 +12,7 @@ import GoalCenterDrilldown from "components/molecules/table/GoalCenterDrilldown"
     local state will stay the same.
 */
 const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setToasterText}) =>{
-  const {teacher, setTeacher, signout, hasClassroomWithStudents} = useAuth();
+  const {teacher, setTeacher, signout} = useAuth();
 
   const [studentId, setStudentId] = useState("");
 
@@ -20,10 +20,8 @@ const GoalCenter = ({modalAction, closeModal, setModalAction, setModalBody, setT
     <DashCard fitOnPage>
       <Row gap={[0, "1rem"]} wrap={false} height={"100%"}>
         <GoalCenterClassrooms
-          teacher={teacher}
           studentId={studentId}
           setStudentId={setStudentId}
-          hasClassroomWithStudents={hasClassroomWithStudents}
         />
         <ColDivider/>
         <GoalCenterDrilldown

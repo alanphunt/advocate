@@ -6,8 +6,10 @@ import AccordionItem from "../atoms/AccordionItem";
 import TableTest from "./table/TableTest";
 import Box from "components/atoms/Box";
 import {mapStudentGoalMeta} from "utils/functions/functions";
+import {useAuth} from "../../utils/auth/AuthHooks";
 
-const GoalCenterClassrooms = ({studentId, setStudentId, hasClassroomWithStudents, teacher}) => {
+const GoalCenterClassrooms = ({studentId, setStudentId}) => {
+  const {teacher, hasClassroomWithStudents} = useAuth();
   const {students, classrooms, goals, benchmarks} = teacher;
   const handleSelectedStudent = (student) => setStudentId(student.id);
 
@@ -25,10 +27,13 @@ const GoalCenterClassrooms = ({studentId, setStudentId, hasClassroomWithStudents
       dataIndex: "completion"
     }
   ]
-  const renderTableData = (classroom) => classroom.studentIds.map(id => mapStudentGoalMeta(students[id],
-    students[id].goalIds.map(goalId => goals[goalId])
-      .map(goal => ({...goal, benchmarks: goal.benchmarkIds.map(bmId => benchmarks[bmId])}))
-  ))
+
+  const renderTableData = (classroom) => {
+    return classroom.studentIds.map(id => mapStudentGoalMeta(students[id],
+      students[id].goalIds.map(goalId => goals[goalId])
+        .map(goal => ({...goal, benchmarks: goal.benchmarkIds.map(bmId => benchmarks[bmId])}))
+    ))
+  }
 
   return (
     <Col span={8} classes={"col-padding"}>

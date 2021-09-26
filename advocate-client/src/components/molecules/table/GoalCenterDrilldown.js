@@ -66,11 +66,13 @@ const GoalCenterDrilldown = ({studentId, teacher, modalAction, setModalAction, s
     setToasterText(<p>{message}</p>);
     setTeacher(prev => ({
       ...prev,
+      students: {...prev.students, [studentId]: {...selectedStudent, goalIds: [...selectedStudent.goalIds, Object.keys(data.goal)[0]]}},
       goals: {...prev.goals, ...data.goal},
       benchmarks: {...prev.benchmarks, ...data.benchmarks}
     }))
     if(!preventClose)
       closeModal();
+    setIsLoading(NOT_LOADING)
   };
 
   const completeCrudOpAndSetNewTrial = (data, message, preventClose) => {
@@ -147,7 +149,7 @@ const GoalCenterDrilldown = ({studentId, teacher, modalAction, setModalAction, s
               goal={mutableGoal}
               classrooms={Object.values(classrooms)}
               students={students}
-              completeCrudOp={completeCrudOp}
+              completeCrudOp={goalCreationSuccessful}
               closeModal={closeModal}
               signout={signout}
               isLoading={isLoading.copyGoal}
@@ -319,6 +321,10 @@ const GoalCenterDrilldown = ({studentId, teacher, modalAction, setModalAction, s
   }, [modalAction, trialId, mutableTrial, mutableGoal, isLoading])
 
   useEffect(() => {
+    setTrialId("");
+  }, [benchmarkId]);
+
+  useEffect(() => {
     if(!modalAction){
       // setIsLoading({"":false});
       if(mutableTrial?.id)
@@ -334,7 +340,7 @@ const GoalCenterDrilldown = ({studentId, teacher, modalAction, setModalAction, s
     <Col span={16} classes={"col-padding"}>
       <H2 margin>{ studentId ? `${selectedStudent.name}'s ` : "" }Goal Summary</H2>
       <GoalDrilldown
-        studentIsPresent={Boolean(studentId)}
+        studentId={studentId}
         goals={selectedStudentGoals}
         allBenchmarks={benchmarks}
         setGoalId={setGoalId}
